@@ -12,6 +12,7 @@ public class UI : MonoBehaviour {
 	public InputField numberOfMuscles;
 	public InputField numberOfNodes;
 	public Toggle randomNumbers;
+	public Toggle generate;
 	public InputField muscleReaction;
 
 	void Start () {
@@ -24,6 +25,7 @@ public class UI : MonoBehaviour {
 		numberOfNodes.text = Constants.numberOfNodes.ToString ();
 		randomNumbers.isOn = Constants.randomNumbers;
 		muscleReaction.text = Constants.musclesReaction.ToString ();
+		generate.isOn = Constants.generate;
 
 		timeMultiplier.onValueChanged.AddListener(UpdateUI);
 		gravityMultiplier.onEndEdit.AddListener(UpdateUI);
@@ -34,6 +36,7 @@ public class UI : MonoBehaviour {
 		numberOfNodes.onEndEdit.AddListener(UpdateUI);
 		randomNumbers.onValueChanged.AddListener(UpdateUI);
 		muscleReaction.onEndEdit.AddListener (UpdateUI);
+		generate.onValueChanged.AddListener (UpdateUI);
 	}
 
 	public void UpdateUI(string s) {
@@ -58,18 +61,24 @@ public class UI : MonoBehaviour {
 		Constants.numberOfNodes = int.Parse (numberOfNodes.text);
 		Constants.randomNumbers = randomNumbers.isOn;
 		Constants.musclesReaction = int.Parse (muscleReaction.text);
+		Constants.generate = generate.isOn;
 	}
 }
 
 public static class Constants {
 	public static float timeMultiplier = 1;
-	public static float gravityMultiplier = 0;
+	public static float gravityMultiplier = 10;
 	public static float cycleDurationMultiplier = 4;
 	public static float tolerance = 0.001f;
 	public static float strengthAmplitude = 20;
 	public static float frictionAmplitude = 1;
 	public static int numberOfMuscles = 3;
-	public static int numberOfNodes = 2;
+	public static int numberOfNodes = 1;
 	public static bool randomNumbers = false;
 	public static float musclesReaction = 4;
+	public static bool generate = false;
+	public static float contractedDistanceMultiplier = 3;
+	public static float extendedDistanceMultiplier = 1;
+	public static float averageDistance = 5;
+	public static float distanceAmplitude = 2;
 }

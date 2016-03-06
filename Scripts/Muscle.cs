@@ -2,17 +2,22 @@
 using System.Collections;
 
 public class Muscle {
+	
+	#region public variables
 	public float strength;
 	public float extendedLength;
 	public float contractedLength;
-
 	public float contractionTime;
+	#endregion
 
-	public Node left;
+	#region private variables
+	private Node left;
 	public Node right;
-
 	private MuscleRenderer muscleRenderer;
+	#endregion
 
+
+	#region Constructor
 	public Muscle (Node left, Node right, float strength, float extendedLength, float contractedLength, float contractionTime) {
 		this.left = left;
 		this.right = right;
@@ -21,12 +26,17 @@ public class Muscle {
 		this.contractedLength = contractedLength;
 		this.contractionTime = contractionTime;
 
+		//Create muscle renderer
 		muscleRenderer = (new GameObject()).AddComponent<MuscleRenderer> ();
 		muscleRenderer.gameObject.name = "Muscle from " + left.id.ToString () + " to " + right.id.ToString ();
 		muscleRenderer.maxLength = extendedLength;
 		muscleRenderer.minLength = contractedLength;
+		muscleRenderer.Initialize ();
+		LateUpdate ();
 	}
+	#endregion
 
+	#region Update and LateUpdate
 	public void Update (float time) {
 		var distance = Vector2.Distance (left.position, right.position);
 
@@ -50,57 +60,29 @@ public class Muscle {
 		//Position
 		muscleRenderer.SetPosition (left.position, right.position);
 	}
+	#endregion
 
+
+	#region Destroy
 	public void Destroy () {
 		MonoBehaviour.Destroy (muscleRenderer.gameObject);
 	}
-}
+	#endregion
 
-public class MuscleRenderer : MonoBehaviour {private Material material;
-	private LineRenderer lineRenderer;
-	private LineRenderer max;
-	private LineRenderer min;
-
-	public float maxLength;
-	public float minLength;
-
-	void Start () {
-		lineRenderer = gameObject.AddComponent<LineRenderer> ();
-		material = new Material(Shader.Find("Diffuse"));
-		material.color = new Color (Random.value, Random.value, Random.value);
-		lineRenderer.material = material;
-
-		max = new GameObject ().AddComponent<LineRenderer> ();
-		min = new GameObject ().AddComponent<LineRenderer> ();
-
-		max.transform.parent = transform;
-		min.transform.parent = transform;
-
-		max.SetWidth (0.25f, 0.25f);
-		min.SetWidth (0.25f, 0.25f);
-
-		max.material = new Material (Shader.Find ("Transparent/Diffuse"));
-		max.material.color = new Color (1, 0, 0, 0.5f);
-		min.material = new Material (Shader.Find ("Transparent/Diffuse"));
-		max.material.color = new Color (0, 1, 0, 0.5f);
+	#region Equals && Hash
+	public override bool Equals (object obj)
+	{
+		if(obj.GetType() == typeof(Tuple)) {
+			var t = (Tuple)obj;
+			return (left.id == t.a && right.id == t.b) || (left.id == t.b && right.id == t.a);
+		} else {
+			return false;
+		}
 	}
 
-	public void SetWidth(float width) {
-		lineRenderer.SetWidth (width, width);
+	public override int GetHashCode ()
+	{
+		return left.GetHashCode () + right.GetHashCode ();
 	}
-
-	public void SetPosition (Vector2 left, Vector2 right) {
-		lineRenderer.SetPosition (0, (Vector3)left + Vector3.forward);
-		lineRenderer.SetPosition (1, (Vector3)right + Vector3.forward);
-		var center = (left + right) / 2;
-		max.SetPosition (0, (Vector3)center - Vector3.left * maxLength / 2);
-		max.SetPosition (1, (Vector3)center - Vector3.right * maxLength / 2);
-
-		min.SetPosition (0, (Vector3)center - Vector3.left * minLength / 2);
-		min.SetPosition (1, (Vector3)center - Vector3.right * minLength / 2);
-
-		var r = Quaternion.FromToRotation (Vector3.right, right - left);
-		max.transform.rotation = r;
-		min.transform.rotation = r;
-	}
+	#endregion
 }

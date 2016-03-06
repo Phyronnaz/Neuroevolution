@@ -5,24 +5,187 @@ using System.Collections.Generic;
 
 public class Generate : MonoBehaviour {
 
-    public GameObject node;
-
-	float cycleDuration;
-
+	#region public variables
 	public Text cycleText;
 	public Text distanceText;
 	public Text timeText;
+	#endregion
 
-	private int numberOfNodes;
-	private int numberOfMuscles;
-
+	#region private variables
 	private List<Node> nodes;
 	private List<Muscle> muscles;
 
-	private float currentTime = 0;
+	private Controller controller;
 
+	private float cycleDuration;
+
+	private bool generated = false;
+
+	private bool muscleEdit;
+	private Node nodeEdit;
+	#endregion
+
+
+	#region Start and Update
 	void Start ()
-    {
+	{
+		//Initialize arrays
+		nodes = new List<Node> ();
+		muscles = new List<Muscle> ();
+
+		//Cycle duration
+		cycleDuration = (Random.value + 0.1f) * Constants.cycleDurationMultiplier;
+
+		//Generate
+		generated = false;
+		muscleEdit = false;
+		if (Constants.generate) {
+			GenerateRandomly ();
+			InitializeController ();
+			generated = true;
+		}
+	}
+
+	void Update () {
+		//Restart if asked
+		if (Input.GetKeyDown (KeyCode.R))
+			Restart ();
+		//Edit
+		if(!generated) {
+			if(muscleEdit) {
+				Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				var l = GetComponent<LineRenderer> ();
+				if (l == null)
+					l = gameObject.AddComponent<LineRenderer> ();
+				pos.z = 0;
+				l.SetPosition (0, nodeEdit.position);
+				l.SetPosition (1, pos);
+			}
+			if(Input.GetMouseButtonDown(0)) {
+				Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				nodes.Add(new Node ((Random.value + 1) * Constants.frictionAmplitude, pos, 1, 0.6f, nodes.Count));
+				if(muscleEdit) {
+					muscleEdit = false;
+					var node = nodes [nodes.Count - 1];
+
+					var t = true;
+					foreach(var m in muscles) {
+						if (m.Equals (new Tuple (node.id, nodeEdit.id))) {
+							t = false;
+							break;
+						}
+					}
+					if (t) {
+						var distance = Vector2.Distance (node.position, nodeEdit.position);
+						var contractedLength = distance - Random.value * Constants.contractedDistanceMultiplier;
+						var extendedLength = distance + Random.value * Constants.extendedDistanceMultiplier;
+
+						muscles.Add (new Muscle (
+							node,
+							nodeEdit,
+							(Random.value + 0.01f) * Constants.strengthAmplitude,
+							extendedLength,
+							contractedLength,
+							cycleDuration / 2//Random.value * cycleDuration
+						));
+					}
+
+					Destroy (GetComponent<LineRenderer> ());
+				}
+			}
+			if (Input.GetMouseButtonDown (1)) {
+				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+				RaycastHit2D hit = Physics2D.GetRayIntersection (ray, Mathf.Infinity);
+				if (hit.collider != null) {
+					if (hit.collider.GetComponent<NodeRenderer> () != null) {
+						if (!muscleEdit) {
+							muscleEdit = true;
+							nodeEdit = nodes [hit.transform.GetComponent<NodeRenderer> ().id];
+						} else if (hit.transform.GetComponent<NodeRenderer> ().id != nodeEdit.id) {
+							muscleEdit = false;
+							var node = nodes [hit.transform.GetComponent<NodeRenderer> ().id];
+
+							var t = true;
+							foreach(var m in muscles) {
+								if (m.Equals (new Tuple (node.id, nodeEdit.id))) {
+									t = false;
+									break;
+								}
+							}
+							if (t) {
+								var distance = Vector2.Distance (node.position, nodeEdit.position);
+								var contractedLength = distance - Random.value * Constants.contractedDistanceMultiplier;
+								var extendedLength = distance + Random.value * Constants.extendedDistanceMultiplier;
+
+								muscles.Add (new Muscle (
+									node,
+									nodeEdit,
+									(Random.value + 0.01f) * Constants.strengthAmplitude,
+									extendedLength,
+									contractedLength,
+									cycleDuration / 2//Random.value * cycleDuration
+								));
+							}
+
+							Destroy (GetComponent<LineRenderer> ());
+						}
+					}
+				}
+			}
+			if (Input.GetKeyDown (KeyCode.Space)) {
+				generated = true;
+				if (GetComponent<LineRenderer> () != null)
+					Destroy (GetComponent<LineRenderer> ());
+				InitializeController ();
+			}
+				
+		}
+	}
+	#endregion
+		
+
+	#region Restart
+	public void Restart () {
+		/*
+		 * Destroy all muscles and nodes
+		 */
+		foreach(var m in muscles) {
+			m.Destroy ();
+		} 
+		foreach(var n in nodes) {
+			n.Destroy ();
+		}
+		/*
+		 * Clear arrays
+		 */
+		muscles.Clear ();
+		nodes.Clear ();
+		/*
+		 * Destroy controller
+		 */
+		DestroyImmediate (controller);
+		/*
+		 * Reset UI
+		 */
+		cycleText.text = "";
+		timeText.text = "";
+		distanceText.text = "";
+		if (GetComponent<LineRenderer> () != null)
+			Destroy (GetComponent<LineRenderer> ());
+		/*
+		 * Regenerate
+		 */
+		Start ();
+	}
+	#endregion
+
+	#region Generate
+	private void GenerateRandomly () {
+		/*
+		 * Set number of muscles and nodes
+		 */
+		int numberOfNodes;
+		int numberOfMuscles;
 		if(Constants.randomNumbers) {
 			numberOfNodes = Random.Range (3, 6);
 			numberOfMuscles = Random.Range (numberOfNodes, numberOfNodes * 4);
@@ -30,19 +193,18 @@ public class Generate : MonoBehaviour {
 			numberOfNodes = Constants.numberOfNodes;
 			numberOfMuscles = Constants.numberOfMuscles;
 		}
-		
-		cycleDuration = 10;//Random.value * Constants.cycleDurationMultiplier + 0.01f;
 
-		nodes = new List<Node> ();
+		/*
+		 * Generate nodes
+     		 */
 		for (var k = 0; k < numberOfNodes; k++)
-        {
-			nodes.Add (new Node ((Random.value + 1) * Constants.frictionAmplitude, new Vector2(Random.value, Random.value*0 + 1) * 10, 1, nodes.Count));
-        }
+		{
+			nodes.Add (new Node ((Random.value + 1) * Constants.frictionAmplitude, new Vector2(Random.value, Random.value + 1) * 10, 1, 0.6f, nodes.Count));
+		}
 
-//		nodes.Add (new Node (Random.value * Constants.frictionAmplitude, Vector2.up + Vector2.right * 5, 0));
-//		nodes.Add (new Node (Random.value * Constants.frictionAmplitude, Vector2.up * 8, 1));
-//		nodes.Add (new Node (Random.value * Constants.frictionAmplitude, Vector2.up + Vector2.left * 5, 1));
-
+		/*
+		 * Recenter nodes
+		 */
 		float s = 0;
 		foreach(var n in nodes) {
 			s += n.position.x;
@@ -55,18 +217,26 @@ public class Generate : MonoBehaviour {
 			n.position = p;
 		}
 
-		muscles = new List<Muscle> ();
+		/*
+		 * Generate muscles
+		 */
+		//list of connected nodes
 		var x = new List<Tuple> ();
+		//prevent infinite loop
 		int sec = 0;
 		for(int k = 0; k < numberOfMuscles; k++) {
+			//Random connection
 			var a = new Tuple (Random.Range (0, numberOfNodes), Random.Range (0, numberOfNodes));
+			//Try to connect all muscles
 			if (k < numberOfNodes)
 				a.a = k;
-			if(!x.Contains(a) && a.a != a.b) {
+			//If muscle not already added
+			if (!x.Contains (a) && a.a != a.b) {
 				x.Add (a);
-				x.Add (a.Reverse());
-				var contractedLength = (Random.value + 1) * 3;
-				var extendedLength = contractedLength + (Random.value + 1) * 1;
+				x.Add (a.Reverse ());
+				var distance = Constants.averageDistance + (Random.value - 0.5f) * 2 * Constants.distanceAmplitude;
+				var contractedLength = distance - Random.value * Constants.contractedDistanceMultiplier;
+				var extendedLength = distance + Random.value * Constants.extendedDistanceMultiplier;
 				muscles.Add (new Muscle (
 					nodes [a.a],
 					nodes [a.b],
@@ -75,98 +245,34 @@ public class Generate : MonoBehaviour {
 					contractedLength,
 					cycleDuration / 2//Random.value * cycleDuration
 				));
-			} else {
-				if (sec < 100) {
-					k -= 1;
-					sec++;
-				}
+			} else if (sec < 100) {
+				//Force loop to continue
+				k -= 1;
+				sec++;
 			}
 		}
-//		cycleDuration = 2;
-//		muscles.Add (new Muscle (nodes [0], nodes [1], 10, 10, 1, cycleDuration / 2));
-//		muscles.Add (new Muscle (nodes [2], nodes [1], 10, 10, 1, cycleDuration / 2));
-//		muscles.Add (new Muscle (nodes [2], nodes [0], 10, 10, 1, cycleDuration / 2));
-		print (muscles.Count);
-	}
 
-	void Update () {
-		var time = (Time.time - cycleDuration * (Mathf.FloorToInt (Time.time / cycleDuration))) / Constants.timeMultiplier;
-
-		foreach(var m in muscles) {
-			m.Update (time);
-		}
-		foreach(var n in nodes) {
-			n.Update (Time.deltaTime * Constants.timeMultiplier);
-		}
+		/*
+		 * Update render
+		 */
 		foreach(var m in muscles) {
 			m.LateUpdate ();
 		}
 		foreach(var n in nodes) {
 			n.LateUpdate ();
 		}
-
-		float s = 0;
-		foreach(var n in nodes) {
-			s += n.position.x;
-		}
-		s /= nodes.Count;
-
-		distanceText.text = "Distance : " + s.ToString ();
-
-		timeText.text = "Time : " + currentTime.ToString ();
-
-		cycleText.text = (Mathf.Ceil (time * Constants.timeMultiplier / cycleDuration * 100)).ToString () + " %";
-
-		currentTime += Time.deltaTime * Constants.timeMultiplier;
-
-		if (Input.GetKeyDown (KeyCode.R))
-			Restart ();
 	}
+	#endregion
 
-	public void Restart () {
-		foreach(var m in muscles) {
-			m.Destroy ();
-		} 
-		foreach(var n in nodes) {
-			n.Destroy ();
-		}
-		muscles.Clear ();
-		nodes.Clear ();
-		currentTime = 0;
-		Start ();
+	#region Initialize controller
+	private void InitializeController () {
+		controller = gameObject.AddComponent<Controller> ();
+		controller.cycleText = cycleText;
+		controller.distanceText = distanceText;
+		controller.timeText = timeText;
+		controller.nodes = nodes;
+		controller.muscles = muscles;
+		controller.cycleDuration = cycleDuration;
 	}
-}
-
-public struct Tuple {
-	public int a;
-	public int b;
-	public Tuple (int a, int b) {
-		this.a = a;
-		this.b = b;
-	}
-
-	public Tuple Reverse () {
-		return new Tuple (b, a);
-	}
-
-	public override bool Equals (object obj)
-	{
-		if (obj.GetType () == typeof(Tuple))
-			return ((Tuple)obj) == this;
-		else
-			return false;
-	}
-
-	public override int GetHashCode ()
-	{
-		return a.GetHashCode () + b.GetHashCode ();
-	}
-
-	public static bool operator ==(Tuple x, Tuple y) {
-		return x.a == y.a && x.b == y.b;
-	}
-
-	public static bool operator !=(Tuple x, Tuple y) {
-		return x.a != y.a || x.b != y.b;
-	}
+	#endregion
 }
