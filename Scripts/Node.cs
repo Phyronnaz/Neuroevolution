@@ -33,7 +33,7 @@ public class Node {
 		//Create node renderer
 		var go = GameObject.Instantiate (Resources.Load ("Circle"), position, Quaternion.identity) as GameObject;
 		go.name = "Node " + id.ToString ();
-		go.GetComponent<SpriteRenderer> ().color = new Color (1 - friction / 2 / Constants.frictionAmplitude, 0, 0);
+		go.GetComponent<SpriteRenderer> ().color = new Color (friction / Constants.frictionAmplitude, 0, 0);
 		nodeRenderer = go.AddComponent<NodeRenderer> ();
 		nodeRenderer.id = id;
 
@@ -68,15 +68,17 @@ public class Node {
 			velocity -= Vector2.Dot (velocity, c) * c;
 		}
 
-		previousSpeed = velocity;
 		if ((velocity * deltaTime + position).y < nodeRadius) {
-			if (position.y > nodeRadius + Constants.tolerance) {
+			if (position.y > nodeRadius + Constants.tolerance)
 				velocity.y = (nodeRadius - position.y) / deltaTime;
-			} else {
+			else
 				velocity.y -= (1 + coefficientOfRestitution) * velocity.y;
-				previousSpeed = velocity;
-			}
 		}
+
+		if (position.y < nodeRadius + Constants.tolerance)
+			velocity.x = 0;// (1 + friction);
+
+		velocity /= Constants.musclesReaction;
 
 		//delta position = v * dt
 		var deltaPosition = velocity * deltaTime;
@@ -85,7 +87,7 @@ public class Node {
 			
 		forcesSum = Vector2.zero;
 
-//		position.y = Mathf.Max (nodeRadius, position.y);
+		previousSpeed = velocity;
 	}
 
 	public void LateUpdate () {

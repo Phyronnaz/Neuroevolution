@@ -60,7 +60,7 @@ public class UI : MonoBehaviour {
 		Constants.numberOfMuscles = int.Parse (numberOfMuscles.text);
 		Constants.numberOfNodes = int.Parse (numberOfNodes.text);
 		Constants.randomNumbers = randomNumbers.isOn;
-		Constants.musclesReaction = int.Parse (muscleReaction.text);
+		Constants.musclesReaction = float.Parse (muscleReaction.text);
 		Constants.generate = generate.isOn;
 	}
 }
@@ -68,17 +68,20 @@ public class UI : MonoBehaviour {
 public static class Constants {
 	public static float timeMultiplier = 1;
 	public static float gravityMultiplier = 10;
-	public static float cycleDurationMultiplier = 4;
+	public static float cycleDurationMultiplier = 10;
 	public static float tolerance = 0.001f;
 	public static float strengthAmplitude = 20;
 	public static float frictionAmplitude = 1;
 	public static int numberOfMuscles = 3;
 	public static int numberOfNodes = 1;
 	public static bool randomNumbers = false;
-	public static float musclesReaction = 4;
+	public static float musclesReaction = 2;
 	public static bool generate = false;
 	public static float contractedDistanceMultiplier = 3;
 	public static float extendedDistanceMultiplier = 1;
-	public static float averageDistance = 5;
-	public static float distanceAmplitude = 2;
+	public static float bounciness = 0.1f;
+	public static float minRandom = 0.01f;
+	public static float minMass = 1;
+	public static float maxMass = 10;
+	public static float minStrength = 1;
 }

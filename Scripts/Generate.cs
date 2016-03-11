@@ -21,24 +21,24 @@ public class Generate : MonoBehaviour {
 
 	private bool generated = false;
 
-	private bool muscleEdit;
-	private Node nodeEdit;
+	private bool isCreatingMuscle;
+	private Node nodeBeeingAssociated;
 	#endregion
 
 
 	#region Start and Update
 	void Start ()
 	{
-		//Initialize arrays
+		//Initialize arrays && variables
 		nodes = new List<Node> ();
 		muscles = new List<Muscle> ();
+		generated = false;
+		isCreatingMuscle = false;
 
 		//Cycle duration
 		cycleDuration = (Random.value + 0.1f) * Constants.cycleDurationMultiplier;
 
 		//Generate
-		generated = false;
-		muscleEdit = false;
 		if (Constants.generate) {
 			GenerateRandomly ();
 			InitializeController ();
@@ -52,84 +52,51 @@ public class Generate : MonoBehaviour {
 			Restart ();
 		//Edit
 		if(!generated) {
-			if(muscleEdit) {
-				Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			if(isCreatingMuscle) {
+				Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				mousePosition.z = 0;
+					
 				var l = GetComponent<LineRenderer> ();
 				if (l == null)
 					l = gameObject.AddComponent<LineRenderer> ();
-				pos.z = 0;
-				l.SetPosition (0, nodeEdit.position);
-				l.SetPosition (1, pos);
+				
+				l.SetPosition (0, nodeBeeingAssociated.position);
+				l.SetPosition (1, mousePosition);
 			}
-			if(Input.GetMouseButtonDown(0)) {
-				Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-				nodes.Add(new Node ((Random.value + 1) * Constants.frictionAmplitude, pos, 1, 0.6f, nodes.Count));
-				if(muscleEdit) {
-					muscleEdit = false;
-					var node = nodes [nodes.Count - 1];
+			if (Input.GetMouseButtonDown (0)) {
+				var hasDoneSmthg = false;
 
-					var t = true;
-					foreach(var m in muscles) {
-						if (m.Equals (new Tuple (node.id, nodeEdit.id))) {
-							t = false;
-							break;
-						}
-					}
-					if (t) {
-						var distance = Vector2.Distance (node.position, nodeEdit.position);
-						var contractedLength = distance - Random.value * Constants.contractedDistanceMultiplier;
-						var extendedLength = distance + Random.value * Constants.extendedDistanceMultiplier;
-
-						muscles.Add (new Muscle (
-							node,
-							nodeEdit,
-							(Random.value + 0.01f) * Constants.strengthAmplitude,
-							extendedLength,
-							contractedLength,
-							cycleDuration / 2//Random.value * cycleDuration
-						));
-					}
-
-					Destroy (GetComponent<LineRenderer> ());
-				}
-			}
-			if (Input.GetMouseButtonDown (1)) {
 				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 				RaycastHit2D hit = Physics2D.GetRayIntersection (ray, Mathf.Infinity);
 				if (hit.collider != null) {
 					if (hit.collider.GetComponent<NodeRenderer> () != null) {
-						if (!muscleEdit) {
-							muscleEdit = true;
-							nodeEdit = nodes [hit.transform.GetComponent<NodeRenderer> ().id];
-						} else if (hit.transform.GetComponent<NodeRenderer> ().id != nodeEdit.id) {
-							muscleEdit = false;
-							var node = nodes [hit.transform.GetComponent<NodeRenderer> ().id];
+						var hitNode = nodes [hit.transform.GetComponent<NodeRenderer> ().id];
 
-							var t = true;
-							foreach(var m in muscles) {
-								if (m.Equals (new Tuple (node.id, nodeEdit.id))) {
-									t = false;
-									break;
-								}
-							}
-							if (t) {
-								var distance = Vector2.Distance (node.position, nodeEdit.position);
-								var contractedLength = distance - Random.value * Constants.contractedDistanceMultiplier;
-								var extendedLength = distance + Random.value * Constants.extendedDistanceMultiplier;
+						if (isCreatingMuscle && !IsMuscleAlreadyAdded (hitNode, nodeBeeingAssociated))
+							GenerateMuscle (hitNode, nodeBeeingAssociated);
+						
+						nodeBeeingAssociated = hitNode;
 
-								muscles.Add (new Muscle (
-									node,
-									nodeEdit,
-									(Random.value + 0.01f) * Constants.strengthAmplitude,
-									extendedLength,
-									contractedLength,
-									cycleDuration / 2//Random.value * cycleDuration
-								));
-							}
-
-							Destroy (GetComponent<LineRenderer> ());
-						}
+						hasDoneSmthg = true;
 					}
+				}
+				if (!hasDoneSmthg) {
+					Vector3 mousePosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+					GenerateNode (mousePosition);
+
+					var lastNode = nodes [nodes.Count - 1];
+
+					if (isCreatingMuscle && !IsMuscleAlreadyAdded (lastNode, nodeBeeingAssociated))
+						GenerateMuscle (lastNode, nodeBeeingAssociated);
+					
+					nodeBeeingAssociated = lastNode;
+				}
+				isCreatingMuscle = true;
+			}
+			if (Input.GetMouseButtonDown (1)) {
+				if (isCreatingMuscle) {
+					isCreatingMuscle = false;
+					Destroy (GetComponent<LineRenderer> ());
 				}
 			}
 			if (Input.GetKeyDown (KeyCode.Space)) {
@@ -137,6 +104,20 @@ public class Generate : MonoBehaviour {
 				if (GetComponent<LineRenderer> () != null)
 					Destroy (GetComponent<LineRenderer> ());
 				InitializeController ();
+			}
+			if(Input.GetKeyDown(KeyCode.Return)) {
+				var k = 0;
+				var alreadyAdded = muscles.Count;
+				while (k < (nodes.Count - 1) * nodes.Count / 2 - alreadyAdded) {
+					//Random connection
+					var t = new Tuple (Random.Range (0, nodes.Count), Random.Range (0, nodes.Count));
+
+
+					if (!IsMuscleAlreadyAdded (t)) {
+						GenerateMuscle (t.a, t.b);
+						k++;
+					}
+				}
 			}
 				
 		}
@@ -179,6 +160,52 @@ public class Generate : MonoBehaviour {
 	}
 	#endregion
 
+	#region Generate muscle && node && check if muscle add
+	private void GenerateMuscle (Node left, Node right) {
+		var distance = Vector2.Distance (left.position, right.position);
+		var contractedLength = distance - Random.Range (Constants.minRandom, Constants.contractedDistanceMultiplier);
+		var extendedLength = distance + Random.Range (Constants.minRandom, Constants.extendedDistanceMultiplier);
+		var strength = Random.Range (Constants.minStrength, Constants.strengthAmplitude);
+		var cycleDuration = Random.Range (Constants.minRandom, this.cycleDuration);
+		var beginWithContraction = (Random.value > 0.5f);
+
+		muscles.Add (new Muscle (left, right, strength, extendedLength, contractedLength, cycleDuration, beginWithContraction));
+	}
+
+	private void GenerateMuscle (int a, int b) {
+		GenerateMuscle (nodes [a], nodes [b]);
+	} 
+
+	private void GenerateNode (Vector2 position) {
+		var friction = Random.Range (Constants.minRandom, Constants.frictionAmplitude);
+		var mass = Random.Range (Constants.minMass, Constants.maxMass);
+
+		nodes.Add (new Node (friction, position, mass, Constants.bounciness, nodes.Count));
+	}
+
+	private void GenerateNode () {
+		GenerateNode (Random.insideUnitCircle * 2 + Vector2.up * 2);
+	}
+
+	private bool IsMuscleAlreadyAdded (Node left, Node right) {
+		return IsMuscleAlreadyAdded (left.id, right.id);
+	}
+
+	private bool IsMuscleAlreadyAdded (Tuple t) {
+		return IsMuscleAlreadyAdded (t.a, t.b);
+	} 
+
+	private bool IsMuscleAlreadyAdded (int left, int right) {
+		if (left == right)
+			return true;
+		foreach(var muscle in muscles) {
+			if (muscle.Equals (new Tuple (left, right)))
+				return true;
+		}
+		return false;
+	} 
+	#endregion
+
 	#region Generate
 	private void GenerateRandomly () {
 		/*
@@ -197,9 +224,9 @@ public class Generate : MonoBehaviour {
 		/*
 		 * Generate nodes
      		 */
-		for (var k = 0; k < numberOfNodes; k++)
+		for (var i = 0; i < numberOfNodes; i++)
 		{
-			nodes.Add (new Node ((Random.value + 1) * Constants.frictionAmplitude, new Vector2(Random.value, Random.value + 1) * 10, 1, 0.6f, nodes.Count));
+			GenerateNode (new Vector2 (Random.value, Random.value + 1) * 10);
 		}
 
 		/*
@@ -220,35 +247,15 @@ public class Generate : MonoBehaviour {
 		/*
 		 * Generate muscles
 		 */
-		//list of connected nodes
-		var x = new List<Tuple> ();
-		//prevent infinite loop
-		int sec = 0;
-		for(int k = 0; k < numberOfMuscles; k++) {
+		var k = 0;
+		while (k < (nodes.Count - 1) * nodes.Count/2 && k < numberOfMuscles) {
 			//Random connection
-			var a = new Tuple (Random.Range (0, numberOfNodes), Random.Range (0, numberOfNodes));
-			//Try to connect all muscles
-			if (k < numberOfNodes)
-				a.a = k;
-			//If muscle not already added
-			if (!x.Contains (a) && a.a != a.b) {
-				x.Add (a);
-				x.Add (a.Reverse ());
-				var distance = Constants.averageDistance + (Random.value - 0.5f) * 2 * Constants.distanceAmplitude;
-				var contractedLength = distance - Random.value * Constants.contractedDistanceMultiplier;
-				var extendedLength = distance + Random.value * Constants.extendedDistanceMultiplier;
-				muscles.Add (new Muscle (
-					nodes [a.a],
-					nodes [a.b],
-					(Random.value + 0.01f) * Constants.strengthAmplitude,
-					extendedLength,
-					contractedLength,
-					cycleDuration / 2//Random.value * cycleDuration
-				));
-			} else if (sec < 100) {
-				//Force loop to continue
-				k -= 1;
-				sec++;
+			var t = new Tuple (Random.Range (0, nodes.Count), Random.Range (0, nodes.Count));
+
+
+			if (!IsMuscleAlreadyAdded (t)) {
+				GenerateMuscle (t.a, t.b);
+				k++;
 			}
 		}
 

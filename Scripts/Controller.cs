@@ -24,7 +24,7 @@ public class Controller : MonoBehaviour {
 		/*
 		 * time modulo cycle duration
 		 */
-		var time = (Time.time - cycleDuration * (Mathf.FloorToInt (Time.time / cycleDuration))) / Constants.timeMultiplier;
+		var time = (currentTime - cycleDuration * (Mathf.FloorToInt (currentTime / cycleDuration)));
 
 		/*
 		 * Update muscles and nodes
@@ -56,7 +56,7 @@ public class Controller : MonoBehaviour {
 		 */
 		distanceText.text = "Distance : " + avPosition.ToString ();
 		timeText.text = "Time : " + currentTime.ToString ();
-		cycleText.text = (Mathf.Ceil (time * Constants.timeMultiplier / cycleDuration * 100)).ToString () + " %";
+		cycleText.text = (Mathf.Ceil (time / cycleDuration * 100)).ToString () + " %";
 
 		/*
 		 * Update current time

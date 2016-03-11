@@ -1744,7 +1744,7 @@ RectTransform:
   m_RootOrder: 15
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -102, y: -233.6}
+  m_AnchoredPosition: {x: -162.34998, y: -233.6}
   m_SizeDelta: {x: 131, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &577389076
@@ -2787,13 +2787,13 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 796776521}
   m_TextComponent: {fileID: 326553912}
   m_Placeholder: {fileID: 1777789369}
-  m_ContentType: 2
+  m_ContentType: 3
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 4
+  m_KeyboardType: 2
   m_LineType: 0
   m_HideMobileInput: 0
-  m_CharacterValidation: 1
+  m_CharacterValidation: 2
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
@@ -2861,8 +2861,8 @@ RectTransform:
   m_RootOrder: 16
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -18, y: -233.6}
-  m_SizeDelta: {x: 37.4, y: 30}
+  m_AnchoredPosition: {x: -48.1, y: -233.6}
+  m_SizeDelta: {x: 97.5, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &841314629
 GameObject:

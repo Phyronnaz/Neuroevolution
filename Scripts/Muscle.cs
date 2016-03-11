@@ -7,7 +7,8 @@ public class Muscle {
 	public float strength;
 	public float extendedLength;
 	public float contractedLength;
-	public float contractionTime;
+	public float changeTime;
+	public bool beginWithContraction;
 	#endregion
 
 	#region private variables
@@ -18,13 +19,14 @@ public class Muscle {
 
 
 	#region Constructor
-	public Muscle (Node left, Node right, float strength, float extendedLength, float contractedLength, float contractionTime) {
+	public Muscle (Node left, Node right, float strength, float extendedLength, float contractedLength, float changeTime, bool beginWithContraction) {
 		this.left = left;
 		this.right = right;
 		this.strength = strength;
 		this.extendedLength = extendedLength;
 		this.contractedLength = contractedLength;
-		this.contractionTime = contractionTime;
+		this.changeTime = changeTime;
+		this.beginWithContraction = beginWithContraction;
 
 		//Create muscle renderer
 		muscleRenderer = (new GameObject()).AddComponent<MuscleRenderer> ();
@@ -38,16 +40,18 @@ public class Muscle {
 
 	#region Update and LateUpdate
 	public void Update (float time) {
-		var distance = Vector2.Distance (left.position, right.position);
 
-		var l = (distance - contractedLength) / (extendedLength - contractedLength) * 2 - 1;
-			
-		var f = Mathf.Exp (-1 / Mathf.Pow (l, 2)) * Mathf.Pow (l, 1 / 1) + ((time < contractionTime) ? 1 : -1);
-//		var f = Mathf.Pow (l, 3) + ((time < contractionTime) ? 1 : -1);
+		float l0;
+		if ((time > changeTime && !beginWithContraction) || (time < changeTime && beginWithContraction))
+			l0 = contractedLength;
+		else
+			l0 = extendedLength;
 
+		var l = Vector2.Distance (left.position, right.position);
+				
 		var center = (left.position + right.position) / 2;
-		left.AddForce (f * strength * (center - left.position).normalized);
-		right.AddForce (f * strength * (center - right.position).normalized);
+		left.AddForce (strength * (l - l0) * (center - left.position).normalized);
+		right.AddForce (strength * (l - l0) * (center - right.position).normalized);
 	}
 
 	public void LateUpdate () {
