@@ -57,12 +57,15 @@ public class Node {
 ////				AddForce (Vector2.right * friction * Rn);
 //		}
 
+		AddForce (-previousSpeed * Constants.fluidFriction);
 
 		//forcesSum = mass * acceleration
-		var acceleration = forcesSum / mass;
+//		var acceleration = forcesSum / mass;
 
 		//v = a * dt + c
-		var velocity = acceleration * deltaTime + previousSpeed;
+//		var velocity = acceleration * deltaTime + previousSpeed;
+		var velocity = (forcesSum * deltaTime / mass + previousSpeed) / (1 + Constants.fluidFriction * deltaTime / mass);
+//		var velocity = 
 
 		foreach(var c in constraints) {
 			velocity -= Vector2.Dot (velocity, c) * c;
@@ -76,9 +79,7 @@ public class Node {
 		}
 
 		if (position.y < nodeRadius + Constants.tolerance)
-			velocity.x = 0;// (1 + friction);
-
-		velocity /= Constants.musclesReaction;
+			velocity.x /= (1 + friction);
 
 		//delta position = v * dt
 		var deltaPosition = velocity * deltaTime;

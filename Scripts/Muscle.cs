@@ -23,8 +23,8 @@ public class Muscle {
 		this.left = left;
 		this.right = right;
 		this.strength = strength;
-		this.extendedLength = extendedLength;
-		this.contractedLength = contractedLength;
+		this.extendedLength = Mathf.Max(extendedLength, Constants.minRandom);
+		this.contractedLength = Mathf.Max (contractedLength, Constants.minRandom);
 		this.changeTime = changeTime;
 		this.beginWithContraction = beginWithContraction;
 

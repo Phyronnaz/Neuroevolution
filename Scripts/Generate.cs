@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -63,59 +64,61 @@ public class Generate : MonoBehaviour {
 				l.SetPosition (0, nodeBeeingAssociated.position);
 				l.SetPosition (1, mousePosition);
 			}
-			if (Input.GetMouseButtonDown (0)) {
-				var hasDoneSmthg = false;
+			if (EventSystem.current.currentSelectedGameObject == null) {
+				if (Input.GetMouseButtonDown (0)) {
+					var hasDoneSmthg = false;
 
-				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-				RaycastHit2D hit = Physics2D.GetRayIntersection (ray, Mathf.Infinity);
-				if (hit.collider != null) {
-					if (hit.collider.GetComponent<NodeRenderer> () != null) {
-						var hitNode = nodes [hit.transform.GetComponent<NodeRenderer> ().id];
+					Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+					RaycastHit2D hit = Physics2D.GetRayIntersection (ray, Mathf.Infinity);
+					if (hit.collider != null) {
+						if (hit.collider.GetComponent<NodeRenderer> () != null) {
+							var hitNode = nodes [hit.transform.GetComponent<NodeRenderer> ().id];
 
-						if (isCreatingMuscle && !IsMuscleAlreadyAdded (hitNode, nodeBeeingAssociated))
-							GenerateMuscle (hitNode, nodeBeeingAssociated);
+							if (isCreatingMuscle && !IsMuscleAlreadyAdded (hitNode, nodeBeeingAssociated))
+								GenerateMuscle (hitNode, nodeBeeingAssociated);
 						
-						nodeBeeingAssociated = hitNode;
+							nodeBeeingAssociated = hitNode;
 
-						hasDoneSmthg = true;
+							hasDoneSmthg = true;
+						}
+					}
+					if (!hasDoneSmthg) {
+						Vector3 mousePosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+						GenerateNode (mousePosition);
+
+						var lastNode = nodes [nodes.Count - 1];
+
+						if (isCreatingMuscle && !IsMuscleAlreadyAdded (lastNode, nodeBeeingAssociated))
+							GenerateMuscle (lastNode, nodeBeeingAssociated);
+					
+						nodeBeeingAssociated = lastNode;
+					}
+					isCreatingMuscle = true;
+				}
+				if (Input.GetMouseButtonDown (1)) {
+					if (isCreatingMuscle) {
+						isCreatingMuscle = false;
+						Destroy (GetComponent<LineRenderer> ());
 					}
 				}
-				if (!hasDoneSmthg) {
-					Vector3 mousePosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-					GenerateNode (mousePosition);
-
-					var lastNode = nodes [nodes.Count - 1];
-
-					if (isCreatingMuscle && !IsMuscleAlreadyAdded (lastNode, nodeBeeingAssociated))
-						GenerateMuscle (lastNode, nodeBeeingAssociated);
-					
-					nodeBeeingAssociated = lastNode;
+				if (Input.GetKeyDown (KeyCode.Space)) {
+					generated = true;
+					if (GetComponent<LineRenderer> () != null)
+						Destroy (GetComponent<LineRenderer> ());
+					InitializeController ();
 				}
-				isCreatingMuscle = true;
-			}
-			if (Input.GetMouseButtonDown (1)) {
-				if (isCreatingMuscle) {
-					isCreatingMuscle = false;
-					Destroy (GetComponent<LineRenderer> ());
-				}
-			}
-			if (Input.GetKeyDown (KeyCode.Space)) {
-				generated = true;
-				if (GetComponent<LineRenderer> () != null)
-					Destroy (GetComponent<LineRenderer> ());
-				InitializeController ();
-			}
-			if(Input.GetKeyDown(KeyCode.Return)) {
-				var k = 0;
-				var alreadyAdded = muscles.Count;
-				while (k < (nodes.Count - 1) * nodes.Count / 2 - alreadyAdded) {
-					//Random connection
-					var t = new Tuple (Random.Range (0, nodes.Count), Random.Range (0, nodes.Count));
+				if (Input.GetKeyDown (KeyCode.Return)) {
+					var k = 0;
+					var alreadyAdded = muscles.Count;
+					while (k < (nodes.Count - 1) * nodes.Count / 2 - alreadyAdded) {
+						//Random connection
+						var t = new Tuple (Random.Range (0, nodes.Count), Random.Range (0, nodes.Count));
 
 
-					if (!IsMuscleAlreadyAdded (t)) {
-						GenerateMuscle (t.a, t.b);
-						k++;
+						if (!IsMuscleAlreadyAdded (t)) {
+							GenerateMuscle (t.a, t.b);
+							k++;
+						}
 					}
 				}
 			}
@@ -167,6 +170,7 @@ public class Generate : MonoBehaviour {
 		var extendedLength = distance + Random.Range (Constants.minRandom, Constants.extendedDistanceMultiplier);
 		var strength = Random.Range (Constants.minStrength, Constants.strengthAmplitude);
 		var cycleDuration = Random.Range (Constants.minRandom, this.cycleDuration);
+//		cycleDuration = this.cycleDuration / 2;
 		var beginWithContraction = (Random.value > 0.5f);
 
 		muscles.Add (new Muscle (left, right, strength, extendedLength, contractedLength, cycleDuration, beginWithContraction));
@@ -184,7 +188,7 @@ public class Generate : MonoBehaviour {
 	}
 
 	private void GenerateNode () {
-		GenerateNode (Random.insideUnitCircle * 2 + Vector2.up * 2);
+		GenerateNode (new Vector2 (Random.Range (-40f, 40f), Random.Range (0f, 20f)));
 	}
 
 	private bool IsMuscleAlreadyAdded (Node left, Node right) {

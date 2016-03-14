@@ -13,7 +13,7 @@ public class UI : MonoBehaviour {
 	public InputField numberOfNodes;
 	public Toggle randomNumbers;
 	public Toggle generate;
-	public InputField muscleReaction;
+	public InputField fluidFriction;
 
 	void Start () {
 		timeMultiplier.value = Constants.timeMultiplier;
@@ -24,7 +24,7 @@ public class UI : MonoBehaviour {
 		numberOfMuscles.text = Constants.numberOfMuscles.ToString ();
 		numberOfNodes.text = Constants.numberOfNodes.ToString ();
 		randomNumbers.isOn = Constants.randomNumbers;
-		muscleReaction.text = Constants.musclesReaction.ToString ();
+		fluidFriction.text = Constants.fluidFriction.ToString ();
 		generate.isOn = Constants.generate;
 
 		timeMultiplier.onValueChanged.AddListener(UpdateUI);
@@ -35,7 +35,7 @@ public class UI : MonoBehaviour {
 		numberOfMuscles.onEndEdit.AddListener(UpdateUI);
 		numberOfNodes.onEndEdit.AddListener(UpdateUI);
 		randomNumbers.onValueChanged.AddListener(UpdateUI);
-		muscleReaction.onEndEdit.AddListener (UpdateUI);
+		fluidFriction.onEndEdit.AddListener (UpdateUI);
 		generate.onValueChanged.AddListener (UpdateUI);
 	}
 
@@ -60,7 +60,7 @@ public class UI : MonoBehaviour {
 		Constants.numberOfMuscles = int.Parse (numberOfMuscles.text);
 		Constants.numberOfNodes = int.Parse (numberOfNodes.text);
 		Constants.randomNumbers = randomNumbers.isOn;
-		Constants.musclesReaction = float.Parse (muscleReaction.text);
+		Constants.fluidFriction = float.Parse (fluidFriction.text);
 		Constants.generate = generate.isOn;
 	}
 }
@@ -70,18 +70,18 @@ public static class Constants {
 	public static float gravityMultiplier = 10;
 	public static float cycleDurationMultiplier = 10;
 	public static float tolerance = 0.001f;
-	public static float strengthAmplitude = 20;
+	public static float strengthAmplitude = 100;
 	public static float frictionAmplitude = 1;
 	public static int numberOfMuscles = 3;
 	public static int numberOfNodes = 1;
-	public static bool randomNumbers = false;
-	public static float musclesReaction = 2;
-	public static bool generate = false;
-	public static float contractedDistanceMultiplier = 3;
-	public static float extendedDistanceMultiplier = 1;
-	public static float bounciness = 0.1f;
+	public static bool randomNumbers = true;
+	public static bool generate = true;
+	public static float fluidFriction = 0.5f;
+	public static float contractedDistanceMultiplier = 2;
+	public static float extendedDistanceMultiplier = 2;
+	public static float bounciness = 0.6f;
 	public static float minRandom = 0.01f;
 	public static float minMass = 1;
-	public static float maxMass = 10;
+	public static float maxMass = 1;
 	public static float minStrength = 1;
 }

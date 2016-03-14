@@ -51,6 +51,10 @@ public class Controller : MonoBehaviour {
 		}
 		avPosition /= nodes.Count;
 
+		var tmp = transform.position;
+		tmp.x = avPosition;
+		transform.position = tmp;
+
 		/*
 		 * Update UI
 		 */
