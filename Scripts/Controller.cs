@@ -16,32 +16,47 @@ public class Controller : MonoBehaviour {
 	public float cycleDuration;
 
 	private float currentTime = 0;
+	private float time = 0;
+	private float deltaTime = 0.001f;
 	#endregion
 
 
-	#region Update
-	void Update () {
+	#region Start && Update && CustomUpdate
+	void Start () {
+		InvokeRepeating ("CustomUpdate", 0, deltaTime);
+	}
+
+	void CustomUpdate () {
 		/*
 		 * time modulo cycle duration
 		 */
-		var time = (currentTime - cycleDuration * (Mathf.FloorToInt (currentTime / cycleDuration)));
+		time = (currentTime - cycleDuration * (Mathf.FloorToInt (currentTime / cycleDuration)));
 
-		/*
-		 * Update muscles and nodes
-		 */
-		foreach(var m in muscles) {
-			m.Update (time);
+		for (var k = 0; k < Constants.timeMultiplier; k++) {
+			/*
+			 * Update muscles and nodes
+			 */
+			foreach (var m in muscles) {
+				m.Update (time);
+			}
+			foreach (var n in nodes) {
+				n.Update (deltaTime);
+			}
+			foreach (var m in muscles) {
+				m.LateUpdate ();
+			}
+			foreach (var n in nodes) {
+				n.LateUpdate ();
+			}
+		
+			/*
+			* Update current time
+			*/
+			currentTime += deltaTime;
 		}
-		foreach(var n in nodes) {
-			n.Update (Time.deltaTime * Constants.timeMultiplier);
-		}
-		foreach(var m in muscles) {
-			m.LateUpdate ();
-		}
-		foreach(var n in nodes) {
-			n.LateUpdate ();
-		}
+	}
 
+	void Update () {
 		/*
 		 * Update average position
 		 */
@@ -61,11 +76,6 @@ public class Controller : MonoBehaviour {
 		distanceText.text = "Distance : " + avPosition.ToString ();
 		timeText.text = "Time : " + currentTime.ToString ();
 		cycleText.text = (Mathf.Ceil (time / cycleDuration * 100)).ToString () + " %";
-
-		/*
-		 * Update current time
-		 */
-		currentTime += Time.deltaTime * Constants.timeMultiplier;
 	}
 	#endregion
 }

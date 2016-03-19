@@ -82,6 +82,6 @@ public static class Constants {
 	public static float bounciness = 0.6f;
 	public static float minRandom = 0.01f;
 	public static float minMass = 1;
-	public static float maxMass = 1;
+	public static float maxMass = 10;
 	public static float minStrength = 1;
 }
