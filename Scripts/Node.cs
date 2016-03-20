@@ -14,15 +14,16 @@ public class Node {
 	public Vector2 position;
 	#endregion
 
-	#region private variables
-	private NodeRenderer nodeRenderer;
-	private Vector2 forcesSum = Vector3.zero;
-	private List<Vector2> constraints = new List<Vector2> ();
+	#region private and protected variables
+	protected NodeRenderer nodeRenderer;
+	protected Vector2 forcesSum = Vector2.zero;
+	protected Vector2 velocitySum = Vector2.zero;
 	private Vector2 previousSpeed = Vector2.zero;
 	#endregion
 
 
 	#region Constructor
+	public Node () {}
 	public Node (float friction, Vector2 position, float mass, float coefficientOfRestitution, int id) {
 		this.friction = friction;
 		this.position = position;
@@ -42,7 +43,7 @@ public class Node {
 	#endregion
 
 	#region Update and LateUpdate
-	public void Update (float deltaTime) {
+	public virtual void Update (float deltaTime) {
 		//Weight
 		AddForce (Vector2.down * Constants.gravityMultiplier * mass);
 
@@ -64,12 +65,7 @@ public class Node {
 
 		//v = a * dt + c
 //		var velocity = acceleration * deltaTime + previousSpeed;
-		var velocity = (forcesSum * deltaTime / mass + previousSpeed) / (1 + Constants.fluidFriction * deltaTime / mass);
-//		var velocity = 
-
-		foreach(var c in constraints) {
-			velocity -= Vector2.Dot (velocity, c) * c;
-		}
+		var velocity = forcesSum * deltaTime / mass + previousSpeed;
 
 		if ((velocity * deltaTime + position).y < nodeRadius) {
 			if (position.y > nodeRadius + Constants.tolerance)
@@ -81,12 +77,15 @@ public class Node {
 		if (position.y < nodeRadius + Constants.tolerance)
 			velocity.x /= (1 + friction);
 
+		velocity -= velocitySum.normalized * Vector2.Dot (velocity, velocitySum);
+
 		//delta position = v * dt
 		var deltaPosition = velocity * deltaTime;
 
 		position += deltaPosition;
 			
 		forcesSum = Vector2.zero;
+		velocitySum = Vector2.zero;
 
 		previousSpeed = velocity;
 	}
@@ -96,13 +95,13 @@ public class Node {
 	}
 	#endregion
 
-	#region AddForce and other
+	#region AddForce
 	public void AddForce (Vector2 force) {
 		forcesSum += force;
 	}
 
-	public void AddConstraint (Vector2 constraint) {
-		constraints.Add (constraint);
+	public void AddVelocity (Vector2 velocity) {
+		velocitySum += velocity;
 	}
 	#endregion
 

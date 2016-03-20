@@ -37,7 +37,38 @@ public class Generate : MonoBehaviour {
 		isCreatingMuscle = false;
 
 		//Cycle duration
-		cycleDuration = (Random.value + 0.1f) * Constants.cycleDurationMultiplier;
+		cycleDuration = 10;//(Random.value + 0.1f) * Constants.cycleDurationMultiplier;
+
+		/////////////////////////////////////////////
+		//HACK
+		/////////////////////////////////////////////
+		generated = true;
+		Constants.gravityMultiplier = 0;
+		Constants.generate = false;
+
+		GenerateNode (Vector2.up * 10);
+		GenerateNode (Vector2.up * 20);
+		GenerateNode (Vector2.one * 20);
+
+		Constants.strengthAmplitude = 0;
+		Constants.extendedDistanceMultiplier = 0;
+		Constants.contractedDistanceMultiplier = 0;
+//		GenerateMuscle (nodes[0], nodes[1]);
+//		GenerateMuscle (nodes[1], nodes[2]);
+
+		nodes.Add (new ChildNode (0.5f, nodes [0], nodes [1], nodes.Count));
+		nodes.Add (new ChildNode (0.5f, nodes [1], nodes [2], nodes.Count));
+		Constants.strengthAmplitude = 1000;
+		Constants.extendedDistanceMultiplier = 2;
+		Constants.contractedDistanceMultiplier = 10;
+		GenerateMuscle (nodes[3], nodes[4]);
+
+		InitializeController ();
+
+
+		/////////////////////////////////////////////
+		/////////////////////////////////////////////
+		/////////////////////////////////////////////
 
 		//Generate
 		if (Constants.generate) {
@@ -170,7 +201,7 @@ public class Generate : MonoBehaviour {
 		var extendedLength = distance + Random.Range (Constants.minRandom, Constants.extendedDistanceMultiplier);
 		var strength = Random.Range (Constants.minStrength, Constants.strengthAmplitude);
 		var cycleDuration = Random.Range (Constants.minRandom, this.cycleDuration);
-//		cycleDuration = this.cycleDuration / 2;
+		cycleDuration = this.cycleDuration / 2;
 		var beginWithContraction = (Random.value > 0.5f);
 
 		muscles.Add (new Muscle (left, right, strength, extendedLength, contractedLength, cycleDuration, beginWithContraction));

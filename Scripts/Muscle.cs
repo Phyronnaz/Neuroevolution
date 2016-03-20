@@ -12,6 +12,7 @@ public class Muscle {
 	#endregion
 
 	#region private variables
+	private bool isContracting = false;
 	private Node left;
 	public Node right;
 	private MuscleRenderer muscleRenderer;
@@ -31,8 +32,8 @@ public class Muscle {
 		//Create muscle renderer
 		muscleRenderer = (new GameObject()).AddComponent<MuscleRenderer> ();
 		muscleRenderer.gameObject.name = "Muscle from " + left.id.ToString () + " to " + right.id.ToString ();
-		muscleRenderer.maxLength = extendedLength;
-		muscleRenderer.minLength = contractedLength;
+		muscleRenderer.maxLength = this.extendedLength;
+		muscleRenderer.minLength = this.contractedLength;
 		muscleRenderer.Initialize ();
 		LateUpdate ();
 	}
@@ -48,10 +49,22 @@ public class Muscle {
 			l0 = extendedLength;
 
 		var l = Vector2.Distance (left.position, right.position);
-				
+
+//		float mul = 1;
+//		if ((l < l0 && l0 == contractedLength) || (l > l0 && l0 == extendedLength))
+//			mul = strength;
+		
 		var center = (left.position + right.position) / 2;
-		left.AddForce (strength * (l - l0) * (center - left.position).normalized);
-		right.AddForce (strength * (l - l0) * (center - right.position).normalized);
+//		var force = strength * Mathf.Clamp(l - l0, -1, 1) * mul;
+		var force = strength * (l - l0);
+		isContracting = force > 0;
+		left.AddForce (force * (center - left.position).normalized);
+		right.AddForce (force * (center - right.position).normalized);
+
+		if ((l < l0 && l0 == contractedLength) || (l > l0 && l0 == extendedLength)) {
+			left.AddVelocity ((center - left.position).normalized);
+			right.AddVelocity ((center - right.position).normalized);
+		}
 	}
 
 	public void LateUpdate () {
@@ -59,7 +72,7 @@ public class Muscle {
 
 		//Width
 		var width = Mathf.Lerp (0.1f, 1, contractedLength / distance);
-		muscleRenderer.SetWidth (width);
+		muscleRenderer.SetWidthAndColor (width, isContracting);
 
 		//Position
 		muscleRenderer.SetPosition (left.position, right.position);
