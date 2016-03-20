@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class MuscleRenderer : MonoBehaviour {private Material material;
-//	private LineRenderer lineRenderer;
+	private LineRenderer lineRenderer;
 	private LineRenderer max;
 	private LineRenderer min;
 	private bool isContracting = false;
@@ -10,11 +10,13 @@ public class MuscleRenderer : MonoBehaviour {private Material material;
 	public float maxLength;
 	public float minLength;
 
+	public Color color;
+
 	public void Initialize () {
-//		lineRenderer = gameObject.AddComponent<LineRenderer> ();
+		lineRenderer = gameObject.AddComponent<LineRenderer> ();
 		material = new Material(Shader.Find("Diffuse"));
-		material.color = new Color (Random.value, Random.value, Random.value);
-//		lineRenderer.material = material;
+		material.color = color;
+		lineRenderer.material = material;
 
 		max = new GameObject ().AddComponent<LineRenderer> ();
 		min = new GameObject ().AddComponent<LineRenderer> ();
@@ -32,7 +34,7 @@ public class MuscleRenderer : MonoBehaviour {private Material material;
 	}
 
 	public void SetWidthAndColor(float width, bool contracting) {
-//		lineRenderer.SetWidth (width, width);
+		lineRenderer.SetWidth (width, width);
 		if(isContracting != contracting) {
 			isContracting = contracting;
 			if(contracting) {
@@ -46,8 +48,8 @@ public class MuscleRenderer : MonoBehaviour {private Material material;
 	}
 
 	public void SetPosition (Vector2 left, Vector2 right) {
-//		lineRenderer.SetPosition (0, (Vector3)left + Vector3.forward);
-//		lineRenderer.SetPosition (1, (Vector3)right + Vector3.forward);
+		lineRenderer.SetPosition (0, (Vector3)left + Vector3.forward);
+		lineRenderer.SetPosition (1, (Vector3)right + Vector3.forward);
 		var center = (left + right) / 2;
 		max.SetPosition (0, (Vector3)(center - left).normalized * maxLength / 2 + (Vector3)center + Vector3.back);
 		max.SetPosition (1, (Vector3)(center - right).normalized * maxLength / 2 + (Vector3)center + Vector3.back);

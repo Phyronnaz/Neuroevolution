@@ -67,16 +67,16 @@ public class UI : MonoBehaviour {
 
 public static class Constants {
 	public static float timeMultiplier = 1;
-	public static float gravityMultiplier = 10;
-	public static float cycleDurationMultiplier = 10;
+	public static float gravityMultiplier = 2;
+	public static float cycleDurationMultiplier = 1;
 	public static float tolerance = 0.001f;
 	public static float strengthAmplitude = 100;
-	public static float frictionAmplitude = 1;
+	public static float frictionAmplitude = 0;
 	public static int numberOfMuscles = 3;
-	public static int numberOfNodes = 1;
+	public static int numberOfNodes = 3;
 	public static bool randomNumbers = true;
-	public static bool generate = true;
-	public static float fluidFriction = 0.5f;
+	public static bool generate = false;
+	public static float fluidFriction = 0.1f;
 	public static float contractedDistanceMultiplier = 2;
 	public static float extendedDistanceMultiplier = 2;
 	public static float bounciness = 0.6f;

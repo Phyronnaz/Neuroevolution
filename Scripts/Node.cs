@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
+
+//TODO: Reset && Disable
 public class Node {
 	
 	#region public variables
@@ -24,7 +26,7 @@ public class Node {
 
 	#region Constructor
 	public Node () {}
-	public Node (float friction, Vector2 position, float mass, float coefficientOfRestitution, int id) {
+	public Node (float friction, Vector2 position, float mass, float coefficientOfRestitution, Transform parent, int id) {
 		this.friction = friction;
 		this.position = position;
 		this.mass = mass;
@@ -37,6 +39,7 @@ public class Node {
 		go.GetComponent<SpriteRenderer> ().color = new Color (friction / Constants.frictionAmplitude, 0, 0);
 		nodeRenderer = go.AddComponent<NodeRenderer> ();
 		nodeRenderer.id = id;
+		nodeRenderer.transform.parent = parent;
 
 		nodeRadius = go.GetComponent<SpriteRenderer> ().bounds.extents.x;
 	}
@@ -111,4 +114,11 @@ public class Node {
 		MonoBehaviour.Destroy (nodeRenderer.gameObject);
 	}
 	#endregion
+
+	public static Node RandomNode (Vector2 position, Transform parent, int id) {
+		var friction = Random.Range (Constants.minRandom, Constants.frictionAmplitude);
+		var mass = Random.Range (Constants.minMass, Constants.maxMass);
+
+		return new Node (friction, position, mass, Constants.bounciness, parent, id);
+	}
 }

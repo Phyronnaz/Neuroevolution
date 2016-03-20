@@ -6,76 +6,96 @@ using System.Collections.Generic;
 public class Controller : MonoBehaviour {
 
 	#region variables
-	public List<Node> nodes;
-	public List<Muscle> muscles;
-
 	public Text cycleText;
 	public Text distanceText;
 	public Text timeText;
+	public List<Creature> creatures;
 
-	public float cycleDuration;
+	public bool train = false || true;
 
 	private float currentTime = 0;
-	private float time = 0;
 	private float deltaTime = 0.001f;
+	private Creature currentCreature;
 	#endregion
 
 
 	#region Start && Update && CustomUpdate
 	void Start () {
+		currentCreature = creatures [0];
+		foreach (var c in creatures) {
+			c.distanceText = distanceText;
+			c.cycleText = cycleText;
+		}
+		currentCreature.CreatureUI = true;
 		InvokeRepeating ("CustomUpdate", 0, deltaTime);
+		if (train) {
+			for (var k = 0; k < 300000f; k++) {
+				foreach (var c in creatures) {
+					c.Update (deltaTime);
+				}
+			}
+			float max = currentCreature.GetAveragePosition();
+			var l = 0;
+			while (l < creatures.Count) {
+				var c = creatures [l];
+				if (c.GetAveragePosition() > max) {
+					max = c.GetAveragePosition();
+					currentCreature.Destroy ();
+					creatures.Remove (currentCreature);
+					currentCreature = c;
+				} else if (c.GetAveragePosition() < max) {
+					c.Destroy ();
+					creatures.Remove (c);
+				} else {
+					l++;
+				}
+			}
+			currentCreature.CreatureUI = true;
+		}
+		foreach(var c in creatures) {
+			c.enableGraphics = true;
+		}
 	}
 
 	void CustomUpdate () {
-		/*
-		 * time modulo cycle duration
-		 */
-		time = (currentTime - cycleDuration * (Mathf.FloorToInt (currentTime / cycleDuration)));
-
 		for (var k = 0; k < Constants.timeMultiplier; k++) {
-			/*
-			 * Update muscles and nodes
-			 */
-			foreach (var m in muscles) {
-				m.Update (time);
+			foreach(var c in creatures) {
+				c.Update (deltaTime);
 			}
-			foreach (var n in nodes) {
-				n.Update (deltaTime);
-			}
-			foreach (var m in muscles) {
-				m.LateUpdate ();
-			}
-			foreach (var n in nodes) {
-				n.LateUpdate ();
-			}
-		
-			/*
-			* Update current time
-			*/
-			currentTime += deltaTime;
 		}
 	}
 
 	void Update () {
 		/*
+		 * Get fastest creature
+		 */
+		float max = currentCreature.GetAveragePosition();
+		foreach(var c in creatures) {
+			if (c.GetAveragePosition() > max) {
+				max = c.GetAveragePosition();
+				currentCreature.CreatureUI = false;
+				currentCreature = c;
+				currentCreature.CreatureUI = true;
+			}
+		}
+		/*
 		 * Update average position
 		 */
-		float avPosition = 0;
-		foreach(var n in nodes) {
-			avPosition += n.position.x;
-		}
-		avPosition /= nodes.Count;
-
 		var tmp = transform.position;
-		tmp.x = avPosition;
+		tmp.x = Mathf.Lerp(tmp.x, currentCreature.GetAveragePosition(), Time.deltaTime);
 		transform.position = tmp;
 
 		/*
 		 * Update UI
 		 */
-		distanceText.text = "Distance : " + avPosition.ToString ();
+		currentTime += Time.deltaTime * Constants.timeMultiplier;
 		timeText.text = "Time : " + currentTime.ToString ();
-		cycleText.text = (Mathf.Ceil (time / cycleDuration * 100)).ToString () + " %";
 	}
 	#endregion
+
+	public void Destroy () {
+		foreach(var c in creatures) {
+			c.Destroy ();
+		}
+	}
 }

@@ -15,6 +15,7 @@ public class Generate : MonoBehaviour {
 	#region private variables
 	private List<Node> nodes;
 	private List<Muscle> muscles;
+	private List<Creature> creatures;
 
 	private Controller controller;
 
@@ -24,6 +25,9 @@ public class Generate : MonoBehaviour {
 
 	private bool isCreatingMuscle;
 	private Node nodeBeeingAssociated;
+
+	private Transform currentCreature;
+	private Color currentColor;
 	#endregion
 
 
@@ -33,8 +37,14 @@ public class Generate : MonoBehaviour {
 		//Initialize arrays && variables
 		nodes = new List<Node> ();
 		muscles = new List<Muscle> ();
+		creatures = new List<Creature> ();
 		generated = false;
 		isCreatingMuscle = false;
+
+		//Camera
+		var p = this.transform.position;
+		p.x = 0;
+		this.transform.position = p;
 
 		//Cycle duration
 		cycleDuration = 10;//(Random.value + 0.1f) * Constants.cycleDurationMultiplier;
@@ -42,28 +52,28 @@ public class Generate : MonoBehaviour {
 		/////////////////////////////////////////////
 		//HACK
 		/////////////////////////////////////////////
-		generated = true;
-		Constants.gravityMultiplier = 0;
-		Constants.generate = false;
-
-		GenerateNode (Vector2.up * 10);
-		GenerateNode (Vector2.up * 20);
-		GenerateNode (Vector2.one * 20);
-
-		Constants.strengthAmplitude = 0;
-		Constants.extendedDistanceMultiplier = 0;
-		Constants.contractedDistanceMultiplier = 0;
-//		GenerateMuscle (nodes[0], nodes[1]);
-//		GenerateMuscle (nodes[1], nodes[2]);
-
-		nodes.Add (new ChildNode (0.5f, nodes [0], nodes [1], nodes.Count));
-		nodes.Add (new ChildNode (0.5f, nodes [1], nodes [2], nodes.Count));
-		Constants.strengthAmplitude = 1000;
-		Constants.extendedDistanceMultiplier = 2;
-		Constants.contractedDistanceMultiplier = 10;
-		GenerateMuscle (nodes[3], nodes[4]);
-
-		InitializeController ();
+//		generated = true;
+//		Constants.gravityMultiplier = 0;
+//		Constants.generate = false;
+//
+//		GenerateNode (Vector2.up * 10);
+//		GenerateNode (Vector2.up * 20);
+//		GenerateNode (Vector2.one * 20);
+//
+//		Constants.strengthAmplitude = 0;
+//		Constants.extendedDistanceMultiplier = 0;
+//		Constants.contractedDistanceMultiplier = 0;
+////		GenerateMuscle (nodes[0], nodes[1]);
+////		GenerateMuscle (nodes[1], nodes[2]);
+//
+//		nodes.Add (new ChildNode (0.5f, nodes [0], nodes [1], nodes.Count));
+//		nodes.Add (new ChildNode (0.5f, nodes [1], nodes [2], nodes.Count));
+//		Constants.strengthAmplitude = 1000;
+//		Constants.extendedDistanceMultiplier = 2;
+//		Constants.contractedDistanceMultiplier = 10;
+//		GenerateMuscle (nodes[3], nodes[4]);
+//		AddCreature ();
+//		InitializeController ();
 
 
 		/////////////////////////////////////////////
@@ -72,9 +82,15 @@ public class Generate : MonoBehaviour {
 
 		//Generate
 		if (Constants.generate) {
-			GenerateRandomly ();
+			for (var k = 0; k < 20; k++) {
+				AddRandomCreature ();
+			}
 			InitializeController ();
 			generated = true;
+		} else {
+			currentCreature = new GameObject ().transform;
+			currentCreature.name = "Creature " + Random.Range (0, 10000).ToString();
+			currentColor = Random.ColorHSV ();
 		}
 	}
 
@@ -133,7 +149,14 @@ public class Generate : MonoBehaviour {
 					}
 				}
 				if (Input.GetKeyDown (KeyCode.Space)) {
+					isCreatingMuscle = false;
+					if (GetComponent<LineRenderer> () != null)
+						Destroy (GetComponent<LineRenderer> ());
+					AddCreature ();
+				}
+				if (Input.GetKeyDown (KeyCode.Escape)) {
 					generated = true;
+					Destroy (currentCreature.gameObject);
 					if (GetComponent<LineRenderer> () != null)
 						Destroy (GetComponent<LineRenderer> ());
 					InitializeController ();
@@ -162,23 +185,23 @@ public class Generate : MonoBehaviour {
 	#region Restart
 	public void Restart () {
 		/*
-		 * Destroy all muscles and nodes
+		 * Destroy all creatues
 		 */
-		foreach(var m in muscles) {
-			m.Destroy ();
-		} 
-		foreach(var n in nodes) {
-			n.Destroy ();
-		}
-		/*
-		 * Clear arrays
-		 */
-		muscles.Clear ();
-		nodes.Clear ();
+		if(controller != null)
+			controller.Destroy ();
 		/*
 		 * Destroy controller
 		 */
 		DestroyImmediate (controller);
+		/*
+		 * Destroy nodes && muscles
+		 */
+		foreach(var n in nodes) {
+			n.Destroy ();
+		}
+		foreach(var m in muscles) {
+			m.Destroy ();
+		}
 		/*
 		 * Reset UI
 		 */
@@ -196,15 +219,7 @@ public class Generate : MonoBehaviour {
 
 	#region Generate muscle && node && check if muscle add
 	private void GenerateMuscle (Node left, Node right) {
-		var distance = Vector2.Distance (left.position, right.position);
-		var contractedLength = distance - Random.Range (Constants.minRandom, Constants.contractedDistanceMultiplier);
-		var extendedLength = distance + Random.Range (Constants.minRandom, Constants.extendedDistanceMultiplier);
-		var strength = Random.Range (Constants.minStrength, Constants.strengthAmplitude);
-		var cycleDuration = Random.Range (Constants.minRandom, this.cycleDuration);
-		cycleDuration = this.cycleDuration / 2;
-		var beginWithContraction = (Random.value > 0.5f);
-
-		muscles.Add (new Muscle (left, right, strength, extendedLength, contractedLength, cycleDuration, beginWithContraction));
+		muscles.Add (Muscle.RandomMuscle (left, right, cycleDuration, currentColor, currentCreature));
 	}
 
 	private void GenerateMuscle (int a, int b) {
@@ -212,10 +227,7 @@ public class Generate : MonoBehaviour {
 	} 
 
 	private void GenerateNode (Vector2 position) {
-		var friction = Random.Range (Constants.minRandom, Constants.frictionAmplitude);
-		var mass = Random.Range (Constants.minMass, Constants.maxMass);
-
-		nodes.Add (new Node (friction, position, mass, Constants.bounciness, nodes.Count));
+		nodes.Add (Node.RandomNode (position, currentCreature,nodes.Count));
 	}
 
 	private void GenerateNode () {
@@ -241,80 +253,32 @@ public class Generate : MonoBehaviour {
 	} 
 	#endregion
 
-	#region Generate
-	private void GenerateRandomly () {
-		/*
-		 * Set number of muscles and nodes
-		 */
-		int numberOfNodes;
-		int numberOfMuscles;
-		if(Constants.randomNumbers) {
-			numberOfNodes = Random.Range (3, 6);
-			numberOfMuscles = Random.Range (numberOfNodes, numberOfNodes * 4);
-		} else {
-			numberOfNodes = Constants.numberOfNodes;
-			numberOfMuscles = Constants.numberOfMuscles;
-		}
-
-		/*
-		 * Generate nodes
-     		 */
-		for (var i = 0; i < numberOfNodes; i++)
-		{
-			GenerateNode (new Vector2 (Random.value, Random.value + 1) * 10);
-		}
-
-		/*
-		 * Recenter nodes
-		 */
-		float s = 0;
-		foreach(var n in nodes) {
-			s += n.position.x;
-		}
-		s /= nodes.Count;
-
-		foreach(var n in nodes) {
-			var p = n.position;
-			p.x -= s;
-			n.position = p;
-		}
-
-		/*
-		 * Generate muscles
-		 */
-		var k = 0;
-		while (k < (nodes.Count - 1) * nodes.Count/2 && k < numberOfMuscles) {
-			//Random connection
-			var t = new Tuple (Random.Range (0, nodes.Count), Random.Range (0, nodes.Count));
-
-
-			if (!IsMuscleAlreadyAdded (t)) {
-				GenerateMuscle (t.a, t.b);
-				k++;
-			}
-		}
-
-		/*
-		 * Update render
-		 */
-		foreach(var m in muscles) {
-			m.LateUpdate ();
-		}
-		foreach(var n in nodes) {
-			n.LateUpdate ();
-		}
-	}
-	#endregion
-
 	#region Initialize controller
 	private void InitializeController () {
 		controller = gameObject.AddComponent<Controller> ();
 		controller.cycleText = cycleText;
 		controller.distanceText = distanceText;
 		controller.timeText = timeText;
-		controller.nodes = nodes;
-		controller.muscles = muscles;
-		controller.cycleDuration = cycleDuration;
+		controller.creatures = creatures;
+		foreach(var n in nodes) {
+			n.Destroy ();
+		}
+		foreach(var m in muscles) {
+			m.Destroy ();
+		}
 	}
 	#endregion
+
+	private void AddCreature () {
+		creatures.Add (new Creature (muscles, nodes, cycleDuration, currentCreature));
+		muscles = new List<Muscle> ();
+		nodes = new List<Node> ();
+		currentCreature = new GameObject ().transform;
+		currentCreature.name = "Creature " + Random.Range (0, 10000).ToString();
+		currentColor = Random.ColorHSV ();
+	}
+
+	private void AddRandomCreature () {
+		creatures.Add (Creature.RandomCreature (cycleDuration));
+	}
 }
