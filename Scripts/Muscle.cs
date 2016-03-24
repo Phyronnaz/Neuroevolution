@@ -43,43 +43,40 @@ public class Muscle {
 
 	#region Update and LateUpdate
 	public void Update (float time) {
-//
-//		float l0;
-//		if ((time > changeTime && !beginWithContraction) || (time < changeTime && beginWithContraction))
-//			l0 = contractedLength;
-//		else
-//			l0 = extendedLength;
-//
-//		var l = Vector2.Distance (left.position, right.position);
-//
-////		float mul = 1;
-////		if ((l < l0 && l0 == contractedLength) || (l > l0 && l0 == extendedLength))
-////			mul = strength;
-//		
-//		var center = (left.position + right.position) / 2;
-////		var force = strength * Mathf.Clamp(l - l0, -1, 1) * mul;
-//		var force = strength * (l - l0);
-//		isContracting = force > 0;
-//		left.AddForce (force * (center - left.position).normalized);
-//		right.AddForce (force * (center - right.position).normalized);
-//
-//		if ((l < l0 && l0 == contractedLength) || (l > l0 && l0 == extendedLength)) {
-//			left.AddVelocity ((center - left.position).normalized);
-//			right.AddVelocity ((center - right.position).normalized);
-//		}
-		float l0;
-		if ((time > changeTime && !beginWithContraction) || (time < changeTime && beginWithContraction))
-			l0 = contractedLength;
-		else
-			l0 = extendedLength;
-
 		//TODO: Square
 		var l = Vector2.Distance (left.position, right.position);
 		var center = (left.position + right.position) / 2;
 
+		float force;
+		if (l > extendedLength)
+			force = (l - extendedLength);
+		else if (l < contractedLength)
+			force = (l - contractedLength);
+		else
+			force = (time > changeTime && !beginWithContraction) || (time < changeTime && beginWithContraction) ?
+				1 * Mathf.Clamp(l-contractedLength, -1, 1) : -1 * Mathf.Clamp(l-extendedLength, -1, 1);
+		
 		//TODO: Remove normalized
-		left.AddForce (strength * (l - l0) * (center - left.position).normalized);
-		right.AddForce (strength * (l - l0) * (center - right.position).normalized);
+		left.AddVelocity (strength * force * (center - left.position).normalized);
+		right.AddVelocity (strength * force * (center - right.position).normalized);
+
+
+//		var l = (left.position - right.position).sqrMagnitude;
+//
+//		var extendedLengthSqr = Mathf.Pow (extendedLength, 2);
+//		var contractedLengthSqr = Mathf.Pow (contractedLength, 2);
+//
+//		float force = (time > changeTime && !beginWithContraction) || (time < changeTime && beginWithContraction) ? 1 : -1;
+//		if (l > extendedLengthSqr)
+//			force += Mathf.Pow (l - extendedLengthSqr + 1, 2);
+//		else if (l < contractedLengthSqr)
+//			force -= Mathf.Pow (l - contractedLengthSqr - 1, 2);
+//
+//		var center = (left.position + right.position) / 2;
+//		var direction = (center - left.position) / (center - left.position).magnitude;
+//
+//		left.AddVelocity (strength * force * direction);
+//		right.AddVelocity (-strength * force * direction);
 	}
 
 	public void LateUpdate () {
@@ -124,8 +121,6 @@ public class Muscle {
 		var extendedLength = distance + Random.Range (Constants.minRandom, Constants.extendedDistanceMultiplier);
 		var strength = Random.Range (Constants.minStrength, Constants.strengthAmplitude);
 		var muscleCycleDuration = Random.Range (Constants.minRandom, cycleDuration);
-		//HACK
-		muscleCycleDuration = cycleDuration / 2;
 		var beginWithContraction = (Random.value > 0.5f);
 
 		return new Muscle (left, right, strength, extendedLength, contractedLength, muscleCycleDuration, beginWithContraction, color, parent);

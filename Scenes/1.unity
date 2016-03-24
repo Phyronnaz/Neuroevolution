@@ -3880,7 +3880,7 @@ RectTransform:
   m_RootOrder: 8
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -101, y: -114.6}
+  m_AnchoredPosition: {x: -133.4, y: -114.6}
   m_SizeDelta: {x: 131, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &992475113
@@ -5781,7 +5781,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 2133404252}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 20
+  m_MaxValue: 100
   m_WholeNumbers: 1
   m_Value: 0
   m_OnValueChanged:
@@ -6019,8 +6019,8 @@ RectTransform:
   m_RootOrder: 7
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -18, y: -113.6}
-  m_SizeDelta: {x: 37.4, y: 30}
+  m_AnchoredPosition: {x: -34.55002, y: -113.6}
+  m_SizeDelta: {x: 69.1, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1422990044
 MonoBehaviour:

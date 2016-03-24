@@ -50,25 +50,11 @@ public class Node {
 		//Weight
 		AddForce (Vector2.down * Constants.gravityMultiplier * mass);
 
-
-//		if (position.y < nodeRadius + Constants.tolerance) {
-//			//Support
-////			forcesSum.y = -previousSpeed.y / deltaTime;
-//			var Rn = -forcesSum.y - previousSpeed.y / deltaTime;
-//			AddForce (Vector2.up * Rn);
-//			//Friction
-////			if (previousSpeed.x > Constants.tolerance)
-////				AddForce (Vector2.right * friction * Rn);
-//		}
-
+		//Fluid friction
 		AddForce (-previousSpeed * Constants.fluidFriction);
 
-		//forcesSum = mass * acceleration
-//		var acceleration = forcesSum / mass;
-
 		//v = a * dt + c
-//		var velocity = acceleration * deltaTime + previousSpeed;
-		var velocity = forcesSum * deltaTime / mass + previousSpeed;
+        var velocity = forcesSum * deltaTime / mass + previousSpeed + velocitySum;
 
 		if ((velocity * deltaTime + position).y < nodeRadius) {
 			if (position.y > nodeRadius + Constants.tolerance)

@@ -19,7 +19,7 @@ public class UI : MonoBehaviour {
 		timeMultiplier.value = Constants.timeMultiplier;
 		gravityMultiplier.text = Constants.gravityMultiplier.ToString ();
 		cycleDurationMultiplier.text = Constants.cycleDurationMultiplier.ToString ();
-		strengthAmplitude.text = Constants.strengthAmplitude.ToString ();
+		strengthAmplitude.text = (Constants.strengthAmplitude * 1000).ToString ();
 		frictionAmplitude.text = Constants.frictionAmplitude.ToString ();
 		numberOfMuscles.text = Constants.numberOfMuscles.ToString ();
 		numberOfNodes.text = Constants.numberOfNodes.ToString ();
@@ -55,7 +55,7 @@ public class UI : MonoBehaviour {
 		Constants.timeMultiplier = timeMultiplier.value;
 		Constants.gravityMultiplier = int.Parse (gravityMultiplier.text);
 		Constants.cycleDurationMultiplier = int.Parse (cycleDurationMultiplier.text);
-		Constants.strengthAmplitude = int.Parse (strengthAmplitude.text);
+		Constants.strengthAmplitude = int.Parse (strengthAmplitude.text) / 1000;
 		Constants.frictionAmplitude = int.Parse (frictionAmplitude.text);
 		Constants.numberOfMuscles = int.Parse (numberOfMuscles.text);
 		Constants.numberOfNodes = int.Parse (numberOfNodes.text);
@@ -67,11 +67,11 @@ public class UI : MonoBehaviour {
 
 public static class Constants {
 	public static float timeMultiplier = 1;
-	public static float gravityMultiplier = 2;
+	public static float gravityMultiplier = 10;
 	public static float cycleDurationMultiplier = 1;
 	public static float tolerance = 0.001f;
-	public static float strengthAmplitude = 100;
-	public static float frictionAmplitude = 0;
+	public static float strengthAmplitude = 100 / 10000;
+	public static float frictionAmplitude = 1000;
 	public static int numberOfMuscles = 3;
 	public static int numberOfNodes = 3;
 	public static bool randomNumbers = true;
@@ -80,7 +80,7 @@ public static class Constants {
 	public static float contractedDistanceMultiplier = 2;
 	public static float extendedDistanceMultiplier = 2;
 	public static float bounciness = 0.6f;
-	public static float minRandom = 0.01f;
+	public static float minRandom = 0.00001f;
 	public static float minMass = 1;
 	public static float maxMass = 10;
 	public static float minStrength = 1;

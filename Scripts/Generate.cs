@@ -52,28 +52,28 @@ public class Generate : MonoBehaviour {
 		/////////////////////////////////////////////
 		//HACK
 		/////////////////////////////////////////////
-//		generated = true;
-//		Constants.gravityMultiplier = 0;
-//		Constants.generate = false;
-//
-//		GenerateNode (Vector2.up * 10);
-//		GenerateNode (Vector2.up * 20);
-//		GenerateNode (Vector2.one * 20);
-//
-//		Constants.strengthAmplitude = 0;
-//		Constants.extendedDistanceMultiplier = 0;
-//		Constants.contractedDistanceMultiplier = 0;
-////		GenerateMuscle (nodes[0], nodes[1]);
-////		GenerateMuscle (nodes[1], nodes[2]);
-//
-//		nodes.Add (new ChildNode (0.5f, nodes [0], nodes [1], nodes.Count));
-//		nodes.Add (new ChildNode (0.5f, nodes [1], nodes [2], nodes.Count));
-//		Constants.strengthAmplitude = 1000;
-//		Constants.extendedDistanceMultiplier = 2;
-//		Constants.contractedDistanceMultiplier = 10;
-//		GenerateMuscle (nodes[3], nodes[4]);
-//		AddCreature ();
-//		InitializeController ();
+		generated = true;
+		Constants.gravityMultiplier = 0;
+		Constants.generate = false;
+
+		GenerateNode (Vector2.up * 10);
+		GenerateNode (Vector2.up * 20);
+		GenerateNode (Vector2.one * 20);
+
+		Constants.strengthAmplitude = 0;
+		Constants.extendedDistanceMultiplier = 0;
+		Constants.contractedDistanceMultiplier = 0;
+		GenerateMuscle (nodes[0], nodes[1]);
+		GenerateMuscle (nodes[1], nodes[2]);
+
+		nodes.Add (new ChildNode (0.5f, nodes [0], nodes [1], nodes.Count));
+		nodes.Add (new ChildNode (0.5f, nodes [1], nodes [2], nodes.Count));
+		Constants.strengthAmplitude = 1000;
+		Constants.extendedDistanceMultiplier = 2;
+		Constants.contractedDistanceMultiplier = 10;
+		GenerateMuscle (nodes[3], nodes[4]);
+		AddCreature ();
+		InitializeController ();
 
 
 		/////////////////////////////////////////////
@@ -82,7 +82,7 @@ public class Generate : MonoBehaviour {
 
 		//Generate
 		if (Constants.generate) {
-			for (var k = 0; k < 20; k++) {
+			for (var k = 0; k < 20 ; k++) {
 				AddRandomCreature ();
 			}
 			InitializeController ();

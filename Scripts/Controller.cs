@@ -11,7 +11,7 @@ public class Controller : MonoBehaviour {
 	public Text timeText;
 	public List<Creature> creatures;
 
-	public bool train = false || true;
+	public bool train = false;// || true;
 
 	private float currentTime = 0;
 	private float deltaTime = 0.001f;
@@ -29,8 +29,8 @@ public class Controller : MonoBehaviour {
 		currentCreature.CreatureUI = true;
 		InvokeRepeating ("CustomUpdate", 0, deltaTime);
 		if (train) {
-			for (var k = 0; k < 300000f; k++) {
-				foreach (var c in creatures) {
+			foreach (var c in creatures) {
+				for (var k = 0; k < 30000; k++) {
 					c.Update (deltaTime);
 				}
 			}
@@ -58,14 +58,21 @@ public class Controller : MonoBehaviour {
 	}
 
 	void CustomUpdate () {
-		for (var k = 0; k < Constants.timeMultiplier; k++) {
-			foreach(var c in creatures) {
+		foreach (var c in creatures) {
+			for (var k = 0; k < Constants.timeMultiplier; k++) {
 				c.Update (deltaTime);
 			}
 		}
 	}
 
 	void Update () {
+		/*
+		 * Update graphics
+		 */
+		foreach(var c in creatures) {
+			c.UpdateGraphics ();
+		}
+	
 		/*
 		 * Get fastest creature
 		 */

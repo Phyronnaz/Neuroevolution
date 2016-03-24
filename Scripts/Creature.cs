@@ -43,7 +43,15 @@ public class Creature {
 		foreach (var n in nodes) {
 			n.Update (deltaTime);
 		}
-		if(enableGraphics) {
+
+		/*
+		* Update current time
+		*/
+		time += deltaTime;
+	}
+
+	public void UpdateGraphics () {
+		if (enableGraphics) {
 			foreach (var m in muscles) {
 				m.LateUpdate ();
 			}
@@ -51,11 +59,6 @@ public class Creature {
 				n.LateUpdate ();
 			}
 		}
-
-		/*
-		* Update current time
-		*/
-		time += deltaTime;
 
 
 		/*
