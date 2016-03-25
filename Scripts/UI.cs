@@ -19,7 +19,8 @@ public class UI : MonoBehaviour {
 		timeMultiplier.value = Constants.timeMultiplier;
 		gravityMultiplier.text = Constants.gravityMultiplier.ToString ();
 		cycleDurationMultiplier.text = Constants.cycleDurationMultiplier.ToString ();
-		strengthAmplitude.text = (Constants.strengthAmplitude * 1000).ToString ();
+		strengthAmplitude.text = (Constants.strengthAmplitude * 10000).ToString ();
+		print ((Constants.strengthAmplitude * 10000).ToString ());
 		frictionAmplitude.text = Constants.frictionAmplitude.ToString ();
 		numberOfMuscles.text = Constants.numberOfMuscles.ToString ();
 		numberOfNodes.text = Constants.numberOfNodes.ToString ();
@@ -55,7 +56,7 @@ public class UI : MonoBehaviour {
 		Constants.timeMultiplier = timeMultiplier.value;
 		Constants.gravityMultiplier = int.Parse (gravityMultiplier.text);
 		Constants.cycleDurationMultiplier = int.Parse (cycleDurationMultiplier.text);
-		Constants.strengthAmplitude = int.Parse (strengthAmplitude.text) / 1000;
+		Constants.strengthAmplitude = int.Parse (strengthAmplitude.text) / 10000;
 		Constants.frictionAmplitude = int.Parse (frictionAmplitude.text);
 		Constants.numberOfMuscles = int.Parse (numberOfMuscles.text);
 		Constants.numberOfNodes = int.Parse (numberOfNodes.text);
@@ -67,10 +68,10 @@ public class UI : MonoBehaviour {
 
 public static class Constants {
 	public static float timeMultiplier = 1;
-	public static float gravityMultiplier = 10;
-	public static float cycleDurationMultiplier = 1;
+	public static float gravityMultiplier = 50;
+	public static float cycleDurationMultiplier = 1f;
 	public static float tolerance = 0.001f;
-	public static float strengthAmplitude = 100 / 10000;
+	public static float strengthAmplitude = 10f / 10000f;
 	public static float frictionAmplitude = 1000;
 	public static int numberOfMuscles = 3;
 	public static int numberOfNodes = 3;

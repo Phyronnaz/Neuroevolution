@@ -41,6 +41,9 @@ public class ChildNode : Node {
 		left.AddVelocity (velocitySum * (1 - normalizedDistanceFromLeft));
 		right.AddVelocity (velocitySum * normalizedDistanceFromLeft);
 
+		left.AddConstraint (constraintSum * (1 - normalizedDistanceFromLeft));
+		right.AddConstraint (constraintSum * normalizedDistanceFromLeft);
+
 		forcesSum = Vector2.zero;
 	}
 	#endregion

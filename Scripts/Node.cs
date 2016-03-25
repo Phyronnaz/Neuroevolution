@@ -20,6 +20,7 @@ public class Node {
 	protected NodeRenderer nodeRenderer;
 	protected Vector2 forcesSum = Vector2.zero;
 	protected Vector2 velocitySum = Vector2.zero;
+	protected Vector2 constraintSum = Vector2.zero;
 	private Vector2 previousSpeed = Vector2.zero;
 	#endregion
 
@@ -48,13 +49,18 @@ public class Node {
 	#region Update and LateUpdate
 	public virtual void Update (float deltaTime) {
 		//Weight
-		AddForce (Vector2.down * Constants.gravityMultiplier * mass);
+//		AddForce (Vector2.down * Constants.gravityMultiplier * mass);
 
 		//Fluid friction
-		AddForce (-previousSpeed * Constants.fluidFriction);
+//		AddForce (-previousSpeed * Constants.fluidFriction);
 
 		//v = a * dt + c
         var velocity = forcesSum * deltaTime / mass + previousSpeed + velocitySum;
+
+		velocity -= constraintSum.normalized * Vector2.Dot (velocity, constraintSum.normalized);
+
+		velocity += Vector2.down * Constants.gravityMultiplier * deltaTime;
+
 
 		if ((velocity * deltaTime + position).y < nodeRadius) {
 			if (position.y > nodeRadius + Constants.tolerance)
@@ -62,11 +68,11 @@ public class Node {
 			else
 				velocity.y -= (1 + coefficientOfRestitution) * velocity.y;
 		}
-
+//
 		if (position.y < nodeRadius + Constants.tolerance)
 			velocity.x /= (1 + friction);
 
-		velocity -= velocitySum.normalized * Vector2.Dot (velocity, velocitySum);
+//		velocity -= velocitySum.normalized * Vector2.Dot (velocity, velocitySum);
 
 		//delta position = v * dt
 		var deltaPosition = velocity * deltaTime;
@@ -75,6 +81,7 @@ public class Node {
 			
 		forcesSum = Vector2.zero;
 		velocitySum = Vector2.zero;
+		constraintSum = Vector2.zero;
 
 		previousSpeed = velocity;
 	}
@@ -91,6 +98,10 @@ public class Node {
 
 	public void AddVelocity (Vector2 velocity) {
 		velocitySum += velocity;
+	}
+
+	public void AddConstraint(Vector2 constraint) {
+		constraintSum += constraint;
 	}
 	#endregion
 

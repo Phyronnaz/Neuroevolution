@@ -86,6 +86,16 @@ public class Controller : MonoBehaviour {
 			}
 		}
 		/*
+		 * Remove the slowest
+		 */
+		for(var k = 0; k < creatures.Count; k++) {
+			var c = creatures [k];
+			if (c.GetAveragePosition () < max - 50) {
+				c.Destroy ();
+				creatures.Remove (c);
+			}
+		}
+		/*
 		 * Update average position
 		 */
 		var tmp = transform.position;

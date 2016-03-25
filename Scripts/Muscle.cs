@@ -42,23 +42,73 @@ public class Muscle {
 	#endregion
 
 	#region Update and LateUpdate
+	private float GetForce (float l, float time) {
+		var center = (left.position + right.position) / 2;
+		if(time > changeTime) {
+			if (beginWithContraction) {
+				//Extend time
+				if (l > extendedLength) {
+					left.AddConstraint ((center - left.position).normalized);
+					right.AddConstraint ((center - right.position).normalized);
+					//Force contract
+					return Mathf.Clamp (l - contractedLength, 0, 0);
+				} else {
+					//Extend
+					return Mathf.Clamp (l - extendedLength, -1, 0);
+				}
+			} else {
+				//Contract time
+				if (contractedLength > l) {
+					left.AddConstraint (-(center - left.position).normalized);
+					right.AddConstraint (-(center - right.position).normalized);
+					//Force extend
+					return Mathf.Clamp (l - extendedLength, 0, 0);
+				} else {
+					//Contract
+					return Mathf.Clamp (l - contractedLength, 0, 1);
+				}
+			}
+		} else {
+			if (beginWithContraction) {
+				//Contract time
+				if (contractedLength > l) {
+					left.AddConstraint (-(center - left.position).normalized);
+					right.AddConstraint (-(center - right.position).normalized);
+					//Force extend
+					return Mathf.Clamp (l - extendedLength, 0, 0);
+				} else {
+					//Contract
+					return Mathf.Clamp (l - contractedLength, 0, 1);
+				}
+			} else {
+				//Extend time
+				if (l > extendedLength) {
+					left.AddConstraint ((center - left.position).normalized);
+					right.AddConstraint ((center - right.position).normalized);
+					//Force contract
+					return Mathf.Clamp (l - contractedLength, 0, 0);
+				} else {
+					//Extend
+					return Mathf.Clamp (l - extendedLength, -1, 0);
+				}
+			}
+		}
+	}
 	public void Update (float time) {
 		//TODO: Square
 		var l = Vector2.Distance (left.position, right.position);
 		var center = (left.position + right.position) / 2;
 
-		float force;
-		if (l > extendedLength)
-			force = (l - extendedLength);
-		else if (l < contractedLength)
-			force = (l - contractedLength);
-		else
-			force = (time > changeTime && !beginWithContraction) || (time < changeTime && beginWithContraction) ?
-				1 * Mathf.Clamp(l-contractedLength, -1, 1) : -1 * Mathf.Clamp(l-extendedLength, -1, 1);
+//		float force = (time > changeTime && !beginWithContraction) || (time < changeTime && beginWithContraction) ? 1 : -1;
+//		if (l > extendedLength)
+//			force += l - extendedLength + 1;
+//		else if (l < contractedLength)
+//			force -= - l + contractedLength - 1;
+
 		
 		//TODO: Remove normalized
-		left.AddVelocity (strength * force * (center - left.position).normalized);
-		right.AddVelocity (strength * force * (center - right.position).normalized);
+		left.AddVelocity (strength * GetForce (l, time) * (center - left.position).normalized);
+		right.AddVelocity (strength * GetForce (l, time) * (center - right.position).normalized);
 
 
 //		var l = (left.position - right.position).sqrMagnitude;
