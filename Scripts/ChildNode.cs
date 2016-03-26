@@ -35,9 +35,6 @@ public class ChildNode : Node {
 	public override void Update (float deltaTime) {
 		position = left.position + (right.position - left.position) / 2;
 
-		left.AddForce (forcesSum * (1 - normalizedDistanceFromLeft));
-		right.AddForce (forcesSum * normalizedDistanceFromLeft);
-
 		left.AddVelocity (velocitySum * (1 - normalizedDistanceFromLeft));
 		right.AddVelocity (velocitySum * normalizedDistanceFromLeft);
 

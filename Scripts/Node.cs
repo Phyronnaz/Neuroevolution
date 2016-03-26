@@ -13,6 +13,7 @@ public class Node {
 	public float coefficientOfRestitution;
 	public int id;
 
+	public Vector2 velocity = Vector2.zero;
 	public Vector2 position;
 	#endregion
 
@@ -21,7 +22,6 @@ public class Node {
 	protected Vector2 forcesSum = Vector2.zero;
 	protected Vector2 velocitySum = Vector2.zero;
 	protected Vector2 constraintSum = Vector2.zero;
-	private Vector2 previousSpeed = Vector2.zero;
 	#endregion
 
 
@@ -48,54 +48,41 @@ public class Node {
 
 	#region Update and LateUpdate
 	public virtual void Update (float deltaTime) {
-		//Weight
-//		AddForce (Vector2.down * Constants.gravityMultiplier * mass);
+		//velocity
+        velocity += velocitySum;
 
-		//Fluid friction
-//		AddForce (-previousSpeed * Constants.fluidFriction);
-
-		//v = a * dt + c
-        var velocity = forcesSum * deltaTime / mass + previousSpeed + velocitySum;
-
+		//constraints
 		velocity -= constraintSum.normalized * Vector2.Dot (velocity, constraintSum.normalized);
 
+		//weight
 		velocity += Vector2.down * Constants.gravityMultiplier * deltaTime;
 
-
+		//collision
 		if ((velocity * deltaTime + position).y < nodeRadius) {
 			if (position.y > nodeRadius + Constants.tolerance)
 				velocity.y = (nodeRadius - position.y) / deltaTime;
 			else
 				velocity.y -= (1 + coefficientOfRestitution) * velocity.y;
 		}
-//
+
+		//friction
 		if (position.y < nodeRadius + Constants.tolerance)
 			velocity.x /= (1 + friction);
 
-//		velocity -= velocitySum.normalized * Vector2.Dot (velocity, velocitySum);
-
-		//delta position = v * dt
-		var deltaPosition = velocity * deltaTime;
-
-		position += deltaPosition;
+		//position
+		position += velocity * deltaTime;
 			
-		forcesSum = Vector2.zero;
+		//reset
 		velocitySum = Vector2.zero;
 		constraintSum = Vector2.zero;
-
-		previousSpeed = velocity;
 	}
 
-	public void LateUpdate () {
+	public void UpdateGraphics () {
 		nodeRenderer.SetPosition (position);
 	}
 	#endregion
 
 	#region AddForce
-	public void AddForce (Vector2 force) {
-		forcesSum += force;
-	}
-
 	public void AddVelocity (Vector2 velocity) {
 		velocitySum += velocity;
 	}

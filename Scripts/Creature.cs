@@ -53,10 +53,10 @@ public class Creature {
 	public void UpdateGraphics () {
 		if (enableGraphics) {
 			foreach (var m in muscles) {
-				m.LateUpdate ();
+				m.UpdateGraphics ();
 			}
 			foreach (var n in nodes) {
-				n.LateUpdate ();
+				n.UpdateGraphics ();
 			}
 		}
 
@@ -158,13 +158,13 @@ public class Creature {
 		}
 
 		/*
-		 * Update render
+		 * Update graphics
 		 */
 		foreach(var m in muscles) {
-			m.LateUpdate ();
+			m.UpdateGraphics ();
 		}
 		foreach(var n in nodes) {
-			n.LateUpdate ();
+			n.UpdateGraphics ();
 		}
 		return new Creature (muscles, nodes, cycleDuration, parent);
 	}

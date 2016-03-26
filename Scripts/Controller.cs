@@ -99,7 +99,7 @@ public class Controller : MonoBehaviour {
 		 * Update average position
 		 */
 		var tmp = transform.position;
-		tmp.x = Mathf.Lerp(tmp.x, currentCreature.GetAveragePosition(), Time.deltaTime);
+		tmp.x = Mathf.Lerp(tmp.x, currentCreature.GetAveragePosition(), Time.deltaTime * Constants.timeMultiplier / 10);
 		transform.position = tmp;
 
 		/*

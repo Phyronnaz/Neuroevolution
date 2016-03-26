@@ -69,7 +69,7 @@ public class UI : MonoBehaviour {
 public static class Constants {
 	public static float timeMultiplier = 1;
 	public static float gravityMultiplier = 50;
-	public static float cycleDurationMultiplier = 1f;
+	public static float cycleDurationMultiplier = 10f;
 	public static float tolerance = 0.001f;
 	public static float strengthAmplitude = 10f / 10000f;
 	public static float frictionAmplitude = 1000;
