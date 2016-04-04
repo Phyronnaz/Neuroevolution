@@ -53,7 +53,7 @@ public class UI : MonoBehaviour
 
 	public void UpdateUI ()
 	{
-		Constants.TimeMultiplier = timeMultiplier.value;
+		Constants.TimeMultiplier = (int)timeMultiplier.value;
 		Constants.GravityMultiplier = int.Parse (gravityMultiplier.text);
 		Constants.CycleDurationMultiplier = int.Parse (cycleDurationMultiplier.text);
 		Constants.StrengthAmplitude = int.Parse (strengthAmplitude.text) / 10000;
@@ -68,7 +68,7 @@ public class UI : MonoBehaviour
 
 public static class Constants
 {
-	public static float TimeMultiplier = 1;
+	public static int TimeMultiplier = 1;
 	public static float GravityMultiplier = 50;
 	public static float CycleDurationMultiplier = 10f;
 	public static float Tolerance = 0.001f;
@@ -88,5 +88,6 @@ public static class Constants
 	public static float MaxMass = 10;
 	public static float MinStrength = 1;
 	public static bool MuscleDebug = true;
-	public static bool NeuralNetwork = false;
+	public static bool NeuralNetwork;
+	public static int NumberOfThreads = 32;
 }

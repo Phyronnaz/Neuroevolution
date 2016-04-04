@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Threading;
 
 public class Controller : MonoBehaviour
 {
@@ -8,7 +9,6 @@ public class Controller : MonoBehaviour
 	public Text DistanceText;
 	public Text TimeText;
 	public List<Creature> Creatures;
-
 	public bool Train;
 
 	float currentTime;
@@ -19,45 +19,36 @@ public class Controller : MonoBehaviour
 	void Start ()
 	{
 		currentCreature = Creatures [0];
-		foreach (var c in Creatures) {
-			c.DistanceText = DistanceText;
-			c.CycleText = CycleText;
-		}
-		currentCreature.CreatureUI = true;
 		InvokeRepeating ("CustomUpdate", 0, deltaTime);
-		if (Train) {
-			foreach (var c in Creatures) {
-				for (var k = 0; k < 30000; k++) {
-					c.Update (deltaTime);
-				}
-			}
-			float max = currentCreature.GetAveragePosition ();
-			var l = 0;
-			while (l < Creatures.Count) {
-				var c = Creatures [l];
-				if (c.GetAveragePosition () > max) {
-					max = c.GetAveragePosition ();
-					currentCreature.Destroy ();
-					Creatures.Remove (currentCreature);
-					currentCreature = c;
-				} else if (c.GetAveragePosition () < max) {
-					c.Destroy ();
-					Creatures.Remove (c);
-				} else {
-					l++;
-				}
-			}
-			currentCreature.CreatureUI = true;
-		}
-		foreach (var c in Creatures) {
-			c.EnableGraphics = true;
-		}
 	}
 
 	void CustomUpdate ()
 	{
-		foreach (var c in Creatures) {
-			for (var k = 0; k < Constants.TimeMultiplier; k++) {
+		var numberOfThreads = Mathf.Min (Constants.NumberOfThreads, Creatures.Count);
+		var threads = new List<Thread> ();
+		var count = Creatures.Count - Creatures.Count % numberOfThreads;
+		int h = count / numberOfThreads;
+		for (var k = 0; k < numberOfThreads; k++) {
+			var creaturesToProcess = Creatures.GetRange (k * h, h);
+			threads.Add (new Thread (() => ThreadedJob (creaturesToProcess, Constants.TimeMultiplier)));
+			threads [threads.Count - 1].Start ();
+		}
+		if (count != Creatures.Count) {
+			var endCreaturesToProcess = Creatures.GetRange (count, Creatures.Count - count);
+			threads.Add (new Thread (() => ThreadedJob (endCreaturesToProcess, Constants.TimeMultiplier)));
+			threads [threads.Count - 1].Start ();
+		}
+
+		foreach (var t in threads) {
+			t.Join ();
+		}
+	}
+
+	static void ThreadedJob (List<Creature> creatures, int time)
+	{
+//		print ("Bug");
+		foreach (var c in creatures) {
+			for (var k = 0; k < time; k++) {
 				c.Update (deltaTime);
 			}
 		}
@@ -65,46 +56,34 @@ public class Controller : MonoBehaviour
 
 	void Update ()
 	{
-		/*
-		 * Update graphics
-		 */
+		// Update graphics
 		foreach (var c in Creatures) {
 			c.UpdateGraphics ();
 		}
 	
-		/*
-		 * Get fastest creature
-		 */
+		// Get fastest creature
 		float max = currentCreature.GetAveragePosition ();
 		foreach (var c in Creatures) {
 			if (c.GetAveragePosition () > max) {
 				max = c.GetAveragePosition ();
-				currentCreature.CreatureUI = false;
 				currentCreature = c;
-				currentCreature.CreatureUI = true;
 			}
 		}
-		/*
-		 * Remove the slowest
-		 */
-		// Analysis disable once ForCanBeConvertedToForeach
-		for (var k = 0; k < Creatures.Count; k++) {
-			var c = Creatures [k];
-			if (c.GetAveragePosition () < max - 50) {
+
+		// Remove the slowest
+		foreach (var c in Creatures) {
+			if (c.GetAveragePosition () < max - 50)
 				c.Destroy ();
-				Creatures.Remove (c);
-			}
 		}
-		/*
-		 * Update average position
-		 */
+		Creatures.RemoveAll (c => c.GetAveragePosition () < max - 50);
+
+		// Update average position
 		var tmp = transform.position;
 		tmp.x = Mathf.Lerp (tmp.x, currentCreature.GetAveragePosition (), Time.deltaTime * Constants.TimeMultiplier / 10);
 		transform.position = tmp;
 
-		/*
-		 * Update UI
-		 */
+		// Update UI
+		currentCreature.UpdateUI (DistanceText, CycleText);
 		currentTime += Time.deltaTime * Constants.TimeMultiplier;
 		TimeText.text = "Time : " + currentTime;
 	}

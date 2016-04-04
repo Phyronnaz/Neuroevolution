@@ -25,39 +25,41 @@ public class Generate : MonoBehaviour
 
 	void Start ()
 	{
-		var s = new Stopwatch ();
-		float x = 0;
-		s.Start ();
-		var a = Vector2.up;
-		var b = Vector2.right;
-		for (var k = 0; k < 1000000; k++) {
-			x += (a - b).magnitude;
-		}
-		print (s.Elapsed);
-
-		s = new Stopwatch ();
-		x = 0;
-		s.Start ();
-		for (var k = 0; k < 1000000; k++) {
-			x += (a - b).sqrMagnitude;
-		}
-		print (s.Elapsed);
-
-		s = new Stopwatch ();
-		x = 0;
-		s.Start ();
-		for (var k = 0; k < 1000000; k++) {
-			x += Vector2.Distance (a, b);
-		}
-		print (s.Elapsed);
-
-		s = new Stopwatch ();
-		x = 0;
-		s.Start ();
-		for (var k = 0; k < 1000000; k++) {
-			x += (a - b).normalized.x;
-		}
-		print (s.Elapsed);
+		#region Tests
+//		var s = new Stopwatch ();
+//		float x = 0;
+//		s.Start ();
+//		var a = Vector2.up;
+//		var b = Vector2.right;
+//		for (var k = 0; k < 1000000; k++) {
+//			x += (a - b).magnitude;
+//		}
+//		print (s.Elapsed);
+//
+//		s = new Stopwatch ();
+//		x = 0;
+//		s.Start ();
+//		for (var k = 0; k < 1000000; k++) {
+//			x += (a - b).sqrMagnitude;
+//		}
+//		print (s.Elapsed);
+//
+//		s = new Stopwatch ();
+//		x = 0;
+//		s.Start ();
+//		for (var k = 0; k < 1000000; k++) {
+//			x += Vector2.Distance (a, b);
+//		}
+//		print (s.Elapsed);
+//
+//		s = new Stopwatch ();
+//		x = 0;
+//		s.Start ();
+//		for (var k = 0; k < 1000000; k++) {
+//			x += (a - b).normalized.x;
+//		}
+//		print (s.Elapsed);
+		#endregion
 
 		//Initialize arrays && variables
 		nodes = new List<Node> ();
@@ -209,6 +211,7 @@ public class Generate : MonoBehaviour
 		}
 	}
 
+
 	public void Restart ()
 	{
 		// Destroy all creatues
@@ -235,6 +238,7 @@ public class Generate : MonoBehaviour
 		Start ();
 	}
 
+
 	void GenerateMuscle (Node left, Node right)
 	{
 		muscles.Add (Muscle.RandomMuscle (left, right, cycleDuration, currentColor, currentCreature));
@@ -250,10 +254,6 @@ public class Generate : MonoBehaviour
 		nodes.Add (Node.RandomNode (position, currentCreature, currentColor, nodes.Count));
 	}
 
-	void GenerateNode ()
-	{
-		GenerateNode (new Vector2 (Random.Range (-40f, 40f), Random.Range (0f, 20f)));
-	}
 
 	bool IsMuscleAlreadyAdded (Node left, Node right)
 	{
@@ -276,6 +276,7 @@ public class Generate : MonoBehaviour
 		return false;
 	}
 
+
 	void InitializeController ()
 	{
 		controller = gameObject.AddComponent<Controller> ();
@@ -290,6 +291,7 @@ public class Generate : MonoBehaviour
 			m.Destroy ();
 		}
 	}
+
 
 	void AddCreature ()
 	{

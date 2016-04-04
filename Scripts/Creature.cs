@@ -4,11 +4,6 @@ using System.Collections.Generic;
 
 public class Creature
 {
-	public Text CycleText;
-	public Text DistanceText;
-	public bool CreatureUI;
-	public bool EnableGraphics;
-
 	readonly List<Muscle> muscles;
 	readonly List<Node> nodes;
 	readonly Transform transform;
@@ -39,7 +34,7 @@ public class Creature
 
 		// Update muscles and nodes
 		if (Constants.NeuralNetwork) {
-
+			
 		} else {
 			foreach (var m in muscles) {
 				if ((time > m.ChangeTime && !m.BeginWithContraction) || (time < m.ChangeTime && m.BeginWithContraction))
@@ -59,20 +54,19 @@ public class Creature
 
 	public void UpdateGraphics ()
 	{
-		if (EnableGraphics) {
-			foreach (var m in muscles) {
-				m.UpdateGraphics ();
-			}
-			foreach (var n in nodes) {
-				n.UpdateGraphics ();
-			}
+		foreach (var m in muscles) {
+			m.UpdateGraphics ();
 		}
-			
-		// Update Creature UI
-		if (CreatureUI) {
-			DistanceText.text = "Distance : " + GetAveragePosition ();
-			CycleText.text = string.Format ("{0} %", Mathf.Ceil (time / cycleDuration * 100));
+		foreach (var n in nodes) {
+			n.UpdateGraphics ();
 		}
+	}
+
+	public void UpdateUI (Text distanceText, Text cycleText)
+	{
+		distanceText.text = "Distance : " + GetAveragePosition ();
+		cycleText.text = string.Format ("{0} %", Mathf.Ceil (time / cycleDuration * 100));
+
 	}
 
 	#region Comment
@@ -154,7 +148,7 @@ public class Creature
 
 		// Generate nodes
 		for (var i = 0; i < numberOfNodes; i++) {
-			nodes.Add (Node.RandomNode (new Vector2 (Random.value, Random.value + 1) * 10, parent, color, i));
+			nodes.Add (Node.RandomNode (new Vector2 (Random.Range (-10f, 10f), Random.Range (0f, 10f)), parent, color, i));
 		}
 			
 		// Recenter nodes
