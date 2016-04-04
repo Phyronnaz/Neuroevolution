@@ -1,39 +1,64 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
-public class Generate : MonoBehaviour {
+public class Generate : MonoBehaviour
+{
 
-	#region public variables
-	public Text cycleText;
-	public Text distanceText;
-	public Text timeText;
-	#endregion
+	[SerializeField]
+	Text cycleText, distanceText, timeText;
 
-	#region private variables
-	private List<Node> nodes;
-	private List<Muscle> muscles;
-	private List<Creature> creatures;
+	List<Node> nodes;
+	List<Muscle> muscles;
+	List<Creature> creatures;
 
-	private Controller controller;
-
-	private float cycleDuration;
-
-	private bool generated = false;
-
-	private bool isCreatingMuscle;
-	private Node nodeBeeingAssociated;
-
-	private Transform currentCreature;
-	private Color currentColor;
-	#endregion
+	Controller controller;
+	float cycleDuration;
+	bool generated;
+	bool isCreatingMuscle;
+	Node nodeBeeingAssociated;
+	Transform currentCreature;
+	Color currentColor;
 
 
-	#region Start and Update
 	void Start ()
 	{
+		var s = new Stopwatch ();
+		float x = 0;
+		s.Start ();
+		var a = Vector2.up;
+		var b = Vector2.right;
+		for (var k = 0; k < 1000000; k++) {
+			x += (a - b).magnitude;
+		}
+		print (s.Elapsed);
+
+		s = new Stopwatch ();
+		x = 0;
+		s.Start ();
+		for (var k = 0; k < 1000000; k++) {
+			x += (a - b).sqrMagnitude;
+		}
+		print (s.Elapsed);
+
+		s = new Stopwatch ();
+		x = 0;
+		s.Start ();
+		for (var k = 0; k < 1000000; k++) {
+			x += Vector2.Distance (a, b);
+		}
+		print (s.Elapsed);
+
+		s = new Stopwatch ();
+		x = 0;
+		s.Start ();
+		for (var k = 0; k < 1000000; k++) {
+			x += (a - b).normalized.x;
+		}
+		print (s.Elapsed);
+
 		//Initialize arrays && variables
 		nodes = new List<Node> ();
 		muscles = new List<Muscle> ();
@@ -42,12 +67,12 @@ public class Generate : MonoBehaviour {
 		isCreatingMuscle = false;
 
 		//Camera
-		var p = this.transform.position;
+		var p = transform.position;
 		p.x = 0;
-		this.transform.position = p;
+		transform.position = p;
 
 		//Cycle duration
-		cycleDuration = (Random.value + 0.1f) * Constants.cycleDurationMultiplier;
+		cycleDuration = (Random.value + 0.1f) * Constants.CycleDurationMultiplier;
 
 		/////////////////////////////////////////////
 		//HACK
@@ -81,35 +106,39 @@ public class Generate : MonoBehaviour {
 		/////////////////////////////////////////////
 
 		//Generate
-		if (Constants.generate) {
-			for (var k = 0; k < 200 ; k++) {
+		if (Constants.Generate) {
+			for (var k = 0; k < 200; k++) {
 				AddRandomCreature ();
 			}
 			InitializeController ();
 			generated = true;
 		} else {
 			currentCreature = new GameObject ().transform;
-			currentCreature.name = "Creature " + Random.Range (0, 10000).ToString();
+			currentCreature.name = "Creature " + Random.Range (0, 10000);
 			currentColor = Random.ColorHSV ();
 		}
 	}
 
-	void Update () {
+	void Update ()
+	{
 		//Restart if asked
 		if (Input.GetKeyDown (KeyCode.R))
 			Restart ();
 		//Edit
-		if(!generated) {
-			if(isCreatingMuscle) {
-				Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		if (!generated) {
+			if (isCreatingMuscle) {
+				Vector3 mousePosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 				mousePosition.z = 0;
 					
 				var l = GetComponent<LineRenderer> ();
 				if (l == null)
 					l = gameObject.AddComponent<LineRenderer> ();
-				
-				l.SetPosition (0, nodeBeeingAssociated.position);
+
+				l.SetPosition (0, nodeBeeingAssociated.Position);
 				l.SetPosition (1, mousePosition);
+				if (l.material == null)
+					l.material = new Material (Shader.Find ("Diffuse"));
+				l.material.color = currentColor;
 			}
 			if (EventSystem.current.currentSelectedGameObject == null) {
 				if (Input.GetMouseButtonDown (0)) {
@@ -119,7 +148,7 @@ public class Generate : MonoBehaviour {
 					RaycastHit2D hit = Physics2D.GetRayIntersection (ray, Mathf.Infinity);
 					if (hit.collider != null) {
 						if (hit.collider.GetComponent<NodeRenderer> () != null) {
-							var hitNode = nodes [hit.transform.GetComponent<NodeRenderer> ().id];
+							var hitNode = nodes [hit.transform.GetComponent<NodeRenderer> ().Id];
 
 							if (isCreatingMuscle && !IsMuscleAlreadyAdded (hitNode, nodeBeeingAssociated))
 								GenerateMuscle (hitNode, nodeBeeingAssociated);
@@ -179,106 +208,101 @@ public class Generate : MonoBehaviour {
 				
 		}
 	}
-	#endregion
-		
 
-	#region Restart
-	public void Restart () {
-		/*
-		 * Destroy all creatues
-		 */
-		if(controller != null)
+	public void Restart ()
+	{
+		// Destroy all creatues
+		if (controller != null)
 			controller.Destroy ();
-		/*
-		 * Destroy controller
-		 */
+		
+		// Destroy controller
 		DestroyImmediate (controller);
-		/*
-		 * Destroy nodes && muscles
-		 */
-		foreach(var n in nodes) {
+
+		// Destroy nodes && muscles
+		foreach (var n in nodes) {
 			n.Destroy ();
 		}
-		foreach(var m in muscles) {
+		foreach (var m in muscles) {
 			m.Destroy ();
 		}
-		/*
-		 * Reset UI
-		 */
+		// Reset UI
 		cycleText.text = "";
 		timeText.text = "";
 		distanceText.text = "";
 		if (GetComponent<LineRenderer> () != null)
 			Destroy (GetComponent<LineRenderer> ());
-		/*
-		 * Regenerate
-		 */
+		// Regenerate
 		Start ();
 	}
-	#endregion
 
-	#region Generate muscle && node && check if muscle add
-	private void GenerateMuscle (Node left, Node right) {
+	void GenerateMuscle (Node left, Node right)
+	{
 		muscles.Add (Muscle.RandomMuscle (left, right, cycleDuration, currentColor, currentCreature));
 	}
 
-	private void GenerateMuscle (int a, int b) {
+	void GenerateMuscle (int a, int b)
+	{
 		GenerateMuscle (nodes [a], nodes [b]);
-	} 
-
-	private void GenerateNode (Vector2 position) {
-		nodes.Add (Node.RandomNode (position, currentCreature,nodes.Count));
 	}
 
-	private void GenerateNode () {
+	void GenerateNode (Vector2 position)
+	{
+		nodes.Add (Node.RandomNode (position, currentCreature, currentColor, nodes.Count));
+	}
+
+	void GenerateNode ()
+	{
 		GenerateNode (new Vector2 (Random.Range (-40f, 40f), Random.Range (0f, 20f)));
 	}
 
-	private bool IsMuscleAlreadyAdded (Node left, Node right) {
-		return IsMuscleAlreadyAdded (left.id, right.id);
+	bool IsMuscleAlreadyAdded (Node left, Node right)
+	{
+		return IsMuscleAlreadyAdded (left.Id, right.Id);
 	}
 
-	private bool IsMuscleAlreadyAdded (Tuple t) {
+	bool IsMuscleAlreadyAdded (Tuple t)
+	{
 		return IsMuscleAlreadyAdded (t.a, t.b);
-	} 
+	}
 
-	private bool IsMuscleAlreadyAdded (int left, int right) {
+	bool IsMuscleAlreadyAdded (int left, int right)
+	{
 		if (left == right)
 			return true;
-		foreach(var muscle in muscles) {
+		foreach (var muscle in muscles) {
 			if (muscle.Equals (new Tuple (left, right)))
 				return true;
 		}
 		return false;
-	} 
-	#endregion
+	}
 
-	#region Initialize controller
-	private void InitializeController () {
+	void InitializeController ()
+	{
 		controller = gameObject.AddComponent<Controller> ();
-		controller.cycleText = cycleText;
-		controller.distanceText = distanceText;
-		controller.timeText = timeText;
-		controller.creatures = creatures;
-		foreach(var n in nodes) {
+		controller.CycleText = cycleText;
+		controller.DistanceText = distanceText;
+		controller.TimeText = timeText;
+		controller.Creatures = creatures;
+		foreach (var n in nodes) {
 			n.Destroy ();
 		}
-		foreach(var m in muscles) {
+		foreach (var m in muscles) {
 			m.Destroy ();
 		}
 	}
-	#endregion
 
-	private void AddCreature () {
+	void AddCreature ()
+	{
 		creatures.Add (new Creature (muscles, nodes, cycleDuration, currentCreature));
 		muscles = new List<Muscle> ();
 		nodes = new List<Node> ();
 		currentCreature = new GameObject ().transform;
-		currentCreature.name = "Creature " + Random.Range (0, 10000).ToString();
+		currentCreature.name = "Creature " + Random.Range (0, 10000);
 		currentColor = Random.ColorHSV ();
 	}
 
-	private void AddRandomCreature () {
+	void AddRandomCreature ()
+	{
 		creatures.Add (Creature.RandomCreature (cycleDuration));
 	}
 }

@@ -1,85 +1,84 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 using System.Collections.Generic;
 
-public class Controller : MonoBehaviour {
+public class Controller : MonoBehaviour
+{
+	public Text CycleText;
+	public Text DistanceText;
+	public Text TimeText;
+	public List<Creature> Creatures;
 
-	#region variables
-	public Text cycleText;
-	public Text distanceText;
-	public Text timeText;
-	public List<Creature> creatures;
+	public bool Train;
 
-	public bool train = false;// || true;
+	float currentTime;
+	const float deltaTime = 0.001f;
 
-	private float currentTime = 0;
-	private float deltaTime = 0.001f;
-	private Creature currentCreature;
-	#endregion
+	Creature currentCreature;
 
-
-	#region Start && Update && CustomUpdate
-	void Start () {
-		currentCreature = creatures [0];
-		foreach (var c in creatures) {
-			c.distanceText = distanceText;
-			c.cycleText = cycleText;
+	void Start ()
+	{
+		currentCreature = Creatures [0];
+		foreach (var c in Creatures) {
+			c.DistanceText = DistanceText;
+			c.CycleText = CycleText;
 		}
 		currentCreature.CreatureUI = true;
 		InvokeRepeating ("CustomUpdate", 0, deltaTime);
-		if (train) {
-			foreach (var c in creatures) {
+		if (Train) {
+			foreach (var c in Creatures) {
 				for (var k = 0; k < 30000; k++) {
 					c.Update (deltaTime);
 				}
 			}
-			float max = currentCreature.GetAveragePosition();
+			float max = currentCreature.GetAveragePosition ();
 			var l = 0;
-			while (l < creatures.Count) {
-				var c = creatures [l];
-				if (c.GetAveragePosition() > max) {
-					max = c.GetAveragePosition();
+			while (l < Creatures.Count) {
+				var c = Creatures [l];
+				if (c.GetAveragePosition () > max) {
+					max = c.GetAveragePosition ();
 					currentCreature.Destroy ();
-					creatures.Remove (currentCreature);
+					Creatures.Remove (currentCreature);
 					currentCreature = c;
-				} else if (c.GetAveragePosition() < max) {
+				} else if (c.GetAveragePosition () < max) {
 					c.Destroy ();
-					creatures.Remove (c);
+					Creatures.Remove (c);
 				} else {
 					l++;
 				}
 			}
 			currentCreature.CreatureUI = true;
 		}
-		foreach(var c in creatures) {
-			c.enableGraphics = true;
+		foreach (var c in Creatures) {
+			c.EnableGraphics = true;
 		}
 	}
 
-	void CustomUpdate () {
-		foreach (var c in creatures) {
-			for (var k = 0; k < Constants.timeMultiplier; k++) {
+	void CustomUpdate ()
+	{
+		foreach (var c in Creatures) {
+			for (var k = 0; k < Constants.TimeMultiplier; k++) {
 				c.Update (deltaTime);
 			}
 		}
 	}
 
-	void Update () {
+	void Update ()
+	{
 		/*
 		 * Update graphics
 		 */
-		foreach(var c in creatures) {
+		foreach (var c in Creatures) {
 			c.UpdateGraphics ();
 		}
 	
 		/*
 		 * Get fastest creature
 		 */
-		float max = currentCreature.GetAveragePosition();
-		foreach(var c in creatures) {
-			if (c.GetAveragePosition() > max) {
-				max = c.GetAveragePosition();
+		float max = currentCreature.GetAveragePosition ();
+		foreach (var c in Creatures) {
+			if (c.GetAveragePosition () > max) {
+				max = c.GetAveragePosition ();
 				currentCreature.CreatureUI = false;
 				currentCreature = c;
 				currentCreature.CreatureUI = true;
@@ -88,30 +87,32 @@ public class Controller : MonoBehaviour {
 		/*
 		 * Remove the slowest
 		 */
-		for(var k = 0; k < creatures.Count; k++) {
-			var c = creatures [k];
+		// Analysis disable once ForCanBeConvertedToForeach
+		for (var k = 0; k < Creatures.Count; k++) {
+			var c = Creatures [k];
 			if (c.GetAveragePosition () < max - 50) {
 				c.Destroy ();
-				creatures.Remove (c);
+				Creatures.Remove (c);
 			}
 		}
 		/*
 		 * Update average position
 		 */
 		var tmp = transform.position;
-		tmp.x = Mathf.Lerp(tmp.x, currentCreature.GetAveragePosition(), Time.deltaTime * Constants.timeMultiplier / 10);
+		tmp.x = Mathf.Lerp (tmp.x, currentCreature.GetAveragePosition (), Time.deltaTime * Constants.TimeMultiplier / 10);
 		transform.position = tmp;
 
 		/*
 		 * Update UI
 		 */
-		currentTime += Time.deltaTime * Constants.timeMultiplier;
-		timeText.text = "Time : " + currentTime.ToString ();
+		currentTime += Time.deltaTime * Constants.TimeMultiplier;
+		TimeText.text = "Time : " + currentTime;
 	}
-	#endregion
 
-	public void Destroy () {
-		foreach(var c in creatures) {
+
+	public void Destroy ()
+	{
+		foreach (var c in Creatures) {
 			c.Destroy ();
 		}
 	}

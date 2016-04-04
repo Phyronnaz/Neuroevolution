@@ -1,110 +1,122 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class Muscle {
-	
-	#region public variables
-	public float strength;
-	public float extendedLength;
-	public float contractedLength;
-	public float changeTime;
-	public bool beginWithContraction;
-	#endregion
+public class Muscle
+{
+	public readonly float Strength;
+	public readonly float ExtendedLength;
+	public readonly float ContractedLength;
+	public readonly float ChangeTime;
+	public readonly bool BeginWithContraction;
+	public readonly Node Right;
+	public readonly Node Left;
 
-	#region private variables
-	private bool isContracting = false;
-	private Node left;
-	private Node right;
-	private MuscleRenderer muscleRenderer;
-	#endregion
+	bool contract;
+	MuscleRenderer muscleRenderer;
 
 
-	#region Constructor
-	public Muscle (Node left, Node right, float strength, float extendedLength, float contractedLength, float changeTime, bool beginWithContraction, Color color, Transform parent) {
-		this.left = left;
-		this.right = right;
-		this.strength = strength;
-		this.extendedLength = Mathf.Max(extendedLength, Constants.minRandom);
-		this.contractedLength = Mathf.Max (contractedLength, Constants.minRandom);
-		this.changeTime = changeTime;
-		this.beginWithContraction = beginWithContraction;
+	public Muscle (Node left, Node right, float strength, float extendedLength, float contractedLength, float changeTime, bool beginWithContraction, Color color, Transform parent)
+	{
+		Left = left;
+		Right = right;
+		Strength = strength;
+		ExtendedLength = Mathf.Max (extendedLength, Constants.MinRandom);
+		ContractedLength = Mathf.Max (contractedLength, Constants.MinRandom);
+		ChangeTime = changeTime;
+		BeginWithContraction = beginWithContraction;
 
 		//Create muscle renderer
-		muscleRenderer = (new GameObject()).AddComponent<MuscleRenderer> ();
-		muscleRenderer.gameObject.name = "Muscle from " + left.id.ToString () + " to " + right.id.ToString ();
-		muscleRenderer.maxLength = this.extendedLength;
-		muscleRenderer.minLength = this.contractedLength;
-		muscleRenderer.color = color;
+		muscleRenderer = (new GameObject ()).AddComponent<MuscleRenderer> ();
+		muscleRenderer.gameObject.name = "Muscle from " + left.Id + " to " + right.Id;
+		muscleRenderer.MaxLength = ExtendedLength;
+		muscleRenderer.MinLength = ContractedLength;
+		muscleRenderer.Color = color;
 		muscleRenderer.transform.parent = parent;
 		muscleRenderer.Initialize ();
 		UpdateGraphics ();
 	}
-	#endregion
 
-	#region Update and LateUpdate
-	public void Update (float time) {
-		//TODO: Square
-		var l = Vector2.Distance (left.position, right.position);
-		var center = (left.position + right.position) / 2;
+
+
+	public void Contract ()
+	{
+		contract = true;
+	}
+
+	public void Extend ()
+	{
+		contract = false;
+	}
+
+	public void Update ()
+	{
+		var l = Vector2.Distance (Left.Position, Right.Position);
+		var center = (Left.Position + Right.Position) / 2;
 
 		float force;
 
-		if ((time > changeTime && !beginWithContraction) || (time < changeTime && beginWithContraction)) {
+		if (contract) {
 			//Contract time
-			if (contractedLength > l) {
-				left.AddConstraint (-(center - left.position).normalized);
-				right.AddConstraint (-(center - right.position).normalized);
+			if (ContractedLength > l) {
+				Left.AddConstraint (-(center - Left.Position).normalized);
+				Right.AddConstraint (-(center - Right.Position).normalized);
 				//Force extend
-				force =  Mathf.Clamp (l - extendedLength, 0, 0);
+				force = Mathf.Clamp (l - ExtendedLength, 0, 0);
 			} else {
 				//Contract
-				force =  Mathf.Clamp (l - contractedLength, 0, 1);
+				force = Mathf.Clamp (l - ContractedLength, 0, 1);
 			}
 		} else {
 			//Extend time
-			if (l > extendedLength) {
-				left.AddConstraint ((center - left.position).normalized);
-				right.AddConstraint ((center - right.position).normalized);
+			if (l > ExtendedLength) {
+				Left.AddConstraint ((center - Left.Position).normalized);
+				Right.AddConstraint ((center - Right.Position).normalized);
 				//Force contract
-				force =  Mathf.Clamp (l - contractedLength, 0, 0);
+				force = Mathf.Clamp (l - ContractedLength, 0, 0);
 			} else {
 				//Extend
-				force =  Mathf.Clamp (l - extendedLength, -1, 0);
+				force = Mathf.Clamp (l - ExtendedLength, -1, 0);
 			}
 		}
 
-		isContracting = force > 0;
-		
-		//TODO: Remove normalized
-		left.AddVelocity (strength * force * (center - left.position).normalized);
-		right.AddVelocity (strength * force * (center - right.position).normalized);
+		Left.AddVelocity (Strength * force * (center - Left.Position).normalized);
+		Right.AddVelocity (Strength * force * (center - Right.Position).normalized);
 	}
 
-	public void UpdateGraphics () {
-		var distance = Vector2.Distance (left.position, right.position);
-
-		//Width
-		var width = Mathf.Lerp (0.1f, 1, contractedLength / distance);
-		muscleRenderer.SetWidthAndColor (width, isContracting);
+	public void UpdateGraphics ()
+	{
+		var distance = Vector2.Distance (Left.Position, Right.Position);
 
 		//Position
-		muscleRenderer.SetPosition (left.position, right.position);
+		muscleRenderer.SetPosition (Left.Position, Right.Position);
+		
+		//Width
+		var width = Mathf.Lerp (0.1f, 1, ContractedLength / distance);
+		muscleRenderer.SetWidthAndColor (width, contract);
 	}
-	#endregion
 
-
-	#region Destroy
-	public void Destroy () {
-		MonoBehaviour.Destroy (muscleRenderer.gameObject);
+		
+	public void Destroy ()
+	{
+		Object.Destroy (muscleRenderer.gameObject);
 	}
-	#endregion
 
-	#region Equals && Hash
+	public static Muscle RandomMuscle (Node left, Node right, float cycleDuration, Color color, Transform parent)
+	{
+		var distance = Vector2.Distance (left.Position, right.Position);
+		var contractedLength = distance - Random.Range (Constants.MinRandom, Constants.ContractedDistanceMultiplier);
+		var extendedLength = distance + Random.Range (Constants.MinRandom, Constants.ExtendedDistanceMultiplier);
+		var strength = Random.Range (Constants.MinStrength, Constants.StrengthAmplitude);
+		var muscleCycleDuration = Random.Range (Constants.MinRandom, cycleDuration);
+		var beginWithContraction = (Random.value > 0.5f);
+		
+		return new Muscle (left, right, strength, extendedLength, contractedLength, muscleCycleDuration, beginWithContraction, color, parent);
+	}
+
 	public override bool Equals (object obj)
 	{
-		if(obj.GetType() == typeof(Tuple)) {
+		if (obj is Tuple) {
 			var t = (Tuple)obj;
-			return (left.id == t.a && right.id == t.b) || (left.id == t.b && right.id == t.a);
+			return (Left.Id == t.a && Right.Id == t.b) || (Left.Id == t.b && Right.Id == t.a);
 		} else {
 			return false;
 		}
@@ -112,18 +124,6 @@ public class Muscle {
 
 	public override int GetHashCode ()
 	{
-		return left.GetHashCode () + right.GetHashCode ();
-	}
-	#endregion
-
-	public static Muscle RandomMuscle (Node left, Node right, float cycleDuration, Color color, Transform parent) {
-		var distance = Vector2.Distance (left.position, right.position);
-		var contractedLength = distance - Random.Range (Constants.minRandom, Constants.contractedDistanceMultiplier);
-		var extendedLength = distance + Random.Range (Constants.minRandom, Constants.extendedDistanceMultiplier);
-		var strength = Random.Range (Constants.minStrength, Constants.strengthAmplitude);
-		var muscleCycleDuration = Random.Range (Constants.minRandom, cycleDuration);
-		var beginWithContraction = (Random.value > 0.5f);
-
-		return new Muscle (left, right, strength, extendedLength, contractedLength, muscleCycleDuration, beginWithContraction, color, parent);
+		return Left.GetHashCode () + Right.GetHashCode ();
 	}
 }
