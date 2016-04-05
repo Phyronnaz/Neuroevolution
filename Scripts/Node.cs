@@ -14,7 +14,6 @@ public class Node
 	public Vector2 Position;
 
 	protected NodeRenderer NodeRenderer;
-	protected Vector2 ForcesSum = Vector2.zero;
 	protected Vector2 VelocitySum = Vector2.zero;
 	protected Vector2 ConstraintSum = Vector2.zero;
 

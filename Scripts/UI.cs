@@ -3,37 +3,33 @@ using UnityEngine.UI;
 
 public class UI : MonoBehaviour
 {
-
-	[SerializeField]
-	Slider timeMultiplier;
-	[SerializeField]
-	InputField gravityMultiplier, cycleDurationMultiplier, strengthAmplitude, frictionAmplitude, numberOfMuscles, numberOfNodes, fluidFriction;
-	[SerializeField]
-	Toggle randomNumbers, generate;
+	public Slider TimeMultiplier;
+	public InputField GravityMultiplier, CycleDurationMultiplier, StrengthAmplitude, FrictionAmplitude, NumberOfMuscles, NumberOfNodes, FluidFriction;
+	public Toggle RandomNumbers, Generate;
 
 	void Start ()
 	{
-		timeMultiplier.value = Constants.TimeMultiplier;
-		gravityMultiplier.text = Constants.GravityMultiplier.ToString ();
-		cycleDurationMultiplier.text = Constants.CycleDurationMultiplier.ToString ();
-		strengthAmplitude.text = (Constants.StrengthAmplitude * 10000).ToString ();
-		frictionAmplitude.text = Constants.FrictionAmplitude.ToString ();
-		numberOfMuscles.text = Constants.NumberOfMuscles.ToString ();
-		numberOfNodes.text = Constants.NumberOfNodes.ToString ();
-		randomNumbers.isOn = Constants.RandomNumbers;
-		fluidFriction.text = Constants.FluidFriction.ToString ();
-		generate.isOn = Constants.Generate;
+		TimeMultiplier.value = Constants.TimeMultiplier;
+		GravityMultiplier.text = Constants.GravityMultiplier.ToString ();
+		CycleDurationMultiplier.text = Constants.CycleDurationMultiplier.ToString ();
+		StrengthAmplitude.text = (Constants.StrengthAmplitude * 10000).ToString ();
+		FrictionAmplitude.text = Constants.FrictionAmplitude.ToString ();
+		NumberOfMuscles.text = Constants.NumberOfMuscles.ToString ();
+		NumberOfNodes.text = Constants.NumberOfNodes.ToString ();
+		RandomNumbers.isOn = Constants.RandomNumbers;
+		FluidFriction.text = Constants.FluidFriction.ToString ();
+		Generate.isOn = Constants.Generate;
 
-		timeMultiplier.onValueChanged.AddListener (UpdateUI);
-		gravityMultiplier.onEndEdit.AddListener (UpdateUI);
-		cycleDurationMultiplier.onEndEdit.AddListener (UpdateUI);
-		strengthAmplitude.onEndEdit.AddListener (UpdateUI);
-		frictionAmplitude.onEndEdit.AddListener (UpdateUI);
-		numberOfMuscles.onEndEdit.AddListener (UpdateUI);
-		numberOfNodes.onEndEdit.AddListener (UpdateUI);
-		randomNumbers.onValueChanged.AddListener (UpdateUI);
-		fluidFriction.onEndEdit.AddListener (UpdateUI);
-		generate.onValueChanged.AddListener (UpdateUI);
+		TimeMultiplier.onValueChanged.AddListener (UpdateUI);
+		GravityMultiplier.onEndEdit.AddListener (UpdateUI);
+		CycleDurationMultiplier.onEndEdit.AddListener (UpdateUI);
+		StrengthAmplitude.onEndEdit.AddListener (UpdateUI);
+		FrictionAmplitude.onEndEdit.AddListener (UpdateUI);
+		NumberOfMuscles.onEndEdit.AddListener (UpdateUI);
+		NumberOfNodes.onEndEdit.AddListener (UpdateUI);
+		RandomNumbers.onValueChanged.AddListener (UpdateUI);
+		FluidFriction.onEndEdit.AddListener (UpdateUI);
+		Generate.onValueChanged.AddListener (UpdateUI);
 	}
 
 	public void UpdateUI (string s)
@@ -53,16 +49,16 @@ public class UI : MonoBehaviour
 
 	public void UpdateUI ()
 	{
-		Constants.TimeMultiplier = (int)timeMultiplier.value;
-		Constants.GravityMultiplier = int.Parse (gravityMultiplier.text);
-		Constants.CycleDurationMultiplier = int.Parse (cycleDurationMultiplier.text);
-		Constants.StrengthAmplitude = int.Parse (strengthAmplitude.text) / 10000;
-		Constants.FrictionAmplitude = int.Parse (frictionAmplitude.text);
-		Constants.NumberOfMuscles = int.Parse (numberOfMuscles.text);
-		Constants.NumberOfNodes = int.Parse (numberOfNodes.text);
-		Constants.RandomNumbers = randomNumbers.isOn;
-		Constants.FluidFriction = float.Parse (fluidFriction.text);
-		Constants.Generate = generate.isOn;
+		Constants.TimeMultiplier = (int)TimeMultiplier.value;
+		Constants.GravityMultiplier = int.Parse (GravityMultiplier.text);
+		Constants.CycleDurationMultiplier = int.Parse (CycleDurationMultiplier.text);
+		Constants.StrengthAmplitude = int.Parse (StrengthAmplitude.text) / 10000;
+		Constants.FrictionAmplitude = int.Parse (FrictionAmplitude.text);
+		Constants.NumberOfMuscles = int.Parse (NumberOfMuscles.text);
+		Constants.NumberOfNodes = int.Parse (NumberOfNodes.text);
+		Constants.RandomNumbers = RandomNumbers.isOn;
+		Constants.FluidFriction = float.Parse (FluidFriction.text);
+		Constants.Generate = Generate.isOn;
 	}
 }
 

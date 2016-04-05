@@ -32,6 +32,7 @@ public class ChildNode : Node
 		left.AddConstraint (ConstraintSum * (1 - normalizedDistanceFromLeft));
 		right.AddConstraint (ConstraintSum * normalizedDistanceFromLeft);
 
-		ForcesSum = Vector2.zero;
+		VelocitySum = Vector2.zero;
+		ConstraintSum = Vector2.zero;
 	}
 }

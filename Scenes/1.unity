@@ -2608,9 +2608,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74ff83b2251417d4a8f805d4981eb409, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cycleText: {fileID: 511780411}
-  distanceText: {fileID: 1554280799}
-  timeText: {fileID: 2054150414}
+  CycleText: {fileID: 511780411}
+  DistanceText: {fileID: 1554280799}
+  TimeText: {fileID: 2054150414}
 --- !u!114 &716970264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2622,16 +2622,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f85f4c3ce699f4f0280a3936f004d46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeMultiplier: {fileID: 1399648231}
-  gravityMultiplier: {fileID: 2053215848}
-  cycleDurationMultiplier: {fileID: 1746641395}
-  strengthAmplitude: {fileID: 1191212537}
-  frictionAmplitude: {fileID: 1422990044}
-  numberOfMuscles: {fileID: 841314631}
-  numberOfNodes: {fileID: 93226939}
-  randomNumbers: {fileID: 462427483}
-  generate: {fileID: 906553412}
-  fluidFriction: {fileID: 796776520}
+  TimeMultiplier: {fileID: 1399648231}
+  GravityMultiplier: {fileID: 2053215848}
+  CycleDurationMultiplier: {fileID: 1746641395}
+  StrengthAmplitude: {fileID: 1191212537}
+  FrictionAmplitude: {fileID: 1422990044}
+  NumberOfMuscles: {fileID: 841314631}
+  NumberOfNodes: {fileID: 93226939}
+  FluidFriction: {fileID: 796776520}
+  RandomNumbers: {fileID: 462427483}
+  Generate: {fileID: 906553412}
 --- !u!1 &725737488
 GameObject:
   m_ObjectHideFlags: 0
@@ -8614,6 +8614,7 @@ Canvas:
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0

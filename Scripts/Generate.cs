@@ -6,9 +6,7 @@ using System.Diagnostics;
 
 public class Generate : MonoBehaviour
 {
-
-	[SerializeField]
-	Text cycleText, distanceText, timeText;
+	public Text CycleText, DistanceText, TimeText;
 
 	List<Node> nodes;
 	List<Muscle> muscles;
@@ -76,36 +74,30 @@ public class Generate : MonoBehaviour
 		//Cycle duration
 		cycleDuration = (Random.value + 0.1f) * Constants.CycleDurationMultiplier;
 
-		/////////////////////////////////////////////
 		//HACK
-		/////////////////////////////////////////////
 //		generated = true;
-//		Constants.gravityMultiplier = 0;
-//		Constants.generate = false;
+//		Constants.GravityMultiplier = 0;
+//		Constants.Generate = false;
 //
 //		GenerateNode (Vector2.up * 10);
 //		GenerateNode (Vector2.up * 20);
-//		GenerateNode (Vector2.one * 20);
+//		GenerateNode (Vector2.up * 20 + Vector2.right * 10);
 //
-//		Constants.strengthAmplitude = 0;
-//		Constants.extendedDistanceMultiplier = 0;
-//		Constants.contractedDistanceMultiplier = 0;
-//		GenerateMuscle (nodes[0], nodes[1]);
-//		GenerateMuscle (nodes[1], nodes[2]);
+//		Constants.StrengthAmplitude = 0;
+//		Constants.ExtendedDistanceMultiplier = 0;
+//		Constants.ContractedDistanceMultiplier = 0;
+//		GenerateMuscle (nodes [0], nodes [1]);
+//		GenerateMuscle (nodes [1], nodes [2]);
 //
 //		nodes.Add (new ChildNode (0.5f, nodes [0], nodes [1], nodes.Count));
 //		nodes.Add (new ChildNode (0.5f, nodes [1], nodes [2], nodes.Count));
-////		Constants.strengthAmplitude = 1000;
-//		Constants.extendedDistanceMultiplier = 2;
-//		Constants.contractedDistanceMultiplier = 10;
-//		GenerateMuscle (nodes[3], nodes[4]);
+//		Constants.StrengthAmplitude = 10f / 10000f;
+//		Constants.ExtendedDistanceMultiplier = 2;
+//		Constants.ContractedDistanceMultiplier = 10;
+//		GenerateMuscle (nodes [3], nodes [4]);
 //		AddCreature ();
 //		InitializeController ();
 
-
-		/////////////////////////////////////////////
-		/////////////////////////////////////////////
-		/////////////////////////////////////////////
 
 		//Generate
 		if (Constants.Generate) {
@@ -229,9 +221,9 @@ public class Generate : MonoBehaviour
 			m.Destroy ();
 		}
 		// Reset UI
-		cycleText.text = "";
-		timeText.text = "";
-		distanceText.text = "";
+		CycleText.text = "";
+		TimeText.text = "";
+		DistanceText.text = "";
 		if (GetComponent<LineRenderer> () != null)
 			Destroy (GetComponent<LineRenderer> ());
 		// Regenerate
@@ -280,9 +272,9 @@ public class Generate : MonoBehaviour
 	void InitializeController ()
 	{
 		controller = gameObject.AddComponent<Controller> ();
-		controller.CycleText = cycleText;
-		controller.DistanceText = distanceText;
-		controller.TimeText = timeText;
+		controller.CycleText = CycleText;
+		controller.DistanceText = DistanceText;
+		controller.TimeText = TimeText;
 		controller.Creatures = creatures;
 		foreach (var n in nodes) {
 			n.Destroy ();

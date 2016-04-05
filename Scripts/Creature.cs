@@ -148,7 +148,7 @@ public class Creature
 
 		// Generate nodes
 		for (var i = 0; i < numberOfNodes; i++) {
-			nodes.Add (Node.RandomNode (new Vector2 (Random.Range (-10f, 10f), Random.Range (0f, 10f)), parent, color, i));
+			nodes.Add (Node.RandomNode (new Vector2 (Random.Range (-10f, 10f), Random.Range (10f, 20f)), parent, color, i));
 		}
 			
 		// Recenter nodes

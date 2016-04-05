@@ -46,7 +46,6 @@ public class Controller : MonoBehaviour
 
 	static void ThreadedJob (List<Creature> creatures, int time)
 	{
-//		print ("Bug");
 		foreach (var c in creatures) {
 			for (var k = 0; k < time; k++) {
 				c.Update (deltaTime);
