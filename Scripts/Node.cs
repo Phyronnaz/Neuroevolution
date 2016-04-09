@@ -1,21 +1,16 @@
 ﻿using UnityEngine;
 
-
-//TODO: Reset && Disable
 public class Node
 {
-	public readonly float Friction;
-	public readonly float Mass;
-	public readonly float CoefficientOfRestitution;
 	public readonly int Id;
-	public const float NodeRadius = 0.75f;
-
+	public NodeRenderer NodeRenderer;
 	public Vector2 Velocity;
 	public Vector2 Position;
 
-	protected NodeRenderer NodeRenderer;
-	protected Vector2 VelocitySum = Vector2.zero;
-	protected Vector2 ConstraintSum = Vector2.zero;
+	protected Vector2 VelocitySum;
+	protected Vector2 ConstraintSum;
+	readonly Vector2 savedPosition;
+	const float NodeRadius = 0.75f;
 
 
 	public Node (int id)
@@ -23,18 +18,24 @@ public class Node
 		Id = id;
 	}
 
-	public Node (float friction, Vector2 position, float mass, float coefficientOfRestitution, Transform parent, Color color, int id)
+	public Node (Vector2 position, NodeRenderer nodeRenderer, int id)
 	{
-		Friction = friction;
 		Position = position;
-		Mass = mass;
-		CoefficientOfRestitution = coefficientOfRestitution;
+		savedPosition = position;
+		Id = id;
+		NodeRenderer = nodeRenderer;
+	}
+
+	public Node (Vector2 position, Transform parent, Color color, int id)
+	{
+		Position = position;
+		savedPosition = position;
 		Id = id;
 
 		//Create node renderer
 		var go = Object.Instantiate (Resources.Load ("Circle"), position, Quaternion.identity) as GameObject;
 		go.name = "Node " + id;
-		go.GetComponent<SpriteRenderer> ().color = color; //new Color (friction / Constants.frictionAmplitude, 0, 0);
+		go.GetComponent<SpriteRenderer> ().color = color;
 		NodeRenderer = go.AddComponent<NodeRenderer> ();
 		NodeRenderer.Id = id;
 		NodeRenderer.transform.parent = parent;
@@ -56,12 +57,12 @@ public class Node
 			if (Position.y > NodeRadius + Constants.Tolerance)
 				Velocity.y = (NodeRadius - Position.y) / deltaTime;
 			else
-				Velocity.y -= (1 + CoefficientOfRestitution) * Velocity.y;
+				Velocity.y -= (1 + Constants.Bounciness) * Velocity.y;
 		}
 
 		//friction
 		if (Position.y < NodeRadius + Constants.Tolerance)
-			Velocity.x /= (1 + Friction);
+			Velocity.x /= (1 + Constants.Friction);
 
 		//position
 		Position += Velocity * deltaTime;
@@ -76,6 +77,7 @@ public class Node
 		NodeRenderer.SetPosition (Position);
 	}
 
+
 	public void AddVelocity (Vector2 velocity)
 	{
 		VelocitySum += velocity;
@@ -86,16 +88,25 @@ public class Node
 		ConstraintSum += constraint;
 	}
 
+
 	public void Destroy ()
 	{
 		Object.Destroy (NodeRenderer.gameObject);
 	}
 
+	public virtual Node Copy ()
+	{
+		return new Node (Position, NodeRenderer, Id);
+	}
+
+	public virtual void Reset ()
+	{
+		Position = savedPosition;
+		Velocity = Vector2.zero;
+	}
+
 	public static Node RandomNode (Vector2 position, Transform parent, Color color, int id)
 	{
-		//var friction = Random.Range (Constants.minRandom, Constants.frictionAmplitude);
-		var mass = Random.Range (Constants.MinMass, Constants.MaxMass);
-
-		return new Node (10000, position, mass, Constants.Bounciness, parent, new Color (1.0f - color.r, 1.0f - color.g, 1.0f - color.b), id);
+		return new Node (position, parent, new Color (1.0f - color.r, 1.0f - color.g, 1.0f - color.b), id);
 	}
 }

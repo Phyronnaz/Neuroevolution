@@ -35,4 +35,10 @@ public class ChildNode : Node
 		VelocitySum = Vector2.zero;
 		ConstraintSum = Vector2.zero;
 	}
+
+	public override Node Copy ()
+	{
+		Debug.LogError ("Not Implemented");
+		return new Node (0);
+	}
 }

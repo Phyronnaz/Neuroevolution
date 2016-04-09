@@ -4,22 +4,11 @@ using UnityEngine.UI;
 public class UI : MonoBehaviour
 {
 	public Slider TimeMultiplier;
-	public InputField GravityMultiplier, CycleDurationMultiplier, StrengthAmplitude, FrictionAmplitude, NumberOfMuscles, NumberOfNodes, FluidFriction;
+	public InputField GravityMultiplier, CycleDurationMultiplier, StrengthAmplitude, FrictionAmplitude, NumberOfMuscles, NumberOfNodes;
 	public Toggle RandomNumbers, Generate;
 
 	void Start ()
 	{
-		TimeMultiplier.value = Constants.TimeMultiplier;
-		GravityMultiplier.text = Constants.GravityMultiplier.ToString ();
-		CycleDurationMultiplier.text = Constants.CycleDurationMultiplier.ToString ();
-		StrengthAmplitude.text = (Constants.StrengthAmplitude * 10000).ToString ();
-		FrictionAmplitude.text = Constants.FrictionAmplitude.ToString ();
-		NumberOfMuscles.text = Constants.NumberOfMuscles.ToString ();
-		NumberOfNodes.text = Constants.NumberOfNodes.ToString ();
-		RandomNumbers.isOn = Constants.RandomNumbers;
-		FluidFriction.text = Constants.FluidFriction.ToString ();
-		Generate.isOn = Constants.Generate;
-
 		TimeMultiplier.onValueChanged.AddListener (UpdateUI);
 		GravityMultiplier.onEndEdit.AddListener (UpdateUI);
 		CycleDurationMultiplier.onEndEdit.AddListener (UpdateUI);
@@ -28,8 +17,22 @@ public class UI : MonoBehaviour
 		NumberOfMuscles.onEndEdit.AddListener (UpdateUI);
 		NumberOfNodes.onEndEdit.AddListener (UpdateUI);
 		RandomNumbers.onValueChanged.AddListener (UpdateUI);
-		FluidFriction.onEndEdit.AddListener (UpdateUI);
 		Generate.onValueChanged.AddListener (UpdateUI);
+
+		ForceUIUpdate ();
+	}
+
+	public void ForceUIUpdate ()
+	{
+		TimeMultiplier.value = Mathf.Log10 (Constants.TimeMultiplier);
+		GravityMultiplier.text = Constants.GravityMultiplier.ToString ();
+		CycleDurationMultiplier.text = Constants.CycleDurationMultiplier.ToString ();
+		StrengthAmplitude.text = (Constants.StrengthAmplitude * 10000).ToString ();
+		FrictionAmplitude.text = Constants.Friction.ToString ();
+		NumberOfMuscles.text = Constants.NumberOfMuscles.ToString ();
+		NumberOfNodes.text = Constants.NumberOfNodes.ToString ();
+		RandomNumbers.isOn = Constants.RandomNumbers;
+		Generate.isOn = Constants.Generate;
 	}
 
 	public void UpdateUI (string s)
@@ -49,15 +52,14 @@ public class UI : MonoBehaviour
 
 	public void UpdateUI ()
 	{
-		Constants.TimeMultiplier = (int)TimeMultiplier.value;
+		Constants.TimeMultiplier = (int)Mathf.Pow (10, TimeMultiplier.value);
 		Constants.GravityMultiplier = int.Parse (GravityMultiplier.text);
 		Constants.CycleDurationMultiplier = int.Parse (CycleDurationMultiplier.text);
 		Constants.StrengthAmplitude = int.Parse (StrengthAmplitude.text) / 10000;
-		Constants.FrictionAmplitude = int.Parse (FrictionAmplitude.text);
+		Constants.Friction = int.Parse (FrictionAmplitude.text);
 		Constants.NumberOfMuscles = int.Parse (NumberOfMuscles.text);
 		Constants.NumberOfNodes = int.Parse (NumberOfNodes.text);
 		Constants.RandomNumbers = RandomNumbers.isOn;
-		Constants.FluidFriction = float.Parse (FluidFriction.text);
 		Constants.Generate = Generate.isOn;
 	}
 }
@@ -69,13 +71,11 @@ public static class Constants
 	public static float CycleDurationMultiplier = 10f;
 	public static float Tolerance = 0.001f;
 	public static float StrengthAmplitude = 10f / 10000f;
-	//TODO: remove
-	public static float FrictionAmplitude = 1000;
+	public static float Friction = 1000;
 	public static int NumberOfMuscles = 3;
 	public static int NumberOfNodes = 3;
 	public static bool RandomNumbers = true;
 	public static bool Generate;
-	public static float FluidFriction = 0.1f;
 	public static float ContractedDistanceMultiplier = 2;
 	public static float ExtendedDistanceMultiplier = 2;
 	public static float Bounciness = 0.6f;

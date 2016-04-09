@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 public class Creature
 {
+	//	readonly Matrix matrix;
 	readonly List<Muscle> muscles;
 	readonly List<Node> nodes;
 	readonly Transform transform;
-	//	readonly Matrix matrix;
 	float cycleDuration;
 	float time;
 
@@ -18,6 +18,9 @@ public class Creature
 		this.nodes = nodes;
 		this.cycleDuration = cycleDuration;
 		this.transform = transform;
+		foreach (var n in nodes) {
+			n.NodeRenderer.GetComponent<Collider2D> ().enabled = false;
+		}
 //		matrix = new Matrix (new float[][] {
 //			new float[]{ 0, 0, 1 },
 //			new float[]{ 0, 1, 1 },
@@ -43,9 +46,9 @@ public class Creature
 					m.Extend ();
 				m.Update ();
 			}
-			foreach (var n in nodes) {
-				n.Update (deltaTime);
-			}
+		}
+		foreach (var n in nodes) {
+			n.Update (deltaTime);
 		}
 			
 		// Update current time
@@ -60,13 +63,6 @@ public class Creature
 		foreach (var n in nodes) {
 			n.UpdateGraphics ();
 		}
-	}
-
-	public void UpdateUI (Text distanceText, Text cycleText)
-	{
-		distanceText.text = "Distance : " + GetAveragePosition ();
-		cycleText.text = string.Format ("{0} %", Mathf.Ceil (time / cycleDuration * 100));
-
 	}
 
 	#region Comment
@@ -109,6 +105,11 @@ public class Creature
 	////print l1
 	//	}
 	#endregion
+
+	public int GetCyclePercentage ()
+	{
+		return Mathf.CeilToInt (time / cycleDuration * 100);
+	}
 
 	public float GetAveragePosition ()
 	{
@@ -199,6 +200,13 @@ public class Creature
 	}
 
 
+	public void Reset ()
+	{
+		foreach (var n in nodes) {
+			n.Reset ();
+		}
+	}
+
 	public void Destroy ()
 	{
 		foreach (var m in muscles) {
@@ -208,5 +216,26 @@ public class Creature
 			n.Destroy ();
 		}
 		Object.Destroy (transform.gameObject);
+	}
+
+
+	public static bool operator < (Creature l, Creature r)
+	{
+		return l.GetAveragePosition () < r.GetAveragePosition ();
+	}
+
+	public static bool operator > (Creature l, Creature r)
+	{
+		return l.GetAveragePosition () > r.GetAveragePosition ();
+	}
+
+	public static bool operator <= (Creature l, Creature r)
+	{
+		return l.GetAveragePosition () <= r.GetAveragePosition ();
+	}
+
+	public static bool operator >= (Creature l, Creature r)
+	{
+		return l.GetAveragePosition () >= r.GetAveragePosition ();
 	}
 }

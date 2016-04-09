@@ -2,7 +2,8 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
-using System.Diagnostics;
+
+//using System.Diagnostics;
 
 public class Generate : MonoBehaviour
 {
@@ -12,7 +13,6 @@ public class Generate : MonoBehaviour
 	List<Muscle> muscles;
 	List<Creature> creatures;
 
-	Controller controller;
 	float cycleDuration;
 	bool generated;
 	bool isCreatingMuscle;
@@ -59,6 +59,8 @@ public class Generate : MonoBehaviour
 //		print (s.Elapsed);
 		#endregion
 
+		Random.seed = 1000;
+
 		//Initialize arrays && variables
 		nodes = new List<Node> ();
 		muscles = new List<Muscle> ();
@@ -74,7 +76,6 @@ public class Generate : MonoBehaviour
 		//Cycle duration
 		cycleDuration = (Random.value + 0.1f) * Constants.CycleDurationMultiplier;
 
-		//HACK
 //		generated = true;
 //		Constants.GravityMultiplier = 0;
 //		Constants.Generate = false;
@@ -113,106 +114,99 @@ public class Generate : MonoBehaviour
 		}
 	}
 
+	void RenderMuscleEditor ()
+	{
+		Vector3 mousePosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+		mousePosition.z = 0;
+		
+		var l = GetComponent<LineRenderer> ();
+		if (l == null)
+			l = gameObject.AddComponent<LineRenderer> ();
+		
+		l.SetPosition (0, nodeBeeingAssociated.Position);
+		l.SetPosition (1, mousePosition);
+		if (l.material == null)
+			l.material = new Material (Shader.Find ("Diffuse"));
+		l.material.color = currentColor;
+	}
+
+	void CheckInput ()
+	{
+		if (Input.GetMouseButtonDown (0)) {
+			var hasDoneSmthg = false;
+			
+			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+			RaycastHit2D hit = Physics2D.GetRayIntersection (ray, Mathf.Infinity);
+			if (hit.collider != null) {
+				if (hit.collider.GetComponent<NodeRenderer> () != null) {
+					var hitNode = nodes [hit.transform.GetComponent<NodeRenderer> ().Id];
+					
+					if (isCreatingMuscle && !IsMuscleAlreadyAdded (hitNode, nodeBeeingAssociated))
+						GenerateMuscle (hitNode, nodeBeeingAssociated);
+					
+					nodeBeeingAssociated = hitNode;
+					
+					hasDoneSmthg = true;
+				}
+			}
+			if (!hasDoneSmthg) {
+				Vector3 mousePosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+				GenerateNode (mousePosition);
+				
+				var lastNode = nodes [nodes.Count - 1];
+				
+				if (isCreatingMuscle && !IsMuscleAlreadyAdded (lastNode, nodeBeeingAssociated))
+					GenerateMuscle (lastNode, nodeBeeingAssociated);
+				
+				nodeBeeingAssociated = lastNode;
+			}
+			isCreatingMuscle = true;
+		}
+		if (Input.GetMouseButtonDown (1) && isCreatingMuscle) {
+			isCreatingMuscle = false;
+			Destroy (GetComponent<LineRenderer> ());
+		}
+		if (Input.GetKeyDown (KeyCode.Space) && isCreatingMuscle) {
+			isCreatingMuscle = false;
+			Destroy (GetComponent<LineRenderer> ());
+			AddCreature ();
+		}
+		if (Input.GetKeyDown (KeyCode.Escape) && creatures.Count > 0) {
+			generated = true;
+			Destroy (currentCreature.gameObject);
+			if (GetComponent<LineRenderer> () != null)
+				Destroy (GetComponent<LineRenderer> ());
+			InitializeController ();
+		}
+		if (Input.GetKeyDown (KeyCode.Return)) {
+			var k = 0;
+			var alreadyAdded = muscles.Count;
+			while (k < (nodes.Count - 1) * nodes.Count / 2 - alreadyAdded) {
+				//Random connection
+				var t = new Tuple (Random.Range (0, nodes.Count), Random.Range (0, nodes.Count));
+
+				if (!IsMuscleAlreadyAdded (t)) {
+					GenerateMuscle (t.a, t.b);
+					k++;
+				}
+			}
+		}
+	}
+
 	void Update ()
 	{
-		//Restart if asked
-		if (Input.GetKeyDown (KeyCode.R))
-			Restart ();
-		//Edit
 		if (!generated) {
-			if (isCreatingMuscle) {
-				Vector3 mousePosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-				mousePosition.z = 0;
-					
-				var l = GetComponent<LineRenderer> ();
-				if (l == null)
-					l = gameObject.AddComponent<LineRenderer> ();
+			if (isCreatingMuscle)
+				RenderMuscleEditor ();
 
-				l.SetPosition (0, nodeBeeingAssociated.Position);
-				l.SetPosition (1, mousePosition);
-				if (l.material == null)
-					l.material = new Material (Shader.Find ("Diffuse"));
-				l.material.color = currentColor;
-			}
-			if (EventSystem.current.currentSelectedGameObject == null) {
-				if (Input.GetMouseButtonDown (0)) {
-					var hasDoneSmthg = false;
-
-					Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-					RaycastHit2D hit = Physics2D.GetRayIntersection (ray, Mathf.Infinity);
-					if (hit.collider != null) {
-						if (hit.collider.GetComponent<NodeRenderer> () != null) {
-							var hitNode = nodes [hit.transform.GetComponent<NodeRenderer> ().Id];
-
-							if (isCreatingMuscle && !IsMuscleAlreadyAdded (hitNode, nodeBeeingAssociated))
-								GenerateMuscle (hitNode, nodeBeeingAssociated);
-						
-							nodeBeeingAssociated = hitNode;
-
-							hasDoneSmthg = true;
-						}
-					}
-					if (!hasDoneSmthg) {
-						Vector3 mousePosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-						GenerateNode (mousePosition);
-
-						var lastNode = nodes [nodes.Count - 1];
-
-						if (isCreatingMuscle && !IsMuscleAlreadyAdded (lastNode, nodeBeeingAssociated))
-							GenerateMuscle (lastNode, nodeBeeingAssociated);
-					
-						nodeBeeingAssociated = lastNode;
-					}
-					isCreatingMuscle = true;
-				}
-				if (Input.GetMouseButtonDown (1)) {
-					if (isCreatingMuscle) {
-						isCreatingMuscle = false;
-						Destroy (GetComponent<LineRenderer> ());
-					}
-				}
-				if (Input.GetKeyDown (KeyCode.Space)) {
-					isCreatingMuscle = false;
-					if (GetComponent<LineRenderer> () != null)
-						Destroy (GetComponent<LineRenderer> ());
-					AddCreature ();
-				}
-				if (Input.GetKeyDown (KeyCode.Escape) && creatures.Count > 0) {
-					generated = true;
-					Destroy (currentCreature.gameObject);
-					if (GetComponent<LineRenderer> () != null)
-						Destroy (GetComponent<LineRenderer> ());
-					InitializeController ();
-				}
-				if (Input.GetKeyDown (KeyCode.Return)) {
-					var k = 0;
-					var alreadyAdded = muscles.Count;
-					while (k < (nodes.Count - 1) * nodes.Count / 2 - alreadyAdded) {
-						//Random connection
-						var t = new Tuple (Random.Range (0, nodes.Count), Random.Range (0, nodes.Count));
-
-
-						if (!IsMuscleAlreadyAdded (t)) {
-							GenerateMuscle (t.a, t.b);
-							k++;
-						}
-					}
-				}
-			}
-				
+			if (EventSystem.current.currentSelectedGameObject == null)
+				CheckInput ();
 		}
 	}
 
 
 	public void Restart ()
 	{
-		// Destroy all creatues
-		if (controller != null)
-			controller.Destroy ();
-		
-		// Destroy controller
-		DestroyImmediate (controller);
-
 		// Destroy nodes && muscles
 		foreach (var n in nodes) {
 			n.Destroy ();
@@ -271,11 +265,11 @@ public class Generate : MonoBehaviour
 
 	void InitializeController ()
 	{
-		controller = gameObject.AddComponent<Controller> ();
-		controller.CycleText = CycleText;
-		controller.DistanceText = DistanceText;
-		controller.TimeText = TimeText;
-		controller.Creatures = creatures;
+		var controllerScript = gameObject.AddComponent<ControllerScript> ();
+		controllerScript.CycleText = CycleText;
+		controllerScript.DistanceText = DistanceText;
+		controllerScript.TimeText = TimeText;
+		controllerScript.Initialize (creatures);
 		foreach (var n in nodes) {
 			n.Destroy ();
 		}

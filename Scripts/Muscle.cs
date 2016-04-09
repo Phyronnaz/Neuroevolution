@@ -11,7 +11,7 @@ public class Muscle
 	public readonly Node Left;
 
 	bool contract;
-	MuscleRenderer muscleRenderer;
+	readonly MuscleRenderer muscleRenderer;
 
 
 	public Muscle (Node left, Node right, float strength, float extendedLength, float contractedLength, float changeTime, bool beginWithContraction, Color color, Transform parent)
@@ -94,7 +94,7 @@ public class Muscle
 		muscleRenderer.SetWidthAndColor (width, contract);
 	}
 
-		
+
 	public void Destroy ()
 	{
 		Object.Destroy (muscleRenderer.gameObject);

@@ -1,90 +1,115 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 
-public class Controller : MonoBehaviour
+public class Controller
 {
-	public Text CycleText;
-	public Text DistanceText;
-	public Text TimeText;
 	public List<Creature> Creatures;
-	public bool Train;
+	public float CurrentTime;
+	public const float DeltaTime = 0.001f;
 
-	float currentTime;
-	const float deltaTime = 0.001f;
 
-	Creature currentCreature;
-
-	void Start ()
+	public Controller (List<Creature> creatures)
 	{
-		currentCreature = Creatures [0];
-		InvokeRepeating ("CustomUpdate", 0, deltaTime);
+		Creatures = creatures;
 	}
 
-	void CustomUpdate ()
+	public void Update (int time)
 	{
+		// Update creatures
 		var numberOfThreads = Mathf.Min (Constants.NumberOfThreads, Creatures.Count);
 		var threads = new List<Thread> ();
 		var count = Creatures.Count - Creatures.Count % numberOfThreads;
 		int h = count / numberOfThreads;
 		for (var k = 0; k < numberOfThreads; k++) {
 			var creaturesToProcess = Creatures.GetRange (k * h, h);
-			threads.Add (new Thread (() => ThreadedJob (creaturesToProcess, Constants.TimeMultiplier)));
+			threads.Add (new Thread (() => ThreadedJob (creaturesToProcess, time)));
 			threads [threads.Count - 1].Start ();
 		}
 		if (count != Creatures.Count) {
 			var endCreaturesToProcess = Creatures.GetRange (count, Creatures.Count - count);
-			threads.Add (new Thread (() => ThreadedJob (endCreaturesToProcess, Constants.TimeMultiplier)));
+			threads.Add (new Thread (() => ThreadedJob (endCreaturesToProcess, time)));
 			threads [threads.Count - 1].Start ();
 		}
-
+		// Wait for threads to end
 		foreach (var t in threads) {
 			t.Join ();
 		}
+
+		// Update graphics
+		foreach (var c in Creatures) {
+			c.UpdateGraphics ();
+		}
+
+		// Update time
+		CurrentTime += DeltaTime * time;
 	}
+
+	public void Update ()
+	{
+		Update (Constants.TimeMultiplier);
+	}
+
 
 	static void ThreadedJob (List<Creature> creatures, int time)
 	{
 		foreach (var c in creatures) {
 			for (var k = 0; k < time; k++) {
-				c.Update (deltaTime);
+				c.Update (DeltaTime);
 			}
 		}
 	}
 
-	void Update ()
+	public void TrainNextGeneration ()
 	{
-		// Update graphics
+		Creatures.Sort ();
+
+	}
+
+	public float GetMaxPosition ()
+	{
+		float max = Creatures [0].GetAveragePosition ();
 		foreach (var c in Creatures) {
-			c.UpdateGraphics ();
+			if (c.GetAveragePosition () > max)
+				max = c.GetAveragePosition ();
 		}
-	
-		// Get fastest creature
-		float max = currentCreature.GetAveragePosition ();
+		return max;
+	}
+
+
+	public void RemoveCreaturesFartherThan (float distance)
+	{
+		RemoveCreaturesFartherThan (distance, GetMaxPosition ());
+	}
+
+	public void RemoveCreaturesFartherThan (float distance, float max)
+	{
+		foreach (var c in Creatures) {
+			if (c.GetAveragePosition () < max - distance)
+				c.Destroy ();
+		}
+		Creatures.RemoveAll (c => c.GetAveragePosition () < max - distance);
+	}
+
+	public void ResetCreatures ()
+	{
+		foreach (var c in Creatures) {
+			c.Reset ();
+		}
+	}
+
+	public int GetCyclePercentageOfTheFarthestCreatures ()
+	{
+		var max = Creatures [0].GetAveragePosition ();
+		var bestCreature = Creatures [0];
 		foreach (var c in Creatures) {
 			if (c.GetAveragePosition () > max) {
 				max = c.GetAveragePosition ();
-				currentCreature = c;
+				bestCreature = c;
 			}
 		}
-
-		// Remove the slowest
-		foreach (var c in Creatures) {
-			if (c.GetAveragePosition () < max - 50)
-				c.Destroy ();
-		}
-		Creatures.RemoveAll (c => c.GetAveragePosition () < max - 50);
-
-		// Update average position
-		var tmp = transform.position;
-		tmp.x = Mathf.Lerp (tmp.x, currentCreature.GetAveragePosition (), Time.deltaTime * Constants.TimeMultiplier / 10);
-		transform.position = tmp;
-
-		// Update UI
-		currentCreature.UpdateUI (DistanceText, CycleText);
-		currentTime += Time.deltaTime * Constants.TimeMultiplier;
-		TimeText.text = "Time : " + currentTime;
+		return bestCreature.GetCyclePercentage ();
 	}
 
 
@@ -93,5 +118,7 @@ public class Controller : MonoBehaviour
 		foreach (var c in Creatures) {
 			c.Destroy ();
 		}
+		Creatures.Clear ();
+		GC.Collect ();
 	}
 }
