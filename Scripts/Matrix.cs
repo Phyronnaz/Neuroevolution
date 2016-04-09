@@ -52,45 +52,6 @@
 		}
 	}
 
-	public float[] this [int x] {
-		get {
-			return Array [x];
-		}
-		set {
-			Array [x] = value;
-		}
-	}
-
-
-	public override bool Equals (object obj)
-	{
-		return Array == (float[][])obj;
-	}
-
-	public override int GetHashCode ()
-	{
-		return Array.GetHashCode ();
-	}
-
-	public override string ToString ()
-	{
-		var s = "[";
-		for (var x = 0; x < M; x++) {
-			if (x != 0)
-				s += ",";
-			s += "[";
-			for (var y = 0; y < N; y++) {
-				if (y != 0)
-					s += ",";
-				s += Array [x] [y].ToString ();
-			}
-			s += "]";
-		}
-		s += "]";
-		return s;
-	}
-
-
 	public static Matrix Random (int xLength, int yLength)
 	{
 		return Matrix.Random (xLength, yLength, new System.Random ());
@@ -130,10 +91,6 @@
 		}
 		return new Matrix (f);
 	}
-
-
-
-
 
 	public static Matrix operator + (Matrix l, Matrix r)
 	{
@@ -277,5 +234,42 @@
 	public static bool operator != (Matrix l, Matrix r)
 	{
 		return l.Array != r.Array;
+	}
+
+	public float[] this [int x] {
+		get {
+			return Array [x];
+		}
+		set {
+			Array [x] = value;
+		}
+	}
+
+	public override bool Equals (object obj)
+	{
+		return Array == (float[][])obj;
+	}
+
+	public override int GetHashCode ()
+	{
+		return Array.GetHashCode ();
+	}
+
+	public override string ToString ()
+	{
+		var s = "[";
+		for (var x = 0; x < M; x++) {
+			if (x != 0)
+				s += ",";
+			s += "[";
+			for (var y = 0; y < N; y++) {
+				if (y != 0)
+					s += ",";
+				s += Array [x] [y].ToString ();
+			}
+			s += "]";
+		}
+		s += "]";
+		return s;
 	}
 }

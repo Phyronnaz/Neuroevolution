@@ -1,10 +1,8 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class Creature
+public class Creature : System.IComparable<Creature>
 {
-	//	readonly Matrix matrix;
 	readonly List<Muscle> muscles;
 	readonly List<Node> nodes;
 	readonly Transform transform;
@@ -27,97 +25,6 @@ public class Creature
 //			new float[]{ 1, 0, 1 },
 //			new float[]{ 1, 1, 1 }
 //		});
-	}
-
-
-	public void Update (float deltaTime)
-	{
-		// Time modulo cycle duration
-		time = (time - cycleDuration * (Mathf.FloorToInt (time / cycleDuration)));
-
-		// Update muscles and nodes
-		if (Constants.NeuralNetwork) {
-			
-		} else {
-			foreach (var m in muscles) {
-				if ((time > m.ChangeTime && !m.BeginWithContraction) || (time < m.ChangeTime && m.BeginWithContraction))
-					m.Contract ();
-				else
-					m.Extend ();
-				m.Update ();
-			}
-		}
-		foreach (var n in nodes) {
-			n.Update (deltaTime);
-		}
-			
-		// Update current time
-		time += deltaTime;
-	}
-
-	public void UpdateGraphics ()
-	{
-		foreach (var m in muscles) {
-			m.UpdateGraphics ();
-		}
-		foreach (var n in nodes) {
-			n.UpdateGraphics ();
-		}
-	}
-
-	#region Comment
-
-	//
-	//	float Sigma (float x)
-	//	{
-	//		return 1 / (1 + Mathf.Exp (-x));
-	//	}
-	//
-	//	void Train ()
-	//	{
-	//		var hiddenSize = 32;
-	//
-	////
-	////X = np.array([  MuscleN.taille “””float””,
-	////MuscleN.etat “””1. si muscle étendu, 0. sinon”””,
-	////MuscleN.relation”””float”””])
-	//// 
-	////
-	//// 
-	////# seed random numbers to make calculation
-	////# deterministic (just a good practice)
-	////synapse_0 = 2*np.random.random((3,hiddenSize)) - 1
-	////synapse_1 = 2*np.random.random((hiddenSize,1)) - 1
-	////
-	////
-	//// 
-	////# initialize weights randomly with mean 0
-	////syn0 = 2*np.random.random((3,1)) - 1
-	//// 
-	////for iter in range(10000):
-	//// 
-	////# forward propagation
-	////l0 = X
-	////l1 = nonlin(np.dot(l0,syn0))
-	//// 
-	////print "Output After Training:"
-	////
-	////print l1
-	//	}
-	#endregion
-
-	public int GetCyclePercentage ()
-	{
-		return Mathf.CeilToInt (time / cycleDuration * 100);
-	}
-
-	public float GetAveragePosition ()
-	{
-		var averagePosition = 0f;
-		foreach (var n in nodes) {
-			averagePosition += n.Position.x;
-		}
-		return averagePosition / nodes.Count;
 	}
 
 
@@ -199,6 +106,94 @@ public class Creature
 		return new Creature (muscles, nodes, cycleDuration, parent);
 	}
 
+	public static Creature RandomCreature (Creature creature, float variation, Color color)
+	{
+		var numberOfNodes = creature.nodes.Count;
+		var numberOfMuscles = creature.muscles.Count;
+//		Color color = Random.ColorHSV ();
+		// Create creature
+		var parent = new GameObject ().transform;
+		parent.name = "Creature " + Random.Range (0, 10000);
+
+		// Define arrays
+		var nodes = new List<Node> (numberOfNodes);
+		var muscles = new List<Muscle> (numberOfMuscles);
+
+		// Generate nodes
+		for (var i = 0; i < numberOfNodes; i++) {
+			nodes.Add (new Node (creature.nodes [i].Position, parent, color, i));
+		}
+			
+		// Generate muscles
+		for (var j = 0; j < numberOfMuscles; j++) {
+			var m = creature.muscles [j];
+			muscles.Add (Muscle.RandomMuscle (m, nodes [m.Left.Id], nodes [m.Right.Id], variation, color, parent));
+		}
+
+		// Update graphics
+		foreach (var m in muscles) {
+			m.UpdateGraphics ();
+		}
+		foreach (var n in nodes) {
+			n.UpdateGraphics ();
+		}
+
+		return new Creature (muscles, nodes, creature.cycleDuration, parent);
+	}
+
+	public int CompareTo (Creature other)
+	{
+		return GetAveragePosition ().CompareTo (other.GetAveragePosition ());
+	}
+
+	public void Update (float deltaTime)
+	{
+		// Time modulo cycle duration
+		time = (time - cycleDuration * (Mathf.FloorToInt (time / cycleDuration)));
+
+		// Update muscles and nodes
+		if (Constants.NeuralNetwork) {
+			
+		} else {
+			foreach (var m in muscles) {
+				if ((time > m.ChangeTime && !m.BeginWithContraction) || (time < m.ChangeTime && m.BeginWithContraction))
+					m.Contract ();
+				else
+					m.Extend ();
+				m.Update ();
+			}
+		}
+		foreach (var n in nodes) {
+			n.Update (deltaTime);
+		}
+			
+		// Update current time
+		time += deltaTime;
+	}
+
+	public void UpdateGraphics ()
+	{
+		foreach (var m in muscles) {
+			m.UpdateGraphics ();
+		}
+		foreach (var n in nodes) {
+			n.UpdateGraphics ();
+		}
+	}
+
+	public int GetCyclePercentage ()
+	{
+		return Mathf.CeilToInt (time / cycleDuration * 100);
+	}
+
+	public float GetAveragePosition ()
+	{
+		var averagePosition = 0f;
+		foreach (var n in nodes) {
+			averagePosition += n.Position.x;
+		}
+		return averagePosition / nodes.Count;
+	}
 
 	public void Reset ()
 	{
@@ -217,25 +212,46 @@ public class Creature
 		}
 		Object.Destroy (transform.gameObject);
 	}
-
-
-	public static bool operator < (Creature l, Creature r)
-	{
-		return l.GetAveragePosition () < r.GetAveragePosition ();
-	}
-
-	public static bool operator > (Creature l, Creature r)
-	{
-		return l.GetAveragePosition () > r.GetAveragePosition ();
-	}
-
-	public static bool operator <= (Creature l, Creature r)
-	{
-		return l.GetAveragePosition () <= r.GetAveragePosition ();
-	}
-
-	public static bool operator >= (Creature l, Creature r)
-	{
-		return l.GetAveragePosition () >= r.GetAveragePosition ();
-	}
 }
+
+
+#region Comment
+
+//
+//	float Sigma (float x)
+//	{
+//		return 1 / (1 + Mathf.Exp (-x));
+//	}
+//
+//	void Train ()
+//	{
+//		var hiddenSize = 32;
+//
+////
+////X = np.array([  MuscleN.taille “””float””,
+////MuscleN.etat “””1. si muscle étendu, 0. sinon”””,
+////MuscleN.relation”””float”””])
+////
+////
+////
+////# seed random numbers to make calculation
+////# deterministic (just a good practice)
+////synapse_0 = 2*np.random.random((3,hiddenSize)) - 1
+////synapse_1 = 2*np.random.random((hiddenSize,1)) - 1
+////
+////
+////
+////# initialize weights randomly with mean 0
+////syn0 = 2*np.random.random((3,1)) - 1
+////
+////for iter in range(10000):
+////
+////# forward propagation
+////l0 = X
+////l1 = nonlin(np.dot(l0,syn0))
+////
+////print "Output After Training:"
+////
+////print l1
+//	}
+#endregion

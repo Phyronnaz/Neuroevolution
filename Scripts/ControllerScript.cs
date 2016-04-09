@@ -8,21 +8,21 @@ public class ControllerScript : MonoBehaviour
 	public Text CycleText;
 	public Text DistanceText;
 	public Text TimeText;
-
+	
 	Controller controller;
+	bool hasBreak;
+
 
 	public void Initialize (List<Creature> creatures)
 	{
 		controller = new Controller (creatures);
 		InvokeRepeating ("ControllerUpdate", 0, Controller.DeltaTime);
+
+		//HACK
+		controller.Train (10, 200000);
 	}
 
-	void ControllerUpdate ()
-	{
-		controller.Update ();
-	}
-
-	void Update ()
+	public void Update ()
 	{
 		var max = controller.GetMaxPosition ();
 
@@ -39,6 +39,12 @@ public class ControllerScript : MonoBehaviour
 		CycleText.text = string.Format ("{0} %", controller.GetCyclePercentageOfTheFarthestCreatures ());
 		TimeText.text = "Time : " + controller.CurrentTime;
 
+		//HACK
+		if (controller.CurrentTime > 200 && !hasBreak) {
+			hasBreak = true;
+			print (max / controller.CurrentTime);
+			Debug.Break ();
+		}
 		if (Input.GetKeyDown (KeyCode.S)) {
 			Constants.TimeMultiplier = 100;
 			GetComponent<UI> ().ForceUIUpdate ();
@@ -50,12 +56,16 @@ public class ControllerScript : MonoBehaviour
 			InvokeRepeating ("ControllerUpdate", 0, Controller.DeltaTime);
 		}
 
-
 		if (Input.GetKeyDown (KeyCode.R)) {
 			CancelInvoke ();
 			controller.Destroy ();
 			Destroy (this);
 			GetComponent<Generate> ().Restart ();
 		}
+	}
+
+	void ControllerUpdate ()
+	{
+		controller.Update ();
 	}
 }

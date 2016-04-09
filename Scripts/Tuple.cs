@@ -3,6 +3,7 @@
 	public int a;
 	public int b;
 
+
 	public Tuple (int a, int b)
 	{
 		this.a = a;

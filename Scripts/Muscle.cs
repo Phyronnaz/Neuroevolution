@@ -36,6 +36,31 @@ public class Muscle
 	}
 
 
+	public static Muscle RandomMuscle (Node left, Node right, float cycleDuration, Color color, Transform parent)
+	{
+		var distance = Vector2.Distance (left.Position, right.Position);
+		var contractedLength = distance - Random.Range (Constants.MinRandom, Constants.ContractedDistanceMultiplier);
+		var extendedLength = distance + Random.Range (Constants.MinRandom, Constants.ExtendedDistanceMultiplier);
+		var strength = Random.Range (Constants.MinStrength, Constants.StrengthAmplitude);
+		var muscleCycleDuration = Random.Range (Constants.MinRandom, cycleDuration);
+		var beginWithContraction = (Random.value > 0.5f);
+		
+		return new Muscle (left, right, strength, extendedLength, contractedLength, muscleCycleDuration, beginWithContraction, color, parent);
+	}
+
+	public static Muscle RandomMuscle (Muscle muscle, Node left, Node right, float variationAmplitude, Color color, Transform parent)
+	{
+		return new Muscle (
+			left,
+			right,
+			muscle.Strength * (1 + Random.Range (-variationAmplitude, variationAmplitude)), 
+			muscle.ExtendedLength * (1 + Random.Range (-variationAmplitude, variationAmplitude)),
+			muscle.ContractedLength * (1 + Random.Range (-variationAmplitude, variationAmplitude)),
+			muscle.ChangeTime * (1 + Random.Range (-variationAmplitude, variationAmplitude)),
+			(Random.value > variationAmplitude) ? muscle.BeginWithContraction : !muscle.BeginWithContraction,
+			color,
+			parent);
+	}
 
 	public void Contract ()
 	{
@@ -94,22 +119,9 @@ public class Muscle
 		muscleRenderer.SetWidthAndColor (width, contract);
 	}
 
-
 	public void Destroy ()
 	{
 		Object.Destroy (muscleRenderer.gameObject);
-	}
-
-	public static Muscle RandomMuscle (Node left, Node right, float cycleDuration, Color color, Transform parent)
-	{
-		var distance = Vector2.Distance (left.Position, right.Position);
-		var contractedLength = distance - Random.Range (Constants.MinRandom, Constants.ContractedDistanceMultiplier);
-		var extendedLength = distance + Random.Range (Constants.MinRandom, Constants.ExtendedDistanceMultiplier);
-		var strength = Random.Range (Constants.MinStrength, Constants.StrengthAmplitude);
-		var muscleCycleDuration = Random.Range (Constants.MinRandom, cycleDuration);
-		var beginWithContraction = (Random.value > 0.5f);
-		
-		return new Muscle (left, right, strength, extendedLength, contractedLength, muscleCycleDuration, beginWithContraction, color, parent);
 	}
 
 	public override bool Equals (object obj)
@@ -118,7 +130,12 @@ public class Muscle
 			var t = (Tuple)obj;
 			return (Left.Id == t.a && Right.Id == t.b) || (Left.Id == t.b && Right.Id == t.a);
 		} else {
-			return false;
+			var m = (Muscle)obj;
+			if (m != null) {
+				return m.Left == Left && m.Right == Right;
+			} else {
+				return false;
+			}
 		}
 	}
 

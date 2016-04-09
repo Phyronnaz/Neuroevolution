@@ -12,7 +12,6 @@ public class Generate : MonoBehaviour
 	List<Node> nodes;
 	List<Muscle> muscles;
 	List<Creature> creatures;
-
 	float cycleDuration;
 	bool generated;
 	bool isCreatingMuscle;
@@ -21,7 +20,7 @@ public class Generate : MonoBehaviour
 	Color currentColor;
 
 
-	void Start ()
+	public void Start ()
 	{
 		#region Tests
 //		var s = new Stopwatch ();
@@ -76,6 +75,7 @@ public class Generate : MonoBehaviour
 		//Cycle duration
 		cycleDuration = (Random.value + 0.1f) * Constants.CycleDurationMultiplier;
 
+		#region ChildNode
 //		generated = true;
 //		Constants.GravityMultiplier = 0;
 //		Constants.Generate = false;
@@ -98,6 +98,7 @@ public class Generate : MonoBehaviour
 //		GenerateMuscle (nodes [3], nodes [4]);
 //		AddCreature ();
 //		InitializeController ();
+		#endregion
 
 
 		//Generate
@@ -110,8 +111,48 @@ public class Generate : MonoBehaviour
 		} else {
 			currentCreature = new GameObject ().transform;
 			currentCreature.name = "Creature " + Random.Range (0, 10000);
-			currentColor = Random.ColorHSV ();
+			currentColor = Color.black;//Random.ColorHSV ();
+			//HACK
+			GenerateNode (Vector2.up * 10);
+			GenerateNode (Vector2.up * 20 + Vector2.right * 5);
+			GenerateNode (Vector2.up * 10 + Vector2.right * 10);
+
+			GenerateMuscle (nodes [0], nodes [1]);
+			GenerateMuscle (nodes [1], nodes [2]);
+			GenerateMuscle (nodes [2], nodes [0]);
+
+			AddCreature ();
 		}
+	}
+
+	public void Update ()
+	{
+		if (!generated) {
+			if (isCreatingMuscle)
+				RenderMuscleEditor ();
+
+			if (EventSystem.current.currentSelectedGameObject == null)
+				CheckInput ();
+		}
+	}
+
+	public void Restart ()
+	{
+		// Destroy nodes && muscles
+		foreach (var n in nodes) {
+			n.Destroy ();
+		}
+		foreach (var m in muscles) {
+			m.Destroy ();
+		}
+		// Reset UI
+		CycleText.text = "";
+		TimeText.text = "";
+		DistanceText.text = "";
+		if (GetComponent<LineRenderer> () != null)
+			Destroy (GetComponent<LineRenderer> ());
+		// Regenerate
+		Start ();
 	}
 
 	void RenderMuscleEditor ()
@@ -191,39 +232,13 @@ public class Generate : MonoBehaviour
 				}
 			}
 		}
-	}
-
-	void Update ()
-	{
-		if (!generated) {
-			if (isCreatingMuscle)
-				RenderMuscleEditor ();
-
-			if (EventSystem.current.currentSelectedGameObject == null)
-				CheckInput ();
+		if (Input.GetKeyDown (KeyCode.G)) {
+			var c = creatures [creatures.Count - 1];
+			for (var k = 0; k < 10; k++) {
+				AddRandomCreature (c, 0.1f);
+			}
 		}
 	}
-
-
-	public void Restart ()
-	{
-		// Destroy nodes && muscles
-		foreach (var n in nodes) {
-			n.Destroy ();
-		}
-		foreach (var m in muscles) {
-			m.Destroy ();
-		}
-		// Reset UI
-		CycleText.text = "";
-		TimeText.text = "";
-		DistanceText.text = "";
-		if (GetComponent<LineRenderer> () != null)
-			Destroy (GetComponent<LineRenderer> ());
-		// Regenerate
-		Start ();
-	}
-
 
 	void GenerateMuscle (Node left, Node right)
 	{
@@ -239,7 +254,6 @@ public class Generate : MonoBehaviour
 	{
 		nodes.Add (Node.RandomNode (position, currentCreature, currentColor, nodes.Count));
 	}
-
 
 	bool IsMuscleAlreadyAdded (Node left, Node right)
 	{
@@ -262,9 +276,10 @@ public class Generate : MonoBehaviour
 		return false;
 	}
 
-
 	void InitializeController ()
 	{
+		if (creatures.Count == 0)
+			return;
 		var controllerScript = gameObject.AddComponent<ControllerScript> ();
 		controllerScript.CycleText = CycleText;
 		controllerScript.DistanceText = DistanceText;
@@ -276,8 +291,9 @@ public class Generate : MonoBehaviour
 		foreach (var m in muscles) {
 			m.Destroy ();
 		}
+		nodes.Clear ();
+		muscles.Clear ();
 	}
-
 
 	void AddCreature ()
 	{
@@ -286,11 +302,16 @@ public class Generate : MonoBehaviour
 		nodes = new List<Node> ();
 		currentCreature = new GameObject ().transform;
 		currentCreature.name = "Creature " + Random.Range (0, 10000);
-		currentColor = Random.ColorHSV ();
+		currentColor = Color.black;//Random.ColorHSV ();
 	}
 
 	void AddRandomCreature ()
 	{
 		creatures.Add (Creature.RandomCreature (cycleDuration));
+	}
+
+	void AddRandomCreature (Creature creature, float variation)
+	{
+		creatures.Add (Creature.RandomCreature (creature, variation, currentColor));
 	}
 }

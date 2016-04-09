@@ -15,7 +15,17 @@ public class Controller
 		Creatures = creatures;
 	}
 
-	public void Update (int time)
+
+	static void ThreadedJob (List<Creature> creatures, int time)
+	{
+		foreach (var c in creatures) {
+			for (var k = 0; k < time; k++) {
+				c.Update (DeltaTime);
+			}
+		}
+	}
+
+	public void Update (int testDuration)
 	{
 		// Update creatures
 		var numberOfThreads = Mathf.Min (Constants.NumberOfThreads, Creatures.Count);
@@ -24,12 +34,12 @@ public class Controller
 		int h = count / numberOfThreads;
 		for (var k = 0; k < numberOfThreads; k++) {
 			var creaturesToProcess = Creatures.GetRange (k * h, h);
-			threads.Add (new Thread (() => ThreadedJob (creaturesToProcess, time)));
+			threads.Add (new Thread (() => ThreadedJob (creaturesToProcess, testDuration)));
 			threads [threads.Count - 1].Start ();
 		}
 		if (count != Creatures.Count) {
 			var endCreaturesToProcess = Creatures.GetRange (count, Creatures.Count - count);
-			threads.Add (new Thread (() => ThreadedJob (endCreaturesToProcess, time)));
+			threads.Add (new Thread (() => ThreadedJob (endCreaturesToProcess, testDuration)));
 			threads [threads.Count - 1].Start ();
 		}
 		// Wait for threads to end
@@ -43,7 +53,7 @@ public class Controller
 		}
 
 		// Update time
-		CurrentTime += DeltaTime * time;
+		CurrentTime += DeltaTime * testDuration;
 	}
 
 	public void Update ()
@@ -51,20 +61,30 @@ public class Controller
 		Update (Constants.TimeMultiplier);
 	}
 
-
-	static void ThreadedJob (List<Creature> creatures, int time)
+	public void GenerateNextGeneration (float generationProgress)
 	{
-		foreach (var c in creatures) {
-			for (var k = 0; k < time; k++) {
-				c.Update (DeltaTime);
-			}
+		var genColor = new Color (generationProgress, generationProgress, generationProgress);
+		Creatures.Sort ();
+		ResetCreatures ();
+		var count = Creatures.Count;
+		if (count % 2 != 0) {
+			Creatures.Add (Creature.RandomCreature (Creatures [count - 1], Constants.Variation, genColor));
+			count -= 1;
 		}
+		for (var k = 0; k < count / 2; k++) {
+			Creatures [k].Destroy ();
+			Creatures [k] = Creature.RandomCreature (Creatures [k + count / 2], Constants.Variation, genColor); 
+		}
+
 	}
 
-	public void TrainNextGeneration ()
+	public void Train (int generations, int testDuration)
 	{
-		Creatures.Sort ();
-
+		for (var k = 0; k < generations; k++) {
+			Update (testDuration);
+			GenerateNextGeneration (k / generations);
+		}
+		CurrentTime = 0;
 	}
 
 	public float GetMaxPosition ()
@@ -76,7 +96,6 @@ public class Controller
 		}
 		return max;
 	}
-
 
 	public void RemoveCreaturesFartherThan (float distance)
 	{
@@ -111,7 +130,6 @@ public class Controller
 		}
 		return bestCreature.GetCyclePercentage ();
 	}
-
 
 	public void Destroy ()
 	{

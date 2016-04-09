@@ -6,6 +6,7 @@ public class ChildNode : Node
 	readonly Node right;
 	readonly float normalizedDistanceFromLeft;
 
+
 	public ChildNode (float normalizedDistanceFromLeft, Node left, Node right, int id) : base (id)
 	{
 		this.normalizedDistanceFromLeft = normalizedDistanceFromLeft;
@@ -34,11 +35,5 @@ public class ChildNode : Node
 
 		VelocitySum = Vector2.zero;
 		ConstraintSum = Vector2.zero;
-	}
-
-	public override Node Copy ()
-	{
-		Debug.LogError ("Not Implemented");
-		return new Node (0);
 	}
 }

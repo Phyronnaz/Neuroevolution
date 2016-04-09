@@ -9,21 +9,14 @@ public class Node
 
 	protected Vector2 VelocitySum;
 	protected Vector2 ConstraintSum;
+
 	readonly Vector2 savedPosition;
-	const float NodeRadius = 0.75f;
+	readonly float NodeRadius = 0.75f;
 
 
 	public Node (int id)
 	{
 		Id = id;
-	}
-
-	public Node (Vector2 position, NodeRenderer nodeRenderer, int id)
-	{
-		Position = position;
-		savedPosition = position;
-		Id = id;
-		NodeRenderer = nodeRenderer;
 	}
 
 	public Node (Vector2 position, Transform parent, Color color, int id)
@@ -35,10 +28,16 @@ public class Node
 		//Create node renderer
 		var go = Object.Instantiate (Resources.Load ("Circle"), position, Quaternion.identity) as GameObject;
 		go.name = "Node " + id;
-		go.GetComponent<SpriteRenderer> ().color = color;
+		go.GetComponent<SpriteRenderer> ().color = new Color (1.0f - color.r, 1.0f - color.g, 1.0f - color.b);
 		NodeRenderer = go.AddComponent<NodeRenderer> ();
 		NodeRenderer.Id = id;
 		NodeRenderer.transform.parent = parent;
+	}
+
+
+	public static Node RandomNode (Vector2 position, Transform parent, Color color, int id)
+	{
+		return new Node (position, parent, color, id);
 	}
 
 	public virtual void Update (float deltaTime)
@@ -46,16 +45,16 @@ public class Node
 		//velocity
 		Velocity += VelocitySum;
 
+		//weight
+		Velocity.y -= Constants.GravityMultiplier * deltaTime;
+
 		//constraints
 		Velocity -= ConstraintSum.normalized * Vector2.Dot (Velocity, ConstraintSum.normalized);
 
-		//weight
-		Velocity += Vector2.down * Constants.GravityMultiplier * deltaTime;
-
 		//collision
-		if ((Velocity * deltaTime + Position).y < NodeRadius) {
-			if (Position.y > NodeRadius + Constants.Tolerance)
-				Velocity.y = (NodeRadius - Position.y) / deltaTime;
+		if (Velocity.y * deltaTime + Position.y < NodeRadius) {
+			if (Position.y > NodeRadius)
+				Position.y = NodeRadius - Velocity.y * deltaTime;
 			else
 				Velocity.y -= (1 + Constants.Bounciness) * Velocity.y;
 		}
@@ -77,7 +76,6 @@ public class Node
 		NodeRenderer.SetPosition (Position);
 	}
 
-
 	public void AddVelocity (Vector2 velocity)
 	{
 		VelocitySum += velocity;
@@ -88,25 +86,29 @@ public class Node
 		ConstraintSum += constraint;
 	}
 
-
-	public void Destroy ()
-	{
-		Object.Destroy (NodeRenderer.gameObject);
-	}
-
-	public virtual Node Copy ()
-	{
-		return new Node (Position, NodeRenderer, Id);
-	}
-
 	public virtual void Reset ()
 	{
 		Position = savedPosition;
 		Velocity = Vector2.zero;
 	}
 
-	public static Node RandomNode (Vector2 position, Transform parent, Color color, int id)
+	public void Destroy ()
 	{
-		return new Node (position, parent, new Color (1.0f - color.r, 1.0f - color.g, 1.0f - color.b), id);
+		Object.Destroy (NodeRenderer.gameObject);
+	}
+
+	public override bool Equals (object obj)
+	{
+		var n = (Node)obj;
+		if (n != null) {
+			return n.Id == Id;
+		} else {
+			return false;
+		}
+	}
+
+	public override int GetHashCode ()
+	{
+		return Id.GetHashCode ();
 	}
 }
