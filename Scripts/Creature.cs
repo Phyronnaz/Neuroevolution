@@ -143,7 +143,7 @@ public class Creature : System.IComparable<Creature>
 
 	public int CompareTo (Creature other)
 	{
-		return GetAveragePosition ().CompareTo (other.GetAveragePosition ());
+		return GetFitness ().CompareTo (other.GetFitness ());
 	}
 
 	public void Update (float deltaTime)
@@ -193,6 +193,15 @@ public class Creature : System.IComparable<Creature>
 			averagePosition += n.Position.x;
 		}
 		return averagePosition / nodes.Count;
+	}
+
+	public float GetFitness ()
+	{
+		var s = 0f;
+		foreach (var m in muscles) {
+			s += m.Strength;
+		}
+		return GetAveragePosition () - s;
 	}
 
 	public void Reset ()

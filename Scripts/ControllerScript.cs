@@ -19,7 +19,7 @@ public class ControllerScript : MonoBehaviour
 		InvokeRepeating ("ControllerUpdate", 0, Controller.DeltaTime);
 
 		//HACK
-		controller.Train (10, 200000);
+		controller.Train (10, (int)(100 / Controller.DeltaTime));
 	}
 
 	public void Update ()
@@ -39,7 +39,6 @@ public class ControllerScript : MonoBehaviour
 		CycleText.text = string.Format ("{0} %", controller.GetCyclePercentageOfTheFarthestCreatures ());
 		TimeText.text = "Time : " + controller.CurrentTime;
 
-		//HACK
 		if (controller.CurrentTime > 200 && !hasBreak) {
 			hasBreak = true;
 			print (max / controller.CurrentTime);
@@ -53,6 +52,7 @@ public class ControllerScript : MonoBehaviour
 		if (Input.GetKeyDown (KeyCode.A)) {
 			CancelInvoke ();
 			controller.ResetCreatures ();
+			controller.CurrentTime = 0;
 			InvokeRepeating ("ControllerUpdate", 0, Controller.DeltaTime);
 		}
 

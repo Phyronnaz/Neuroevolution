@@ -113,15 +113,15 @@ public class Generate : MonoBehaviour
 			currentCreature.name = "Creature " + Random.Range (0, 10000);
 			currentColor = Color.black;//Random.ColorHSV ();
 			//HACK
-			GenerateNode (Vector2.up * 10);
-			GenerateNode (Vector2.up * 20 + Vector2.right * 5);
-			GenerateNode (Vector2.up * 10 + Vector2.right * 10);
-
-			GenerateMuscle (nodes [0], nodes [1]);
-			GenerateMuscle (nodes [1], nodes [2]);
-			GenerateMuscle (nodes [2], nodes [0]);
-
-			AddCreature ();
+//			GenerateNode (Vector2.up * 10);
+//			GenerateNode (Vector2.up * 20 + Vector2.right * 5);
+//			GenerateNode (Vector2.up * 10 + Vector2.right * 10);
+//
+//			GenerateMuscle (nodes [0], nodes [1]);
+//			GenerateMuscle (nodes [1], nodes [2]);
+//			GenerateMuscle (nodes [2], nodes [0]);
+//
+//			AddCreature ();
 		}
 	}
 
@@ -144,6 +144,9 @@ public class Generate : MonoBehaviour
 		}
 		foreach (var m in muscles) {
 			m.Destroy ();
+		}
+		foreach (var c in creatures) {
+			c.Destroy ();
 		}
 		// Reset UI
 		CycleText.text = "";
@@ -237,6 +240,9 @@ public class Generate : MonoBehaviour
 			for (var k = 0; k < 10; k++) {
 				AddRandomCreature (c, 0.1f);
 			}
+		}
+		if (Input.GetKeyDown (KeyCode.R)) {
+			Restart ();
 		}
 	}
 

@@ -19,6 +19,6 @@ public static class Constants
 	public static float MinStrength = 1;
 	public static bool MuscleDebug = true;
 	public static bool NeuralNetwork;
-	public static int NumberOfThreads = 32;
+	public static int NumberOfThreads = 320;
 	public static float Variation = 0.1f;
 }

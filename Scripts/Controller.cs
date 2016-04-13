@@ -82,7 +82,7 @@ public class Controller
 	{
 		for (var k = 0; k < generations; k++) {
 			Update (testDuration);
-			GenerateNextGeneration (k / generations);
+			GenerateNextGeneration ((float)k / generations);
 		}
 		CurrentTime = 0;
 	}
