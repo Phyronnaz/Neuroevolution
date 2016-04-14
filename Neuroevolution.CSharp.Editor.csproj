@@ -88,30 +88,6 @@
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>Library\UnityAssemblies\SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.EditorTestsRunner">
-      <HintPath>Library\UnityAssemblies\UnityEditor.EditorTestsRunner.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.Networking">
-      <HintPath>Library\UnityAssemblies\UnityEditor.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>Library\UnityAssemblies\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.UI">
-      <HintPath>Library\UnityAssemblies\UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.Advertisements">
-      <HintPath>Library\UnityAssemblies\UnityEditor.Advertisements.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.TreeEditor">
-      <HintPath>Library\UnityAssemblies\UnityEditor.TreeEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Neuroevolution.CSharp.Plugins.csproj">
@@ -125,18 +101,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Editor\CrossPlatformInput\CrossPlatformInputInitialize.cs" />
-    <Compile Include="Assets\FarseerUnity\Editor\Base\CollisionGroupAsset.cs" />
-    <Compile Include="Assets\FarseerUnity\Editor\Base\FSCollisionGroupEditor.cs" />
-    <Compile Include="Assets\FarseerUnity\Editor\CustomAssetUtility.cs" />
-    <Compile Include="Assets\FarseerUnity\Editor\FSConcaveShapeCpEditor.cs" />
-    <Compile Include="Assets\FarseerUnity\Editor\FSSettings.cs" />
-    <Compile Include="Assets\FarseerUnity\Editor\FSShapeCpEditor.cs" />
-    <Compile Include="Assets\FarseerUnity\Editor\Windows\FSProjectSettingsWindow.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\FarseerUnity\Base\FarseerDebugViewUnity\FDView.shader" />
-    <None Include="Assets\FarseerUnity\Support Files\Tests\Shaders\Color.shader" />
-    <None Include="Assets\FarseerUnity\Support Files\Tests\Shaders\Transparent Vertex Colored.shader" />
     <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
     <None Include="Assets\Standard Assets\Fonts\OpenSans\License!.txt" />
   </ItemGroup>
