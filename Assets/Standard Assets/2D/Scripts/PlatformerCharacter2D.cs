@@ -20,6 +20,19 @@ namespace UnityStandardAssets._2D
         private Rigidbody2D m_Rigidbody2D;
         private bool m_FacingRight = true;  // For determining which way the player is currently facing.
 
+        public LayerMask WhatIsGround
+        {
+            get
+            {
+                return m_WhatIsGround;
+            }
+
+            set
+            {
+                m_WhatIsGround = value;
+            }
+        }
+
         private void Awake()
         {
             // Setting up references.
@@ -36,7 +49,7 @@ namespace UnityStandardAssets._2D
 
             // The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
             // This can be done using layers instead but Sample Assets will not overwrite your project settings.
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_WhatIsGround);
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, WhatIsGround);
             for (int i = 0; i < colliders.Length; i++)
             {
                 if (colliders[i].gameObject != gameObject)
@@ -55,7 +68,7 @@ namespace UnityStandardAssets._2D
             if (!crouch && m_Anim.GetBool("Crouch"))
             {
                 // If the character has a ceiling preventing them from standing up, keep them crouching
-                if (Physics2D.OverlapCircle(m_CeilingCheck.position, k_CeilingRadius, m_WhatIsGround))
+                if (Physics2D.OverlapCircle(m_CeilingCheck.position, k_CeilingRadius, WhatIsGround))
                 {
                     crouch = true;
                 }

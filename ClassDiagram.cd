@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Evolution.Constants" Collapsed="true">
+    <Position X="15.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAhASCgAQACAAAAAgAIAAQBAAAQCAEAAIAgAEAAgAE=</HashCode>
+      <FileName>Assets\Scripts\Constants.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Evolution.Controller" Collapsed="true">
+    <Position X="10.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQgAAAAAAAAAAABAAAAEBggAABAAAEgAAAAgAAAAAI=</HashCode>
+      <FileName>Assets\Scripts\Controller.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="Creatures" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Evolution.ControllerScript" Collapsed="true">
+    <Position X="10.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAQGACAAQAAAAAAAAAAgAAAAAAQAAAAA=</HashCode>
+      <FileName>Assets\Scripts\ControllerScript.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="controller" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Evolution.Creature" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIQBAAAAAAAAJAQAAAgIAAAAAABUAAAAAAAgAACAIAA=</HashCode>
+      <FileName>Assets\Scripts\Creature.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="nodes" />
+      <Field Name="muscles" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Orientation="Bottom" Position="0.7" />
+  </Class>
+  <Class Name="Evolution.Generate" Collapsed="true">
+    <Position X="3.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>FAQACAIEgCAAAAAICAAQAAAAgAASoAAAQAAAAQSgIIA=</HashCode>
+      <FileName>Assets\Scripts\Generate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Evolution.Muscle" Collapsed="true">
+    <Position X="5.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EARAAAAAAAAEIIAAgAAAAAAAAABAAIABCACIBAAACAA=</HashCode>
+      <FileName>Assets\Scripts\Muscle.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="muscleRenderer" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Evolution.MuscleRenderer" Collapsed="true">
+    <Position X="5.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAQARAAAAAAAABoAAAAAgAAAAAQgABAAAA=</HashCode>
+      <FileName>Assets\Scripts\MuscleRenderer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Evolution.Node" Collapsed="true">
+    <Position X="8" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEQCAAAAAIAAJAAhgAAAAACQAQBAAIAAAQAAAAAEAIA=</HashCode>
+      <FileName>Assets\Scripts\Node.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="NodeRenderer" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Evolution.NodeRenderer" Collapsed="true">
+    <Position X="8" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\NodeRenderer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Evolution.UI" Collapsed="true">
+    <Position X="12.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAwAACgACAAAAAAAAAIAAAAAAAQAAAAAAAgAEAIAAE=</HashCode>
+      <FileName>Assets\Scripts\UI.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UnityEngine.MonoBehaviour" Collapsed="true">
+    <Position X="8" Y="1" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

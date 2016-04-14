@@ -64,11 +64,6 @@ namespace Evolution
             CurrentTime += DeltaTime * testDuration;
         }
 
-        public void Update()
-        {
-            Update(Constants.TimeMultiplier);
-        }
-
         public void GenerateNextGeneration(float generationProgress)
         {
             var genColor = new Color(generationProgress, generationProgress, generationProgress);
@@ -77,13 +72,13 @@ namespace Evolution
             var count = Creatures.Count;
             if (count % 2 != 0)
             {
-                Creatures.Add(Creature.RandomCreature(Creatures[count - 1], Constants.Variation, genColor));
+                Creatures.Add(Creature.CloneCreature(Creatures[count - 1], Constants.Variation, genColor));
                 count -= 1;
             }
             for (var k = 0; k < count / 2; k++)
             {
                 Creatures[k].Destroy();
-                Creatures[k] = Creature.RandomCreature(Creatures[k + count / 2], Constants.Variation, genColor);
+                Creatures[k] = Creature.CloneCreature(Creatures[k + count / 2], Constants.Variation, genColor);
             }
 
         }
@@ -109,10 +104,6 @@ namespace Evolution
             return max;
         }
 
-        public void RemoveCreaturesFartherThan(float distance)
-        {
-            RemoveCreaturesFartherThan(distance, GetMaxPosition());
-        }
 
         public void RemoveCreaturesFartherThan(float distance, float max)
         {
@@ -132,7 +123,7 @@ namespace Evolution
             }
         }
 
-        public int GetCyclePercentageOfTheFarthestCreatures()
+        public int GetCyclePercentageOfTheFarthestCreature()
         {
             var max = Creatures[0].GetAveragePosition();
             var bestCreature = Creatures[0];

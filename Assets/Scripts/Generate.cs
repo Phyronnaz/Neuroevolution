@@ -7,321 +7,324 @@ using System.Collections.Generic;
 
 namespace Evolution
 {
-	public class Generate : MonoBehaviour
-	{
-		public Text CycleText, DistanceText, TimeText;
+    public class Generate : MonoBehaviour
+    {
+        public Text CycleText, DistanceText, TimeText;
 
-		List<Node> nodes;
-		List<Muscle> muscles;
-		List<Creature> creatures;
-		float cycleDuration;
-		bool generated;
-		bool isCreatingMuscle;
-		Node nodeBeeingAssociated;
-		Transform currentCreature;
-		Color currentColor;
-
-
-		public void Start ()
-		{
-			#region Tests
-			//		var s = new Stopwatch ();
-			//		float x = 0;
-			//		s.Start ();
-			//		var a = Vector2.up;
-			//		var b = Vector2.right;
-			//		for (var k = 0; k < 1000000; k++) {
-			//			x += (a - b).magnitude;
-			//		}
-			//		print (s.Elapsed);
-			//
-			//		s = new Stopwatch ();
-			//		x = 0;
-			//		s.Start ();
-			//		for (var k = 0; k < 1000000; k++) {
-			//			x += (a - b).sqrMagnitude;
-			//		}
-			//		print (s.Elapsed);
-			//
-			//		s = new Stopwatch ();
-			//		x = 0;
-			//		s.Start ();
-			//		for (var k = 0; k < 1000000; k++) {
-			//			x += Vector2.Distance (a, b);
-			//		}
-			//		print (s.Elapsed);
-			//
-			//		s = new Stopwatch ();
-			//		x = 0;
-			//		s.Start ();
-			//		for (var k = 0; k < 1000000; k++) {
-			//			x += (a - b).normalized.x;
-			//		}
-			//		print (s.Elapsed);
-			#endregion
-
-			Random.seed = 1000;
-
-			//Initialize arrays && variables
-			nodes = new List<Node> ();
-			muscles = new List<Muscle> ();
-			creatures = new List<Creature> ();
-			generated = false;
-			isCreatingMuscle = false;
-
-			//Camera
-			var p = transform.position;
-			p.x = 0;
-			transform.position = p;
-
-			//Cycle duration
-			cycleDuration = (Random.value + 0.1f) * Constants.CycleDurationMultiplier;
-
-			#region ChildNode
-			//		generated = true;
-			//		Constants.GravityMultiplier = 0;
-			//		Constants.Generate = false;
-			//
-			//		GenerateNode (Vector2.up * 10);
-			//		GenerateNode (Vector2.up * 20);
-			//		GenerateNode (Vector2.up * 20 + Vector2.right * 10);
-			//
-			//		Constants.StrengthAmplitude = 0;
-			//		Constants.ExtendedDistanceMultiplier = 0;
-			//		Constants.ContractedDistanceMultiplier = 0;
-			//		GenerateMuscle (nodes [0], nodes [1]);
-			//		GenerateMuscle (nodes [1], nodes [2]);
-			//
-			//		nodes.Add (new ChildNode (0.5f, nodes [0], nodes [1], nodes.Count));
-			//		nodes.Add (new ChildNode (0.5f, nodes [1], nodes [2], nodes.Count));
-			//		Constants.StrengthAmplitude = 10f / 10000f;
-			//		Constants.ExtendedDistanceMultiplier = 2;
-			//		Constants.ContractedDistanceMultiplier = 10;
-			//		GenerateMuscle (nodes [3], nodes [4]);
-			//		AddCreature ();
-			//		InitializeController ();
-			#endregion
+        List<Node> nodes;
+        List<Muscle> muscles;
+        List<Creature> creatures;
+        float cycleDuration;
+        bool generated;
+        bool isCreatingMuscle;
+        Node nodeBeeingAssociated;
+        Transform currentCreature;
+        Color currentColor;
 
 
-			//Generate
-			if (Constants.Generate) {
-				for (var k = 0; k < 200; k++) {
-					AddRandomCreature ();
-				}
-				InitializeController ();
-				generated = true;
-			} else {
+        public void Start()
+        {
+            #region Tests
+            //		var s = new Stopwatch ();
+            //		float x = 0;
+            //		s.Start ();
+            //		var a = Vector2.up;
+            //		var b = Vector2.right;
+            //		for (var k = 0; k < 1000000; k++) {
+            //			x += (a - b).magnitude;
+            //		}
+            //		print (s.Elapsed);
+            //
+            //		s = new Stopwatch ();
+            //		x = 0;
+            //		s.Start ();
+            //		for (var k = 0; k < 1000000; k++) {
+            //			x += (a - b).sqrMagnitude;
+            //		}
+            //		print (s.Elapsed);
+            //
+            //		s = new Stopwatch ();
+            //		x = 0;
+            //		s.Start ();
+            //		for (var k = 0; k < 1000000; k++) {
+            //			x += Vector2.Distance (a, b);
+            //		}
+            //		print (s.Elapsed);
+            //
+            //		s = new Stopwatch ();
+            //		x = 0;
+            //		s.Start ();
+            //		for (var k = 0; k < 1000000; k++) {
+            //			x += (a - b).normalized.x;
+            //		}
+            //		print (s.Elapsed);
+            #endregion
 
-				currentCreature = new GameObject ().transform;
-				currentCreature.name = "Creature " + Random.Range (0, 10000);
-				currentColor = Color.black;//Random.ColorHSV ();
-				//HACK
-				//			GenerateNode (Vector2.up * 10);
-				//			GenerateNode (Vector2.up * 20 + Vector2.right * 5);
-				//			GenerateNode (Vector2.up * 10 + Vector2.right * 10);
-				//
-				//			GenerateMuscle (nodes [0], nodes [1]);
-				//			GenerateMuscle (nodes [1], nodes [2]);
-				//			GenerateMuscle (nodes [2], nodes [0]);
-				//
-				//			AddCreature ();
-			}
-		}
+            Random.seed = 1000;
 
-		public void Update ()
-		{
-			if (!generated) {
-				if (isCreatingMuscle)
-					RenderMuscleEditor ();
+            //Initialize arrays && variables
+            nodes = new List<Node>();
+            muscles = new List<Muscle>();
+            creatures = new List<Creature>();
+            generated = false;
+            isCreatingMuscle = false;
 
-				if (EventSystem.current.currentSelectedGameObject == null)
-					CheckInput ();
-			}
-		}
+            //Camera
+            var p = transform.position;
+            p.x = 0;
+            transform.position = p;
 
-		public void Restart ()
-		{
-			// Destroy nodes && muscles
-			foreach (var n in nodes) {
-				n.Destroy ();
-			}
-			foreach (var m in muscles) {
-				m.Destroy ();
-			}
-			foreach (var c in creatures) {
-				c.Destroy ();
-			}
-			// Reset UI
-			CycleText.text = "";
-			TimeText.text = "";
-			DistanceText.text = "";
-			if (GetComponent<LineRenderer> () != null)
-				Destroy (GetComponent<LineRenderer> ());
-			// Regenerate
-			Start ();
-		}
+            //Cycle duration
+            cycleDuration = (Random.value + 0.1f) * Constants.CycleDurationMultiplier;
 
-		void RenderMuscleEditor ()
-		{
-			Vector3 mousePosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-			mousePosition.z = 0;
+            #region ChildNode
+            //		generated = true;
+            //		Constants.GravityMultiplier = 0;
+            //		Constants.Generate = false;
+            //
+            //		GenerateNode (Vector2.up * 10);
+            //		GenerateNode (Vector2.up * 20);
+            //		GenerateNode (Vector2.up * 20 + Vector2.right * 10);
+            //
+            //		Constants.StrengthAmplitude = 0;
+            //		Constants.ExtendedDistanceMultiplier = 0;
+            //		Constants.ContractedDistanceMultiplier = 0;
+            //		GenerateMuscle (nodes [0], nodes [1]);
+            //		GenerateMuscle (nodes [1], nodes [2]);
+            //
+            //		nodes.Add (new ChildNode (0.5f, nodes [0], nodes [1], nodes.Count));
+            //		nodes.Add (new ChildNode (0.5f, nodes [1], nodes [2], nodes.Count));
+            //		Constants.StrengthAmplitude = 10f / 10000f;
+            //		Constants.ExtendedDistanceMultiplier = 2;
+            //		Constants.ContractedDistanceMultiplier = 10;
+            //		GenerateMuscle (nodes [3], nodes [4]);
+            //		AddCreature ();
+            //		InitializeController ();
+            #endregion
 
-			var l = GetComponent<LineRenderer> ();
-			if (l == null)
-				l = gameObject.AddComponent<LineRenderer> ();
 
-			l.SetPosition (0, nodeBeeingAssociated.Position);
-			l.SetPosition (1, mousePosition);
-			if (l.material == null)
-				l.material = new Material (Shader.Find ("Diffuse"));
-			l.material.color = currentColor;
-		}
+            currentCreature = new GameObject().transform;
+            currentCreature.name = "Creature " + Random.Range(0, 10000);
+            currentColor = Color.black;
+            //HACK
+            //			GenerateNode (Vector2.up * 10);
+            //			GenerateNode (Vector2.up * 20 + Vector2.right * 5);
+            //			GenerateNode (Vector2.up * 10 + Vector2.right * 10);
+            //
+            //			GenerateMuscle (nodes [0], nodes [1]);
+            //			GenerateMuscle (nodes [1], nodes [2]);
+            //			GenerateMuscle (nodes [2], nodes [0]);
+            //
+            //			AddCreature ();
+        }
 
-		void CheckInput ()
-		{
-			if (Input.GetMouseButtonDown (0)) {
-				var hasDoneSmthg = false;
+        public void Update()
+        {
+            if (!generated)
+            {
+                if (isCreatingMuscle)
+                    RenderMuscleEditor();
 
-				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-				RaycastHit2D hit = Physics2D.GetRayIntersection (ray, Mathf.Infinity);
-				if (hit.collider != null) {
-					if (hit.collider.GetComponent<NodeRenderer> () != null) {
-						var hitNode = nodes [hit.transform.GetComponent<NodeRenderer> ().Id];
+                if (EventSystem.current.currentSelectedGameObject == null)
+                    CheckInput();
+            }
+        }
 
-						if (isCreatingMuscle && !IsMuscleAlreadyAdded (hitNode, nodeBeeingAssociated))
-							GenerateMuscle (hitNode, nodeBeeingAssociated);
+        public void Restart()
+        {
+            // Destroy nodes && muscles
+            foreach (var n in nodes)
+            {
+                n.Destroy();
+            }
+            foreach (var m in muscles)
+            {
+                m.Destroy();
+            }
+            foreach (var c in creatures)
+            {
+                c.Destroy();
+            }
+            // Reset UI
+            CycleText.text = "";
+            TimeText.text = "";
+            DistanceText.text = "";
+            if (GetComponent<LineRenderer>() != null)
+                Destroy(GetComponent<LineRenderer>());
+            // Regenerate
+            Start();
+        }
 
-						nodeBeeingAssociated = hitNode;
+        void RenderMuscleEditor()
+        {
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mousePosition.z = 0;
 
-						hasDoneSmthg = true;
-					}
-				}
-				if (!hasDoneSmthg) {
-					Vector3 mousePosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-					GenerateNode (mousePosition);
+            var l = GetComponent<LineRenderer>();
+            if (l == null)
+                l = gameObject.AddComponent<LineRenderer>();
 
-					var lastNode = nodes [nodes.Count - 1];
+            l.SetPosition(0, nodeBeeingAssociated.Position);
+            l.SetPosition(1, mousePosition);
+            if (l.material == null)
+                l.material = new Material(Shader.Find("Diffuse"));
+            l.material.color = currentColor;
+        }
 
-					if (isCreatingMuscle && !IsMuscleAlreadyAdded (lastNode, nodeBeeingAssociated))
-						GenerateMuscle (lastNode, nodeBeeingAssociated);
+        void CheckInput()
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                var hasDoneSmthg = false;
 
-					nodeBeeingAssociated = lastNode;
-				}
-				isCreatingMuscle = true;
-			}
-			if (Input.GetMouseButtonDown (1) && isCreatingMuscle) {
-				isCreatingMuscle = false;
-				Destroy (GetComponent<LineRenderer> ());
-			}
-			if (Input.GetKeyDown (KeyCode.Space) && isCreatingMuscle) {
-				isCreatingMuscle = false;
-				Destroy (GetComponent<LineRenderer> ());
-				AddCreature ();
-			}
-			if (Input.GetKeyDown (KeyCode.Escape) && creatures.Count > 0) {
-				generated = true;
-				Destroy (currentCreature.gameObject);
-				if (GetComponent<LineRenderer> () != null)
-					Destroy (GetComponent<LineRenderer> ());
-				InitializeController ();
-			}
-			if (Input.GetKeyDown (KeyCode.Return)) {
-				var k = 0;
-				var alreadyAdded = muscles.Count;
-				while (k < (nodes.Count - 1) * nodes.Count / 2 - alreadyAdded) {
-					//Random connection
-					var t = new Tuple (Random.Range (0, nodes.Count), Random.Range (0, nodes.Count));
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
+                if (hit.collider != null)
+                {
+                    if (hit.collider.GetComponent<NodeRenderer>() != null)
+                    {
+                        var hitNode = nodes[hit.transform.GetComponent<NodeRenderer>().Id];
 
-					if (!IsMuscleAlreadyAdded (t)) {
-						GenerateMuscle (t.a, t.b);
-						k++;
-					}
-				}
-			}
-			if (Input.GetKeyDown (KeyCode.G)) {
-				var c = creatures [creatures.Count - 1];
-				for (var k = 0; k < 10; k++) {
-					AddRandomCreature (c, 0.1f);
-				}
-			}
-			if (Input.GetKeyDown (KeyCode.R)) {
-				Restart ();
-			}
-		}
+                        if (isCreatingMuscle && !IsMuscleAlreadyAdded(hitNode.Id, nodeBeeingAssociated.Id))
+                            GenerateMuscle(hitNode, nodeBeeingAssociated);
 
-		void GenerateMuscle (Node left, Node right)
-		{
-			muscles.Add (Muscle.RandomMuscle (left, right, cycleDuration, currentColor, currentCreature));
-		}
+                        nodeBeeingAssociated = hitNode;
 
-		void GenerateMuscle (int a, int b)
-		{
-			GenerateMuscle (nodes [a], nodes [b]);
-		}
+                        hasDoneSmthg = true;
+                    }
+                }
+                if (!hasDoneSmthg)
+                {
+                    Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    GenerateNode(mousePosition);
 
-		void GenerateNode (Vector2 position)
-		{
-			nodes.Add (Node.RandomNode (position, currentCreature, currentColor, nodes.Count));
-		}
+                    var lastNode = nodes[nodes.Count - 1];
 
-		bool IsMuscleAlreadyAdded (Node left, Node right)
-		{
-			return IsMuscleAlreadyAdded (left.Id, right.Id);
-		}
+                    if (isCreatingMuscle && !IsMuscleAlreadyAdded(lastNode.Id, nodeBeeingAssociated.Id))
+                        GenerateMuscle(lastNode, nodeBeeingAssociated);
 
-		bool IsMuscleAlreadyAdded (Tuple t)
-		{
-			return IsMuscleAlreadyAdded (t.a, t.b);
-		}
+                    nodeBeeingAssociated = lastNode;
+                }
+                isCreatingMuscle = true;
+            }
+            if (Input.GetMouseButtonDown(1) && isCreatingMuscle)
+            {
+                isCreatingMuscle = false;
+                Destroy(GetComponent<LineRenderer>());
+            }
+            if (Input.GetKeyDown(KeyCode.Space) && isCreatingMuscle)
+            {
+                isCreatingMuscle = false;
+                Destroy(GetComponent<LineRenderer>());
+                AddCreature();
+            }
+            if (Input.GetKeyDown(KeyCode.Escape) && creatures.Count > 0)
+            {
+                generated = true;
+                Destroy(currentCreature.gameObject);
+                if (GetComponent<LineRenderer>() != null)
+                    Destroy(GetComponent<LineRenderer>());
+                InitializeController();
+            }
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                var k = 0;
+                var alreadyAdded = muscles.Count;
+                while (k < (nodes.Count - 1) * nodes.Count / 2 - alreadyAdded)
+                {
+                    //Random connection
+                    var a = Random.Range(0, nodes.Count);
+                    var b = Random.Range(0, nodes.Count);
 
-		bool IsMuscleAlreadyAdded (int left, int right)
-		{
-			if (left == right)
-				return true;
-			foreach (var muscle in muscles) {
-				if (muscle.Equals (new Tuple (left, right)))
-					return true;
-			}
-			return false;
-		}
+                    if (!IsMuscleAlreadyAdded(a, b))
+                    {
+                        GenerateMuscle(nodes[a], nodes[b]);
+                        k++;
+                    }
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                var c = creatures[creatures.Count - 1];
+                for (var k = 0; k < 10; k++)
+                {
+                    CloneCreature(c, 0.1f);
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                for (var k = 0; k < 10; k++)
+                {
+                    AddRandomCreature();
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                Restart();
+            }
+        }
 
-		void InitializeController ()
-		{
-			if (creatures.Count == 0)
-				return;
-			var controllerScript = gameObject.AddComponent<ControllerScript> ();
-			controllerScript.CycleText = CycleText;
-			controllerScript.DistanceText = DistanceText;
-			controllerScript.TimeText = TimeText;
-			controllerScript.Initialize (creatures);
-			foreach (var n in nodes) {
-				n.Destroy ();
-			}
-			foreach (var m in muscles) {
-				m.Destroy ();
-			}
-			nodes.Clear ();
-			muscles.Clear ();
-		}
+        void GenerateMuscle(Node left, Node right)
+        {
+            muscles.Add(Muscle.RandomMuscle(left, right, cycleDuration, currentColor, currentCreature));
+        }
 
-		void AddCreature ()
-		{
-			creatures.Add (new Creature (muscles, nodes, cycleDuration, currentCreature));
-			muscles = new List<Muscle> ();
-			nodes = new List<Node> ();
-			currentCreature = new GameObject ().transform;
-			currentCreature.name = "Creature " + Random.Range (0, 10000);
-			currentColor = Color.black;//Random.ColorHSV ();
-		}
+        void GenerateNode(Vector2 position)
+        {
+            nodes.Add(Node.RandomNode(position, currentCreature, currentColor, nodes.Count));
+        }
 
-		void AddRandomCreature ()
-		{
-			creatures.Add (Creature.RandomCreature (cycleDuration));
-		}
+        bool IsMuscleAlreadyAdded(int left, int right)
+        {
+            if (left == right)
+                return true;
+            foreach (var muscle in muscles)
+            {
+                if (muscle.Equals(new Tuple(left, right)))
+                    return true;
+            }
+            return false;
+        }
 
-		void AddRandomCreature (Creature creature, float variation)
-		{
-			creatures.Add (Creature.RandomCreature (creature, variation, currentColor));
-		}
-	}
+        void InitializeController()
+        {
+            if (creatures.Count == 0)
+                return;
+            var controllerScript = gameObject.AddComponent<ControllerScript>();
+            controllerScript.CycleText = CycleText;
+            controllerScript.DistanceText = DistanceText;
+            controllerScript.TimeText = TimeText;
+            controllerScript.Initialize(creatures);
+            foreach (var n in nodes)
+            {
+                n.Destroy();
+            }
+            foreach (var m in muscles)
+            {
+                m.Destroy();
+            }
+            nodes.Clear();
+            muscles.Clear();
+        }
+
+        void AddCreature()
+        {
+            creatures.Add(new Creature(muscles, nodes, cycleDuration, currentCreature));
+            muscles = new List<Muscle>();
+            nodes = new List<Node>();
+            currentCreature = new GameObject().transform;
+            currentCreature.name = "Creature " + Random.Range(0, 10000);
+            currentColor = Color.black;//Random.ColorHSV ();
+        }
+
+        void AddRandomCreature()
+        {
+            creatures.Add(Creature.RandomCreature(cycleDuration));
+        }
+
+        void CloneCreature(Creature creature, float variation)
+        {
+            creatures.Add(Creature.CloneCreature(creature, variation, currentColor));
+        }
+    }
 }

@@ -38,7 +38,7 @@ namespace Evolution
 
             //Update UI
             DistanceText.text = "Distance : " + max;
-            CycleText.text = string.Format("{0} %", controller.GetCyclePercentageOfTheFarthestCreatures());
+            CycleText.text = string.Format("{0} %", controller.GetCyclePercentageOfTheFarthestCreature());
             TimeText.text = "Time : " + controller.CurrentTime;
 
             if (controller.CurrentTime > 200 && !hasBreak)
@@ -72,7 +72,7 @@ namespace Evolution
 
         void ControllerUpdate()
         {
-            controller.Update();
+            controller.Update(Constants.TimeMultiplier);
         }
     }
 }
