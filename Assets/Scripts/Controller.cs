@@ -72,13 +72,13 @@ namespace Evolution
             var count = Creatures.Count;
             if (count % 2 != 0)
             {
-                Creatures.Add(Creature.CloneCreature(Creatures[count - 1], Constants.Variation, genColor));
+                Creatures.Add(Creatures[count - 1].Clone(Constants.Variation, genColor));
                 count -= 1;
             }
             for (var k = 0; k < count / 2; k++)
             {
                 Creatures[k].Destroy();
-                Creatures[k] = Creature.CloneCreature(Creatures[k + count / 2], Constants.Variation, genColor);
+                Creatures[k] = Creatures[k + count / 2].Clone(Constants.Variation, genColor);
             }
 
         }

@@ -12,7 +12,6 @@ namespace Evolution
         LineRenderer lineRenderer;
         LineRenderer max;
         LineRenderer min;
-        bool isContracting;
 
         public void Initialize()
         {
@@ -31,9 +30,9 @@ namespace Evolution
             min.SetWidth(0.25f, 0.25f);
 
             max.material = new Material(Shader.Find("Transparent/Diffuse"));
-            max.material.color = new Color(0, 1, 0, 0.5f);
+            max.material.color = new Color(1f, 1f, 1f, 1f);
             min.material = new Material(Shader.Find("Transparent/Diffuse"));
-            min.material.color = new Color(0, 1, 0, 0.5f);
+            min.material.color = new Color(0.5f, 0.5f, 0.5f, 0f);
         }
 
         public void SetWidthAndColor(float width, bool contracting)
@@ -41,19 +40,15 @@ namespace Evolution
             lineRenderer.SetWidth(width, width);
             if (Constants.MuscleDebug)
             {
-                if (isContracting != contracting)
+                if (contracting)
                 {
-                    isContracting = contracting;
-                    if (contracting)
-                    {
-                        max.material.color = new Color(1, 0, 0, 0.5f);
-                        min.material.color = new Color(1, 0, 0, 0.5f);
-                    }
-                    else
-                    {
-                        max.material.color = new Color(0, 1, 0, 0.5f);
-                        min.material.color = new Color(0, 1, 0, 0.5f);
-                    }
+                    max.material.color = new Color(1, 0, 0, 0.5f);
+                    min.material.color = new Color(1, 0, 0, 0.5f);
+                }
+                else
+                {
+                    max.material.color = new Color(0, 1, 0, 0.5f);
+                    min.material.color = new Color(0, 1, 0, 0.5f);
                 }
             }
         }

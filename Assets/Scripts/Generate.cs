@@ -251,6 +251,7 @@ namespace Evolution
             }
             if (Input.GetKeyDown(KeyCode.C))
             {
+                AddCreature();
                 var c = creatures[creatures.Count - 1];
                 for (var k = 0; k < 10; k++)
                 {
@@ -276,7 +277,14 @@ namespace Evolution
 
         void GenerateMuscle(Node left, Node right)
         {
-            muscles.Add(Muscle.RandomMuscle(left, right, cycleDuration, dumbMuscle, currentColor, currentCreature));
+            if (dumbMuscle)
+            {
+                muscles.Add(new DumbMuscle(left, right, currentColor, currentCreature));
+            }
+            else
+            {
+                muscles.Add(IntelligentMuscle.RandomMuscle(left, right, cycleDuration, currentColor, currentCreature));
+            }
         }
 
         void GenerateNode(Vector2 position)
@@ -336,7 +344,7 @@ namespace Evolution
 
         void CloneCreature(Creature creature, float variation)
         {
-            creatures.Add(Creature.CloneCreature(creature, variation, currentColor));
+            creatures.Add(creature.Clone(variation, currentColor));
         }
     }
 }
