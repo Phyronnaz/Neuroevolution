@@ -17,6 +17,7 @@ namespace Evolution
         float cycleDuration;
         bool generated;
         bool isCreatingMuscle;
+        bool dumbMuscle;
         Node nodeBeeingAssociated;
         Transform currentCreature;
         Color currentColor;
@@ -68,6 +69,7 @@ namespace Evolution
             creatures = new List<Creature>();
             generated = false;
             isCreatingMuscle = false;
+            dumbMuscle = false;
 
             //Camera
             var p = transform.position;
@@ -181,14 +183,15 @@ namespace Evolution
                 RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
                 if (hit.collider != null)
                 {
-                    if (hit.collider.GetComponent<NodeRenderer>() != null)
+                    var nodeRendererHit = hit.collider.GetComponent<NodeRenderer>();
+                    if (nodeRendererHit != null)
                     {
-                        var hitNode = nodes[hit.transform.GetComponent<NodeRenderer>().Id];
+                        var nodeHit = nodes[nodeRendererHit.Id];
 
-                        if (isCreatingMuscle && !IsMuscleAlreadyAdded(hitNode.Id, nodeBeeingAssociated.Id))
-                            GenerateMuscle(hitNode, nodeBeeingAssociated);
+                        if (isCreatingMuscle && !IsMuscleAlreadyAdded(nodeHit.Id, nodeBeeingAssociated.Id))
+                            GenerateMuscle(nodeHit, nodeBeeingAssociated);
 
-                        nodeBeeingAssociated = hitNode;
+                        nodeBeeingAssociated = nodeHit;
 
                         hasDoneSmthg = true;
                     }
@@ -212,10 +215,13 @@ namespace Evolution
                 isCreatingMuscle = false;
                 Destroy(GetComponent<LineRenderer>());
             }
-            if (Input.GetKeyDown(KeyCode.Space) && isCreatingMuscle)
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                isCreatingMuscle = false;
-                Destroy(GetComponent<LineRenderer>());
+                if (isCreatingMuscle)
+                {
+                    isCreatingMuscle = false;
+                    Destroy(GetComponent<LineRenderer>());
+                }
                 AddCreature();
             }
             if (Input.GetKeyDown(KeyCode.Escape) && creatures.Count > 0)
@@ -262,11 +268,15 @@ namespace Evolution
             {
                 Restart();
             }
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                dumbMuscle = !dumbMuscle;
+            }
         }
 
         void GenerateMuscle(Node left, Node right)
         {
-            muscles.Add(Muscle.RandomMuscle(left, right, cycleDuration, currentColor, currentCreature));
+            muscles.Add(Muscle.RandomMuscle(left, right, cycleDuration, dumbMuscle, currentColor, currentCreature));
         }
 
         void GenerateNode(Vector2 position)
@@ -309,6 +319,8 @@ namespace Evolution
 
         void AddCreature()
         {
+            if (nodes.Count == 0)
+                return;
             creatures.Add(new Creature(muscles, nodes, cycleDuration, currentCreature));
             muscles = new List<Muscle>();
             nodes = new List<Node>();

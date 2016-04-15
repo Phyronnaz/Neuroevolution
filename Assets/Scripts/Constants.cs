@@ -20,5 +20,6 @@ namespace Evolution
         public static bool NeuralNetwork = false;
         public static int NumberOfThreads = 320;
         public static float Variation = 0.1f;
+        public static int Generations = 0;
     }
 }

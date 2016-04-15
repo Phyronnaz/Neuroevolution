@@ -11,7 +11,7 @@ namespace Evolution
         public readonly bool BeginWithContraction;
         public readonly Node Right;
         public readonly Node Left;
-        public  readonly MuscleRenderer muscleRenderer;
+        public readonly MuscleRenderer muscleRenderer;
 
         bool contract;
 
@@ -38,11 +38,20 @@ namespace Evolution
         }
 
 
-        public static Muscle RandomMuscle(Node left, Node right, float cycleDuration, Color color, Transform parent)
+        public static Muscle RandomMuscle(Node left, Node right, float cycleDuration, bool dumbMuscle, Color color, Transform parent)
         {
             var distance = Vector2.Distance(left.Position, right.Position);
-            var contractedLength = distance - Random.Range(Constants.MinRandom, Constants.ContractedDistanceMultiplier);
-            var extendedLength = distance + Random.Range(Constants.MinRandom, Constants.ExtendedDistanceMultiplier);
+            float contractedLength, extendedLength;
+            if (dumbMuscle)
+            {
+                contractedLength = distance;
+                extendedLength = distance;
+            }
+            else
+            {
+                contractedLength = distance - Random.Range(Constants.MinRandom, Constants.ContractedDistanceMultiplier);
+                extendedLength = distance + Random.Range(Constants.MinRandom, Constants.ExtendedDistanceMultiplier);
+            }
             var strength = Random.Range(Constants.MinStrength, Constants.StrengthAmplitude);
             var muscleCycleDuration = Random.Range(Constants.MinRandom, cycleDuration);
             var beginWithContraction = (Random.value > 0.5f);
@@ -52,12 +61,14 @@ namespace Evolution
 
         public static Muscle CloneMuscle(Muscle muscle, Node left, Node right, float variationAmplitude, Color color, Transform parent)
         {
+            var extendedLength = muscle.ExtendedLength * ((muscle.ExtendedLength == muscle.ContractedLength) ? 1 : (1 + Random.Range(-variationAmplitude, variationAmplitude)));
+            var contractedLength = muscle.ContractedLength * ((muscle.ExtendedLength == muscle.ContractedLength) ? 1 : (1 + Random.Range(-variationAmplitude, variationAmplitude)));
             return new Muscle(
                 left,
                 right,
                 muscle.Strength * (1 + Random.Range(-variationAmplitude, variationAmplitude)),
-                muscle.ExtendedLength * (1 + Random.Range(-variationAmplitude, variationAmplitude)),
-                muscle.ContractedLength * (1 + Random.Range(-variationAmplitude, variationAmplitude)),
+                extendedLength,
+                contractedLength,
                 muscle.ChangeTime * (1 + Random.Range(-variationAmplitude, variationAmplitude)),
                 (Random.value > variationAmplitude) ? muscle.BeginWithContraction : !muscle.BeginWithContraction,
                 color,
@@ -91,12 +102,14 @@ namespace Evolution
                     //Force extend
                     force = Mathf.Clamp(l - ExtendedLength, 0, 0);
                 }
-                else {
+                else
+                {
                     //Contract
                     force = Mathf.Clamp(l - ContractedLength, 0, 1);
                 }
             }
-            else {
+            else
+            {
                 //Extend time
                 if (l > ExtendedLength)
                 {
@@ -105,7 +118,8 @@ namespace Evolution
                     //Force contract
                     force = Mathf.Clamp(l - ContractedLength, 0, 0);
                 }
-                else {
+                else
+                {
                     //Extend
                     force = Mathf.Clamp(l - ExtendedLength, -1, 0);
                 }
@@ -139,13 +153,15 @@ namespace Evolution
                 var t = (Tuple)obj;
                 return (Left.Id == t.a && Right.Id == t.b) || (Left.Id == t.b && Right.Id == t.a);
             }
-            else {
+            else
+            {
                 var m = (Muscle)obj;
                 if (m != null)
                 {
                     return m.Left == Left && m.Right == Right;
                 }
-                else {
+                else
+                {
                     return false;
                 }
             }

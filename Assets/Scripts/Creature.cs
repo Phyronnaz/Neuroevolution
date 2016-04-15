@@ -104,7 +104,7 @@ namespace Evolution
 
                 if (!alreadyAdded)
                 {
-                    muscles.Add(Muscle.RandomMuscle(nodes[t.a], nodes[t.b], cycleDuration, color, parent));
+                    muscles.Add(Muscle.RandomMuscle(nodes[t.a], nodes[t.b], cycleDuration, false, color, parent));
                     k++;
                 }
             }

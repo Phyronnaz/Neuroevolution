@@ -21,7 +21,7 @@ namespace Evolution
             InvokeRepeating("ControllerUpdate", 0, Controller.DeltaTime);
 
             //HACK
-            controller.Train(10, (int)(100 / Controller.DeltaTime));
+            controller.Train(Constants.Generations, (int)(100 / Controller.DeltaTime));
         }
 
         public void Update()

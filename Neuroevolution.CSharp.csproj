@@ -74,6 +74,7 @@
     <Compile Include="Assets\Scripts\Controller.cs" />
     <Compile Include="Assets\Scripts\ControllerScript.cs" />
     <Compile Include="Assets\Scripts\Creature.cs" />
+    <Compile Include="Assets\Scripts\GameObjectActivator.cs" />
     <Compile Include="Assets\Scripts\Generate.cs" />
     <Compile Include="Assets\Scripts\Matrix.cs" />
     <Compile Include="Assets\Scripts\MouseOnlyControls.cs" />
