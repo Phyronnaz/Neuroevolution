@@ -104,7 +104,7 @@ namespace Evolution
 
                 if (!alreadyAdded)
                 {
-                    muscles.Add(IntelligentMuscle.RandomMuscle(nodes[t.a], nodes[t.b], cycleDuration, color, parent));
+                    muscles.Add(Muscle.RandomMuscle(nodes[t.a], nodes[t.b], cycleDuration, false, color, parent));
                     k++;
                 }
             }
@@ -122,10 +122,10 @@ namespace Evolution
             return new Creature(muscles, nodes, cycleDuration, parent);
         }
 
-        public Creature Clone(float variation, Color color)
+        public static Creature CloneCreature(Creature creature, float variation, Color color)
         {
-            var numberOfNodes = this.nodes.Count;
-            var numberOfMuscles = this.muscles.Count;
+            var numberOfNodes = creature.nodes.Count;
+            var numberOfMuscles = creature.muscles.Count;
             //		Color color = Random.ColorHSV ();
             // Create creature
             var parent = new GameObject().transform;
@@ -138,14 +138,14 @@ namespace Evolution
             // Generate nodes
             for (var i = 0; i < numberOfNodes; i++)
             {
-                nodes.Add(new Node(nodes[i].Position, parent, color, i));
+                nodes.Add(new Node(creature.nodes[i].Position, parent, color, i));
             }
 
             // Generate muscles
             for (var j = 0; j < numberOfMuscles; j++)
             {
-                var m = muscles[j];
-                muscles.Add(m.Clone(nodes[m.Left.Id], nodes[m.Right.Id], variation, color, parent));
+                var m = creature.muscles[j];
+                muscles.Add(Muscle.CloneMuscle(m, nodes[m.Left.Id], nodes[m.Right.Id], variation, color, parent));
             }
 
             // Update graphics
@@ -158,7 +158,7 @@ namespace Evolution
                 n.UpdateGraphics();
             }
 
-            return new Creature(muscles, nodes, cycleDuration, parent);
+            return new Creature(muscles, nodes, creature.cycleDuration, parent);
         }
 
         public int CompareTo(Creature other)
@@ -179,15 +179,10 @@ namespace Evolution
             else {
                 foreach (var m in muscles)
                 {
-                    //TODO: Put in IntelligentMuscle class
-                    if (m is IntelligentMuscle)
-                    {
-                        var im = (IntelligentMuscle)m;
-                        if ((time > im.ChangeTime && !im.BeginWithContraction) || (time < im.ChangeTime && im.BeginWithContraction))
-                            im.Contract();
-                        else
-                            im.Extend();
-                    }
+                    if ((time > m.ChangeTime && !m.BeginWithContraction) || (time < m.ChangeTime && m.BeginWithContraction))
+                        m.Contract();
+                    else
+                        m.Extend();
                     m.Update();
                 }
             }

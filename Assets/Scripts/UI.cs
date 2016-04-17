@@ -6,7 +6,7 @@ namespace Evolution
     public class UI : MonoBehaviour
     {
         public Slider TimeMultiplier;
-        public InputField NumberOfMuscles, NumberOfNodes, Generations;
+        public InputField FrictionAmplitude, NumberOfMuscles, NumberOfNodes, Generations;
         public Toggle RandomNumbers;
 
 
@@ -14,6 +14,7 @@ namespace Evolution
         {
             ForceUIUpdate();
             TimeMultiplier.onValueChanged.AddListener(UpdateUI);
+            FrictionAmplitude.onEndEdit.AddListener(UpdateUI);
             NumberOfMuscles.onEndEdit.AddListener(UpdateUI);
             NumberOfNodes.onEndEdit.AddListener(UpdateUI);
             RandomNumbers.onValueChanged.AddListener(UpdateUI);
@@ -23,6 +24,7 @@ namespace Evolution
         public void ForceUIUpdate()
         {
             TimeMultiplier.value = Mathf.Log10(Constants.TimeMultiplier);
+            FrictionAmplitude.text = Constants.Friction.ToString();
             NumberOfMuscles.text = Constants.NumberOfMuscles.ToString();
             NumberOfNodes.text = Constants.NumberOfNodes.ToString();
             RandomNumbers.isOn = Constants.RandomNumbers;
@@ -47,6 +49,7 @@ namespace Evolution
         public void UpdateUI()
         {
             Constants.TimeMultiplier = (int)Mathf.Pow(10, TimeMultiplier.value);
+            Constants.Friction = int.Parse(FrictionAmplitude.text);
             Constants.NumberOfMuscles = int.Parse(NumberOfMuscles.text);
             Constants.NumberOfNodes = int.Parse(NumberOfNodes.text);
             Constants.RandomNumbers = RandomNumbers.isOn;
