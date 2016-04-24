@@ -5,16 +5,14 @@ namespace Evolution
 {
     public class Creature : System.IComparable<Creature>
     {
-        readonly List<Muscle> muscles;
         readonly List<Node> nodes;
         readonly Transform transform;
         float cycleDuration;
         float time;
 
 
-        public Creature(List<Muscle> muscles, List<Node> nodes, float cycleDuration, Transform transform)
+        public Creature(List<Node> nodes, float cycleDuration, Transform transform)
         {
-            this.muscles = muscles;
             this.nodes = nodes;
             this.cycleDuration = cycleDuration;
             this.transform = transform;
@@ -57,7 +55,6 @@ namespace Evolution
 
             // Define arrays
             var nodes = new List<Node>(numberOfNodes);
-            var muscles = new List<Muscle>(numberOfMuscles);
 
             // Generate nodes
             for (var i = 0; i < numberOfNodes; i++)
@@ -92,73 +89,62 @@ namespace Evolution
                     alreadyAdded = true;
                 }
                 else {
-                    foreach (var muscle in muscles)
-                    {
-                        if (muscle.Equals(t))
-                        {
-                            alreadyAdded = true;
-                            break;
-                        }
-                    }
+                    ;
                 }
 
                 if (!alreadyAdded)
                 {
-                    muscles.Add(IntelligentMuscle.RandomMuscle(nodes[t.a], nodes[t.b], cycleDuration, color, parent));
-                    k++;
+                    //muscles.Add(IntelligentMuscle.RandomMuscle(nodes[t.a], nodes[t.b], cycleDuration, color, parent));
+                    //k++;
                 }
             }
 
             // Update graphics
-            foreach (var m in muscles)
-            {
-                m.UpdateGraphics();
-            }
             foreach (var n in nodes)
             {
                 n.UpdateGraphics();
             }
 
-            return new Creature(muscles, nodes, cycleDuration, parent);
+            return new Creature(nodes, cycleDuration, parent);
         }
 
         public Creature Clone(float variation, Color color)
         {
-            var numberOfNodes = this.nodes.Count;
-            var numberOfMuscles = this.muscles.Count;
-            //		Color color = Random.ColorHSV ();
-            // Create creature
+            //var numberOfNodes = this.nodes.Count;
+            //var numberOfMuscles = this.muscles.Count;
+            ////		Color color = Random.ColorHSV ();
+            //// Create creature
             var parent = new GameObject().transform;
             parent.name = "Creature " + Random.Range(0, 10000);
 
-            // Define arrays
-            var nodes = new List<Node>(numberOfNodes);
-            var muscles = new List<Muscle>(numberOfMuscles);
+            //// Define arrays
+            //var nodes = new List<Node>(numberOfNodes);
+            //var muscles = new List<Muscle>(numberOfMuscles);
 
-            // Generate nodes
-            for (var i = 0; i < numberOfNodes; i++)
-            {
-                nodes.Add(new Node(nodes[i].Position, parent, color, i));
-            }
+            //// Generate nodes
+            //for (var i = 0; i < numberOfNodes; i++)
+            //{
+            //    nodes.Add(new Node(nodes[i].Position, parent, color, i));
+            //}
 
-            // Generate muscles
-            for (var j = 0; j < numberOfMuscles; j++)
-            {
-                var m = muscles[j];
-                muscles.Add(m.Clone(nodes[m.Left.Id], nodes[m.Right.Id], variation, color, parent));
-            }
+            //// Generate muscles
+            //for (var j = 0; j < numberOfMuscles; j++)
+            //{
+            //    var m = muscles[j];
+            //    muscles.Add(m.Clone(nodes[m.Left.Id], nodes[m.Right.Id], variation, color, parent));
+            //}
 
-            // Update graphics
-            foreach (var m in muscles)
-            {
-                m.UpdateGraphics();
-            }
-            foreach (var n in nodes)
-            {
-                n.UpdateGraphics();
-            }
+            //// Update graphics
+            //foreach (var m in muscles)
+            //{
+            //    m.UpdateGraphics();
+            //}
+            //foreach (var n in nodes)
+            //{
+            //    n.UpdateGraphics();
+            //}
 
-            return new Creature(muscles, nodes, cycleDuration, parent);
+            return new Creature(nodes, cycleDuration, parent);
         }
 
         public int CompareTo(Creature other)
@@ -176,24 +162,12 @@ namespace Evolution
             {
 
             }
-            else {
-                foreach (var m in muscles)
-                {
-                    //TODO: Put in IntelligentMuscle class
-                    if (m is IntelligentMuscle)
-                    {
-                        var im = (IntelligentMuscle)m;
-                        if ((time > im.ChangeTime && !im.BeginWithContraction) || (time < im.ChangeTime && im.BeginWithContraction))
-                            im.Contract();
-                        else
-                            im.Extend();
-                    }
-                    m.Update();
-                }
-            }
-            foreach (var n in nodes)
+            else
             {
-                n.Update(deltaTime);
+                foreach (var n in nodes)
+                {
+                    n.Update(deltaTime);
+                }
             }
 
             // Update current time
@@ -202,10 +176,6 @@ namespace Evolution
 
         public void UpdateGraphics()
         {
-            foreach (var m in muscles)
-            {
-                m.UpdateGraphics();
-            }
             foreach (var n in nodes)
             {
                 n.UpdateGraphics();
@@ -242,10 +212,6 @@ namespace Evolution
 
         public void Destroy()
         {
-            foreach (var m in muscles)
-            {
-                m.Destroy();
-            }
             foreach (var n in nodes)
             {
                 n.Destroy();

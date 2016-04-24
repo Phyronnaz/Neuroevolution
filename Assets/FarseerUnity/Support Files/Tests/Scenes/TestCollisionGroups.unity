@@ -140,9 +140,12 @@ MonoBehaviour:
   - {fileID: 44950821}
   - {fileID: 1970125957}
   - {fileID: 2095721532}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &15560417
 GameObject:
   m_ObjectHideFlags: 0
@@ -331,9 +334,12 @@ MonoBehaviour:
   - {fileID: 454412813}
   - {fileID: 495433492}
   - {fileID: 252259498}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &38539999
 GameObject:
   m_ObjectHideFlags: 0
@@ -468,9 +474,12 @@ MonoBehaviour:
   - {fileID: 1689552268}
   - {fileID: 954511709}
   - {fileID: 1056616371}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &46774184
 GameObject:
   m_ObjectHideFlags: 0
@@ -546,9 +555,12 @@ MonoBehaviour:
   - {fileID: 45183894}
   - {fileID: 1365838244}
   - {fileID: 580021609}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &60045691
 GameObject:
   m_ObjectHideFlags: 0
@@ -757,9 +769,12 @@ MonoBehaviour:
   - {fileID: 496808967}
   - {fileID: 1442124467}
   - {fileID: 538301576}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &79029786
 GameObject:
   m_ObjectHideFlags: 0
@@ -1166,9 +1181,12 @@ MonoBehaviour:
   - {fileID: 571436426}
   - {fileID: 454835758}
   - {fileID: 1376844761}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &132087427
 GameObject:
   m_ObjectHideFlags: 0
@@ -1340,9 +1358,12 @@ MonoBehaviour:
   - {fileID: 1675401794}
   - {fileID: 1586388290}
   - {fileID: 685372950}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &155150550
 GameObject:
   m_ObjectHideFlags: 0
@@ -1611,9 +1632,12 @@ MonoBehaviour:
   - {fileID: 611578682}
   - {fileID: 494578311}
   - {fileID: 675367024}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &207850315
 GameObject:
   m_ObjectHideFlags: 0
@@ -1669,9 +1693,12 @@ MonoBehaviour:
   - {fileID: 580969556}
   - {fileID: 311791373}
   - {fileID: 1447600262}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &208284414
 GameObject:
   m_ObjectHideFlags: 0
@@ -1820,9 +1847,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 1
-  CollisionCategories: ffffff7f
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &215047423
 GameObject:
   m_ObjectHideFlags: 0
@@ -1930,9 +1960,12 @@ MonoBehaviour:
   - {fileID: 2010355145}
   - {fileID: 387733355}
   - {fileID: 542477063}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &244135144
 GameObject:
   m_ObjectHideFlags: 0
@@ -1988,9 +2021,12 @@ MonoBehaviour:
   - {fileID: 1597843683}
   - {fileID: 367516016}
   - {fileID: 1220570986}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &252259497
 GameObject:
   m_ObjectHideFlags: 0
@@ -2562,9 +2598,12 @@ MonoBehaviour:
   - {fileID: 813486971}
   - {fileID: 1383880743}
   - {fileID: 1564730701}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &319690650
 GameObject:
   m_ObjectHideFlags: 0
@@ -2619,9 +2658,12 @@ MonoBehaviour:
   - {fileID: 310438502}
   - {fileID: 1649166859}
   - {fileID: 687209949}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &320607081
 GameObject:
   m_ObjectHideFlags: 0
@@ -2703,9 +2745,12 @@ MonoBehaviour:
   - {fileID: 2092259661}
   - {fileID: 1042687537}
   - {fileID: 1619268412}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &326965560
 GameObject:
   m_ObjectHideFlags: 0
@@ -2761,9 +2806,12 @@ MonoBehaviour:
   - {fileID: 675367024}
   - {fileID: 602231607}
   - {fileID: 390852946}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &331845875
 GameObject:
   m_ObjectHideFlags: 0
@@ -2818,9 +2866,12 @@ MonoBehaviour:
   - {fileID: 1182860100}
   - {fileID: 1663837159}
   - {fileID: 1317202206}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &336416001
 GameObject:
   m_ObjectHideFlags: 0
@@ -2874,9 +2925,12 @@ MonoBehaviour:
   - {fileID: 262012865}
   - {fileID: 682525934}
   - {fileID: 1037011515}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &338894432
 GameObject:
   m_ObjectHideFlags: 0
@@ -2925,9 +2979,12 @@ MonoBehaviour:
   - {fileID: 630855333}
   - {fileID: 1178398815}
   - {fileID: 520788122}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &340734567
 GameObject:
   m_ObjectHideFlags: 0
@@ -2981,9 +3038,12 @@ MonoBehaviour:
   - {fileID: 630855333}
   - {fileID: 826296527}
   - {fileID: 884558235}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &341268740
 GameObject:
   m_ObjectHideFlags: 0
@@ -3064,9 +3124,12 @@ MonoBehaviour:
   - {fileID: 841603691}
   - {fileID: 1212050240}
   - {fileID: 1978588863}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &346359770
 GameObject:
   m_ObjectHideFlags: 0
@@ -3234,9 +3297,12 @@ MonoBehaviour:
   - {fileID: 1824153741}
   - {fileID: 1373883885}
   - {fileID: 1772429181}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &367516015
 GameObject:
   m_ObjectHideFlags: 0
@@ -3317,9 +3383,12 @@ MonoBehaviour:
   - {fileID: 1515786079}
   - {fileID: 1197904775}
   - {fileID: 587560550}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &381509358
 GameObject:
   m_ObjectHideFlags: 0
@@ -3549,9 +3618,12 @@ MonoBehaviour:
   - {fileID: 841603691}
   - {fileID: 1650853826}
   - {fileID: 580969556}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &402915097
 GameObject:
   m_ObjectHideFlags: 0
@@ -3905,9 +3977,12 @@ MonoBehaviour:
   - {fileID: 45183894}
   - {fileID: 1180420927}
   - {fileID: 928035814}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &449781434
 GameObject:
   m_ObjectHideFlags: 0
@@ -4098,9 +4173,12 @@ MonoBehaviour:
   - {fileID: 1376844761}
   - {fileID: 72655735}
   - {fileID: 581475638}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &461987513
 GameObject:
   m_ObjectHideFlags: 0
@@ -4154,9 +4232,12 @@ MonoBehaviour:
   - {fileID: 1675401794}
   - {fileID: 353993420}
   - {fileID: 22505186}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &473797867
 GameObject:
   m_ObjectHideFlags: 0
@@ -4853,9 +4934,12 @@ MonoBehaviour:
   - {fileID: 1660757635}
   - {fileID: 620453813}
   - {fileID: 1081091707}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &538301575
 GameObject:
   m_ObjectHideFlags: 0
@@ -5133,9 +5217,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 1
-  CollisionCategories: ffffff7f
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &554089384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5257,9 +5344,12 @@ MonoBehaviour:
   - {fileID: 346359771}
   - {fileID: 1065082578}
   - {fileID: 267998751}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &562879906
 GameObject:
   m_ObjectHideFlags: 0
@@ -5729,9 +5819,12 @@ MonoBehaviour:
   - {fileID: 1549304145}
   - {fileID: 1342453861}
   - {fileID: 215047424}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &607546176
 GameObject:
   m_ObjectHideFlags: 0
@@ -5996,9 +6089,12 @@ MonoBehaviour:
   - {fileID: 864003698}
   - {fileID: 882258949}
   - {fileID: 1404009950}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &625826030
 GameObject:
   m_ObjectHideFlags: 0
@@ -6053,9 +6149,12 @@ MonoBehaviour:
   - {fileID: 936328622}
   - {fileID: 1177133212}
   - {fileID: 955359862}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &630855332
 GameObject:
   m_ObjectHideFlags: 0
@@ -6191,9 +6290,12 @@ MonoBehaviour:
   - {fileID: 854259168}
   - {fileID: 1112424709}
   - {fileID: 100106633}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &647979198
 GameObject:
   m_ObjectHideFlags: 0
@@ -6474,9 +6576,12 @@ MonoBehaviour:
   - {fileID: 1081091707}
   - {fileID: 729446166}
   - {fileID: 1588124846}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &685372949
 GameObject:
   m_ObjectHideFlags: 0
@@ -6933,9 +7038,12 @@ MonoBehaviour:
   - {fileID: 1181445869}
   - {fileID: 936328622}
   - {fileID: 155150551}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &745102118
 GameObject:
   m_ObjectHideFlags: 0
@@ -7043,9 +7151,12 @@ MonoBehaviour:
   - {fileID: 157081747}
   - {fileID: 2080490259}
   - {fileID: 1056122058}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &765305678
 GameObject:
   m_ObjectHideFlags: 0
@@ -7131,9 +7242,12 @@ MonoBehaviour:
   - {fileID: 1390415833}
   - {fileID: 1651221441}
   - {fileID: 619468323}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &780417534
 GameObject:
   m_ObjectHideFlags: 0
@@ -7365,9 +7479,12 @@ MonoBehaviour:
   - {fileID: 1191207511}
   - {fileID: 1507536240}
   - {fileID: 1216131157}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &813691300
 GameObject:
   m_ObjectHideFlags: 0
@@ -7497,9 +7614,12 @@ MonoBehaviour:
   - {fileID: 404447603}
   - {fileID: 440950646}
   - {fileID: 2015261838}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &840086783
 GameObject:
   m_ObjectHideFlags: 0
@@ -7784,9 +7904,12 @@ MonoBehaviour:
   - {fileID: 1997070141}
   - {fileID: 1586595974}
   - {fileID: 1883125375}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &857195342
 GameObject:
   m_ObjectHideFlags: 0
@@ -8076,9 +8199,12 @@ MonoBehaviour:
   - {fileID: 1997070141}
   - {fileID: 1414486478}
   - {fileID: 884700236}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &872431692
 GameObject:
   m_ObjectHideFlags: 0
@@ -8203,9 +8329,12 @@ MonoBehaviour:
   - {fileID: 459410696}
   - {fileID: 61189226}
   - {fileID: 91512046}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &881419871
 GameObject:
   m_ObjectHideFlags: 0
@@ -8261,9 +8390,12 @@ MonoBehaviour:
   - {fileID: 833667911}
   - {fileID: 1228474962}
   - {fileID: 961764189}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &882258948
 GameObject:
   m_ObjectHideFlags: 0
@@ -8429,9 +8561,12 @@ MonoBehaviour:
   - {fileID: 449781435}
   - {fileID: 994725291}
   - {fileID: 24430525}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &904104240
 GameObject:
   m_ObjectHideFlags: 0
@@ -8514,9 +8649,12 @@ MonoBehaviour:
   - {fileID: 1148564851}
   - {fileID: 1741803611}
   - {fileID: 918736987}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &913528113
 GameObject:
   m_ObjectHideFlags: 0
@@ -8873,9 +9011,12 @@ MonoBehaviour:
   - {fileID: 46774185}
   - {fileID: 862730331}
   - {fileID: 308221970}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &954511708
 GameObject:
   m_ObjectHideFlags: 0
@@ -8985,9 +9126,12 @@ MonoBehaviour:
   - {fileID: 2015261838}
   - {fileID: 1087365293}
   - {fileID: 1803886970}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &961153235
 GameObject:
   m_ObjectHideFlags: 0
@@ -9154,9 +9298,12 @@ MonoBehaviour:
   - {fileID: 1586388290}
   - {fileID: 786360702}
   - {fileID: 2014499666}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &984906157
 GameObject:
   m_ObjectHideFlags: 0
@@ -9238,9 +9385,12 @@ MonoBehaviour:
   - {fileID: 1844225918}
   - {fileID: 1141698210}
   - {fileID: 632615988}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &990091222
 GameObject:
   m_ObjectHideFlags: 0
@@ -9375,9 +9525,12 @@ MonoBehaviour:
   - {fileID: 382314767}
   - {fileID: 1575420268}
   - {fileID: 857195343}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1007295589
 GameObject:
   m_ObjectHideFlags: 0
@@ -9701,9 +9854,12 @@ MonoBehaviour:
   - {fileID: 756892083}
   - {fileID: 1541250435}
   - {fileID: 1448133877}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1034975588
 GameObject:
   m_ObjectHideFlags: 0
@@ -9913,9 +10069,12 @@ MonoBehaviour:
   - {fileID: 1660757635}
   - {fileID: 992156754}
   - {fileID: 1887791285}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1046186765
 GameObject:
   m_ObjectHideFlags: 0
@@ -10018,9 +10177,12 @@ MonoBehaviour:
   - {fileID: 454412813}
   - {fileID: 930290776}
   - {fileID: 1165864970}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1056122057
 GameObject:
   m_ObjectHideFlags: 0
@@ -10238,9 +10400,12 @@ MonoBehaviour:
   - {fileID: 580021609}
   - {fileID: 1886155626}
   - {fileID: 1013540932}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1081091706
 GameObject:
   m_ObjectHideFlags: 0
@@ -10487,9 +10652,12 @@ MonoBehaviour:
   - {fileID: 1396895633}
   - {fileID: 223411085}
   - {fileID: 734718143}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1111673091
 GameObject:
   m_ObjectHideFlags: 0
@@ -10538,9 +10706,12 @@ MonoBehaviour:
   - {fileID: 1034975589}
   - {fileID: 1390415833}
   - {fileID: 1824153741}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1112424708
 GameObject:
   m_ObjectHideFlags: 0
@@ -10772,9 +10943,12 @@ MonoBehaviour:
   - {fileID: 454835758}
   - {fileID: 574668455}
   - {fileID: 1354366746}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1134501221
 GameObject:
   m_ObjectHideFlags: 0
@@ -10859,9 +11033,12 @@ MonoBehaviour:
   - {fileID: 1034975589}
   - {fileID: 1404979501}
   - {fileID: 1060341220}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1138328154
 GameObject:
   m_ObjectHideFlags: 0
@@ -11083,9 +11260,12 @@ MonoBehaviour:
   - {fileID: 1327459298}
   - {fileID: 516821463}
   - {fileID: 813691301}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1165864969
 GameObject:
   m_ObjectHideFlags: 0
@@ -11464,9 +11644,12 @@ MonoBehaviour:
   - {fileID: 620453813}
   - {fileID: 105575735}
   - {fileID: 2000712463}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1212050239
 GameObject:
   m_ObjectHideFlags: 0
@@ -11654,9 +11837,12 @@ MonoBehaviour:
   - {fileID: 262012865}
   - {fileID: 1928098106}
   - {fileID: 756892083}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1250906829
 GameObject:
   m_ObjectHideFlags: 0
@@ -11711,9 +11897,12 @@ MonoBehaviour:
   - {fileID: 1160742812}
   - {fileID: 1189167810}
   - {fileID: 475646690}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1251761258
 GameObject:
   m_ObjectHideFlags: 0
@@ -11796,9 +11985,12 @@ MonoBehaviour:
   - {fileID: 63425342}
   - {fileID: 623849753}
   - {fileID: 23873838}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1260693326
 GameObject:
   m_ObjectHideFlags: 0
@@ -11847,9 +12039,12 @@ MonoBehaviour:
   - {fileID: 382314767}
   - {fileID: 473797868}
   - {fileID: 833667911}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1262830190
 GameObject:
   m_ObjectHideFlags: 0
@@ -11956,9 +12151,12 @@ MonoBehaviour:
   - {fileID: 1646840099}
   - {fileID: 289927361}
   - {fileID: 44950821}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1293862958
 GameObject:
   m_ObjectHideFlags: 0
@@ -12007,9 +12205,12 @@ MonoBehaviour:
   - {fileID: 1396895633}
   - {fileID: 864003698}
   - {fileID: 706954775}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1296995423
 GameObject:
   m_ObjectHideFlags: 0
@@ -12278,9 +12479,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 1
-  CollisionCategories: ffffff7f
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1334260986
 GameObject:
   m_ObjectHideFlags: 0
@@ -12388,9 +12592,12 @@ MonoBehaviour:
   - {fileID: 2098548064}
   - {fileID: 79029787}
   - {fileID: 1982898267}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1339608279
 GameObject:
   m_ObjectHideFlags: 0
@@ -12493,9 +12700,12 @@ MonoBehaviour:
   - {fileID: 1515786079}
   - {fileID: 1182860100}
   - {fileID: 1549304145}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1348987940
 GameObject:
   m_ObjectHideFlags: 0
@@ -12544,9 +12754,12 @@ MonoBehaviour:
   - {fileID: 449781435}
   - {fileID: 1160742812}
   - {fileID: 63425342}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1352281244
 GameObject:
   m_ObjectHideFlags: 0
@@ -12919,9 +13132,12 @@ MonoBehaviour:
   - {fileID: 1689552268}
   - {fileID: 1844225918}
   - {fileID: 46774185}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1390415832
 GameObject:
   m_ObjectHideFlags: 0
@@ -13270,9 +13486,12 @@ MonoBehaviour:
   - {fileID: 2010355145}
   - {fileID: 813486971}
   - {fileID: 346359771}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1417177207
 GameObject:
   m_ObjectHideFlags: 0
@@ -13321,9 +13540,12 @@ MonoBehaviour:
   - {fileID: 157081747}
   - {fileID: 1191207511}
   - {fileID: 297066262}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1424156181
 GameObject:
   m_ObjectHideFlags: 0
@@ -13378,9 +13600,12 @@ MonoBehaviour:
   - {fileID: 1178398815}
   - {fileID: 1410597972}
   - {fileID: 1027284877}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1424758534
 GameObject:
   m_ObjectHideFlags: 0
@@ -13462,9 +13687,12 @@ MonoBehaviour:
   - {fileID: 494578311}
   - {fileID: 381509359}
   - {fileID: 841737348}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1431255272
 GameObject:
   m_ObjectHideFlags: 0
@@ -13722,9 +13950,12 @@ MonoBehaviour:
   - {fileID: 1524118969}
   - {fileID: 160310769}
   - {fileID: 1912301500}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1462161328
 GameObject:
   m_ObjectHideFlags: 0
@@ -13773,9 +14004,12 @@ MonoBehaviour:
   - {fileID: 1908379335}
   - {fileID: 854259168}
   - {fileID: 918530969}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1462583199
 GameObject:
   m_ObjectHideFlags: 0
@@ -13858,9 +14092,12 @@ MonoBehaviour:
   - {fileID: 520788122}
   - {fileID: 1189800063}
   - {fileID: 1697684099}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1467942441
 GameObject:
   m_ObjectHideFlags: 0
@@ -14368,9 +14605,12 @@ MonoBehaviour:
   - {fileID: 473797868}
   - {fileID: 289221010}
   - {fileID: 1632162509}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1531727980
 GameObject:
   m_ObjectHideFlags: 0
@@ -14540,9 +14780,12 @@ MonoBehaviour:
   - {fileID: 1323596984}
   - {fileID: 1476665384}
   - {fileID: 783711211}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1564730700
 GameObject:
   m_ObjectHideFlags: 0
@@ -14747,9 +14990,12 @@ MonoBehaviour:
   - {fileID: 341268741}
   - {fileID: 923582872}
   - {fileID: 553111646}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1581541563
 GameObject:
   m_ObjectHideFlags: 0
@@ -14805,9 +15051,12 @@ MonoBehaviour:
   - {fileID: 155150551}
   - {fileID: 1364262081}
   - {fileID: 1362005560}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1586388289
 GameObject:
   m_ObjectHideFlags: 0
@@ -15138,9 +15387,12 @@ MonoBehaviour:
   - {fileID: 404447603}
   - {fileID: 1835009749}
   - {fileID: 1910091934}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1616307724
 GameObject:
   m_ObjectHideFlags: 0
@@ -15195,9 +15447,12 @@ MonoBehaviour:
   - {fileID: 186443975}
   - {fileID: 1462583200}
   - {fileID: 1821567936}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1619268411
 GameObject:
   m_ObjectHideFlags: 0
@@ -15360,9 +15615,12 @@ MonoBehaviour:
   - {fileID: 1365838244}
   - {fileID: 927570885}
   - {fileID: 1481641474}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1635221005
 GameObject:
   m_ObjectHideFlags: 0
@@ -15445,9 +15703,12 @@ MonoBehaviour:
   - {fileID: 1165864970}
   - {fileID: 924121315}
   - {fileID: 1009802230}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1646840098
 GameObject:
   m_ObjectHideFlags: 0
@@ -15530,9 +15791,12 @@ MonoBehaviour:
   - {fileID: 706954775}
   - {fileID: 315716461}
   - {fileID: 1725224612}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1649166858
 GameObject:
   m_ObjectHideFlags: 0
@@ -15668,9 +15932,12 @@ MonoBehaviour:
   - {fileID: 289927361}
   - {fileID: 487593674}
   - {fileID: 2055414537}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1660757634
 GameObject:
   m_ObjectHideFlags: 0
@@ -15779,9 +16046,12 @@ MonoBehaviour:
   - {fileID: 1414486478}
   - {fileID: 1444458174}
   - {fileID: 963546360}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1675401793
 GameObject:
   m_ObjectHideFlags: 0
@@ -15864,9 +16134,12 @@ MonoBehaviour:
   - {fileID: 884700236}
   - {fileID: 164716684}
   - {fileID: 145642466}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1680632887
 GameObject:
   m_ObjectHideFlags: 0
@@ -15942,9 +16215,12 @@ MonoBehaviour:
   - {fileID: 1524118969}
   - {fileID: 310438502}
   - {fileID: 266178519}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1684137334
 GameObject:
   m_ObjectHideFlags: 0
@@ -15998,9 +16274,12 @@ MonoBehaviour:
   - {fileID: 611578682}
   - {fileID: 132087428}
   - {fileID: 1025192856}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1685857076
 GameObject:
   m_ObjectHideFlags: 0
@@ -16296,9 +16575,12 @@ MonoBehaviour:
   - {fileID: 930290776}
   - {fileID: 1138328155}
   - {fileID: 1411128625}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1723920742
 GameObject:
   m_ObjectHideFlags: 0
@@ -16352,9 +16634,12 @@ MonoBehaviour:
   - {fileID: 1646840099}
   - {fileID: 1685857077}
   - {fileID: 451120536}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1725224611
 GameObject:
   m_ObjectHideFlags: 0
@@ -16566,9 +16851,12 @@ MonoBehaviour:
   - {fileID: 918530969}
   - {fileID: 558765892}
   - {fileID: 1753914401}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1772429180
 GameObject:
   m_ObjectHideFlags: 0
@@ -16749,9 +17037,12 @@ MonoBehaviour:
   - {fileID: 571436426}
   - {fileID: 1911176024}
   - {fileID: 1098184079}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1802088731
 GameObject:
   m_ObjectHideFlags: 0
@@ -16806,9 +17097,12 @@ MonoBehaviour:
   - {fileID: 440950646}
   - {fileID: 113597099}
   - {fileID: 2126750550}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1803886969
 GameObject:
   m_ObjectHideFlags: 0
@@ -16889,9 +17183,12 @@ MonoBehaviour:
   - {fileID: 1181445869}
   - {fileID: 1680632888}
   - {fileID: 861924853}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1814422245
 GameObject:
   m_ObjectHideFlags: 0
@@ -17123,9 +17420,12 @@ MonoBehaviour:
   - {fileID: 1374961512}
   - {fileID: 341268741}
   - {fileID: 1327459298}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1867520078
 GameObject:
   m_ObjectHideFlags: 0
@@ -17180,9 +17480,12 @@ MonoBehaviour:
   - {fileID: 1650853826}
   - {fileID: 961153236}
   - {fileID: 681271629}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1876116774
 GameObject:
   m_ObjectHideFlags: 0
@@ -17628,9 +17931,12 @@ MonoBehaviour:
   - {fileID: 2098548064}
   - {fileID: 186443975}
   - {fileID: 1148564851}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1927217241
 GameObject:
   m_ObjectHideFlags: 0
@@ -17836,9 +18142,12 @@ MonoBehaviour:
   - {fileID: 685372950}
   - {fileID: 1578217295}
   - {fileID: 1989372602}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1968615814
 GameObject:
   m_ObjectHideFlags: 0
@@ -18081,9 +18390,12 @@ MonoBehaviour:
   - {fileID: 1374961512}
   - {fileID: 15560418}
   - {fileID: 1431255273}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &2010355144
 GameObject:
   m_ObjectHideFlags: 0
@@ -18289,9 +18601,12 @@ MonoBehaviour:
   - {fileID: 297066262}
   - {fileID: 807575674}
   - {fileID: 521988090}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &2041851631
 GameObject:
   m_ObjectHideFlags: 0
@@ -18394,9 +18709,12 @@ MonoBehaviour:
   - {fileID: 1323596984}
   - {fileID: 2092259661}
   - {fileID: 459410696}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &2055414536
 GameObject:
   m_ObjectHideFlags: 0
@@ -18635,9 +18953,12 @@ MonoBehaviour:
   - {fileID: 266178519}
   - {fileID: 137203303}
   - {fileID: 1627514748}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &2077375887
 GameObject:
   m_ObjectHideFlags: 0
@@ -18991,9 +19312,12 @@ MonoBehaviour:
   - {fileID: 1928098106}
   - {fileID: 566761067}
   - {fileID: 1441813403}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &2125497264
 GameObject:
   m_ObjectHideFlags: 0
@@ -19176,9 +19500,12 @@ MonoBehaviour:
   - {fileID: 1908379335}
   - {fileID: 1047096376}
   - {fileID: 437266975}
-  UseCollisionGroups: 1
-  CollisionCategories: 00020000
-  CollidesWith: 01000000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &2138592615
 GameObject:
   m_ObjectHideFlags: 0
@@ -19274,9 +19601,12 @@ MonoBehaviour:
   - {fileID: 1046186766}
   - {fileID: 173876810}
   - {fileID: 689906027}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &2142485843
 GameObject:
   m_ObjectHideFlags: 0
@@ -19325,6 +19655,9 @@ MonoBehaviour:
   - {fileID: 1046186766}
   - {fileID: 496808967}
   - {fileID: 1597843683}
-  UseCollisionGroups: 1
-  CollisionCategories: 00040000
-  CollidesWith: 00040000
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0

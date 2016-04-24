@@ -180,9 +180,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &3154505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -386,9 +389,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &46441514
 GameObject:
   m_ObjectHideFlags: 0
@@ -511,9 +517,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &63217264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -675,9 +684,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &95152990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -800,9 +812,12 @@ MonoBehaviour:
   - {fileID: 1416859645}
   - {fileID: 1913080303}
   - {fileID: 1950890661}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &150054490
 GameObject:
   m_ObjectHideFlags: 0
@@ -898,9 +913,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &150054496
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1130,9 +1148,12 @@ MonoBehaviour:
   Density: 1
   Restitution: 0.5
   Friction: 1
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
   PointInput: 1
   TransformPoints:
   - {fileID: 484497555}
@@ -1260,9 +1281,12 @@ MonoBehaviour:
   Restitution: 0.1
   Friction: 0.8
   PolygonPoints: []
-  UseCollisionGroups: 1
-  CollisionCategories: ffffff7f
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &214964633
 GameObject:
   m_ObjectHideFlags: 0
@@ -1374,9 +1398,12 @@ MonoBehaviour:
   - {fileID: 1207089148}
   - {fileID: 1650168929}
   - {fileID: 1581673770}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &232513882
 GameObject:
   m_ObjectHideFlags: 0
@@ -1627,9 +1654,12 @@ MonoBehaviour:
   Restitution: 0.1
   Friction: 0.8
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &293862003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1775,9 +1805,12 @@ MonoBehaviour:
   Restitution: 0.1
   Friction: 0.8
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &302763501
 GameObject:
   m_ObjectHideFlags: 0
@@ -1846,7 +1879,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Gravity: {x: 0, y: -25}
-  DoPhysics: 1
 --- !u!114 &313479996
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1911,9 +1943,12 @@ MonoBehaviour:
   - {fileID: 1601005926}
   - {fileID: 136434077}
   - {fileID: 1088797204}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &354558058
 GameObject:
   m_ObjectHideFlags: 0
@@ -1971,9 +2006,12 @@ MonoBehaviour:
   - {fileID: 171000182}
   - {fileID: 185751663}
   - {fileID: 816947489}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &362344773
 GameObject:
   m_ObjectHideFlags: 0
@@ -2108,9 +2146,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &384073281
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2248,9 +2289,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &411564506
 GameObject:
   m_ObjectHideFlags: 0
@@ -2400,9 +2444,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &435051212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2612,9 +2659,12 @@ MonoBehaviour:
   Restitution: 0.1
   Friction: 1
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &455112278
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2806,9 +2856,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &524850027
 GameObject:
   m_ObjectHideFlags: 0
@@ -2871,9 +2924,12 @@ MonoBehaviour:
   Density: 4
   Restitution: 0.1
   Friction: 1
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
   PointInput: 1
   TransformPoints:
   - {fileID: 46441515}
@@ -3017,9 +3073,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &545879375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3173,9 +3232,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &554089378
 GameObject:
   m_ObjectHideFlags: 0
@@ -3270,9 +3332,12 @@ MonoBehaviour:
   Restitution: 0.1
   Friction: 0.8
   PolygonPoints: []
-  UseCollisionGroups: 1
-  CollisionCategories: ffffff7f
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &554089384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3407,9 +3472,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &601175385
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3559,9 +3627,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &632911340
 GameObject:
   m_ObjectHideFlags: 0
@@ -3711,9 +3782,12 @@ MonoBehaviour:
   Restitution: 0.1
   Friction: 1
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &641392831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3928,9 +4002,12 @@ MonoBehaviour:
   Restitution: 0.1
   Friction: 0.8
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &699357409
 GameObject:
   m_ObjectHideFlags: 0
@@ -4357,9 +4434,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &827254853
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4590,9 +4670,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &920920873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4714,9 +4797,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &978486163
 GameObject:
   m_ObjectHideFlags: 0
@@ -4770,9 +4856,12 @@ MonoBehaviour:
   - {fileID: 1615663482}
   - {fileID: 826076462}
   - {fileID: 298633636}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &983945177
 GameObject:
   m_ObjectHideFlags: 0
@@ -4895,9 +4984,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &1000646066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5285,9 +5377,12 @@ MonoBehaviour:
   - {fileID: 789527798}
   - {fileID: 273278068}
   - {fileID: 759554946}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1167615871
 GameObject:
   m_ObjectHideFlags: 0
@@ -5410,9 +5505,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &1196989036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5493,9 +5591,12 @@ MonoBehaviour:
   - {fileID: 486805771}
   - {fileID: 639215753}
   - {fileID: 302763502}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1207089147
 GameObject:
   m_ObjectHideFlags: 0
@@ -5672,9 +5773,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &1242891272
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5824,9 +5928,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &1280302824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5987,9 +6094,12 @@ MonoBehaviour:
   Restitution: 0.1
   Friction: 0.8
   PolygonPoints: []
-  UseCollisionGroups: 1
-  CollisionCategories: ffffff7f
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1335379406
 GameObject:
   m_ObjectHideFlags: 0
@@ -6326,9 +6436,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &1529467847
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6411,9 +6524,12 @@ MonoBehaviour:
   - {fileID: 1376737069}
   - {fileID: 13601962}
   - {fileID: 215961723}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1581673769
 GameObject:
   m_ObjectHideFlags: 0
@@ -6563,9 +6679,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1601005925
 GameObject:
   m_ObjectHideFlags: 0
@@ -6708,9 +6827,12 @@ MonoBehaviour:
   - {fileID: 411564507}
   - {fileID: 872949498}
   - {fileID: 1700114732}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1649943308
 GameObject:
   m_ObjectHideFlags: 0
@@ -6926,9 +7048,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &1715402311
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7066,9 +7191,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &1804268022
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7245,9 +7373,12 @@ MonoBehaviour:
   - {fileID: 1226774914}
   - {fileID: 1030653379}
   - {fileID: 1822546788}
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1869720248
 GameObject:
   m_ObjectHideFlags: 0
@@ -7397,9 +7528,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &1913080302
 GameObject:
   m_ObjectHideFlags: 0
@@ -7522,9 +7656,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &1925144947
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7728,9 +7865,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!1 &2009146219
 GameObject:
   m_ObjectHideFlags: 0
@@ -7865,9 +8005,12 @@ MonoBehaviour:
   Restitution: 0.1
   Friction: 1
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &2025720702
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8038,9 +8181,12 @@ MonoBehaviour:
   Restitution: 0.5
   Friction: 0.75
   PolygonPoints: []
-  UseCollisionGroups: 0
-  CollisionCategories: 01000000
-  CollidesWith: ffffff7f
+  CollisionFilter: 0
+  CollisionGroup: {fileID: 0}
+  BelongsTo: 1
+  BelongsToFold: 0
+  CollidesWith: 2147483647
+  CollidesWithFold: 0
 --- !u!114 &2146244099
 MonoBehaviour:
   m_ObjectHideFlags: 0
