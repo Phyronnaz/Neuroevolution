@@ -12,8 +12,8 @@ namespace Evolution
         public readonly Node Right;
         public readonly Node Left;
         public readonly MuscleRenderer muscleRenderer;
-
-        bool contract;
+        public float Ratio;
+        public bool Contract;
 
 
         public Muscle(Node left, Node right, float strength, float extendedLength, float contractedLength, float changeTime, bool beginWithContraction, Color color, Transform parent)
@@ -35,6 +35,9 @@ namespace Evolution
             muscleRenderer.transform.parent = parent;
             muscleRenderer.Initialize();
             UpdateGraphics();
+
+            //Ratio
+            Ratio = l / (ExtendedLength - ContractedLength);
         }
 
 
@@ -75,24 +78,15 @@ namespace Evolution
                 parent);
         }
 
-        public void Contract()
-        {
-            contract = true;
-        }
-
-        public void Extend()
-        {
-            contract = false;
-        }
-
         public void Update()
         {
             var l = Vector2.Distance(Left.Position, Right.Position);
             var center = (Left.Position + Right.Position) / 2;
 
+            Ratio = l / (ExtendedLength - ContractedLength);
             float force;
 
-            if (contract)
+            if (Contract)
             {
                 //Contract time
                 if (ContractedLength > l)
@@ -138,7 +132,7 @@ namespace Evolution
 
             //Width
             var width = Mathf.Lerp(0.1f, 1, ContractedLength / distance);
-            muscleRenderer.SetWidthAndColor(width, contract);
+            muscleRenderer.SetWidthAndColor(width, Contract);
         }
 
         public void Destroy()
