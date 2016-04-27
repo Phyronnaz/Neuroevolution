@@ -37,7 +37,7 @@ namespace Evolution
             UpdateGraphics();
 
             //Ratio
-            Ratio = l / (ExtendedLength - ContractedLength);
+            Ratio = Vector2.Distance(Left.Position, Right.Position) / (ExtendedLength - ContractedLength);
         }
 
 

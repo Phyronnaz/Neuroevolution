@@ -17,7 +17,7 @@ namespace Evolution
         public static float MinRandom = 0.00001f;
         public static float MinStrength = 1;
         public static bool MuscleDebug = true;
-        public static bool NeuralNetwork = false;
+        public static bool NeuralNetwork = true;
         public static int NumberOfThreads = 320;
         public static float Variation = 0.1f;
         public static int Generations = 0;

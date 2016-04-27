@@ -17,7 +17,7 @@ namespace Evolution
 
         public Creature(List<Muscle> muscles, List<Node> nodes, float cycleDuration, Transform transform)
         {
-            return Creature(muscles, nodes, cycleDuration, transform, Matrix.Random(2 * muscles.Count, hiddenSize), Matrix.Random(hiddenSize, muscles.Count));
+            new Creature(muscles, nodes, cycleDuration, transform, Matrix.Random(2 * muscles.Count, hiddenSize), Matrix.Random(hiddenSize, muscles.Count));
         }
         public Creature(List<Muscle> muscles, List<Node> nodes, float cycleDuration, Transform transform, Matrix synapse_0, Matrix synapse_1)
         {
@@ -25,7 +25,6 @@ namespace Evolution
             this.nodes = nodes;
             this.cycleDuration = cycleDuration;
             this.transform = transform;
-            this.matrix = matrix;
             foreach (var n in nodes)
             {
                 n.NodeRenderer.GetComponent<Collider2D>().enabled = false;
@@ -162,7 +161,9 @@ namespace Evolution
                 n.UpdateGraphics();
             }
 
-            return new Creature(muscles, nodes, creature.cycleDuration, parent);
+            var newSyn0 = creature.synapse_0 + Matrix.Random(creature.synapse_0.M, creature.synapse_0.N, Constants.Variation, new System.Random());
+            var newSyn1 = creature.synapse_0 + Matrix.Random(creature.synapse_1.M, creature.synapse_1.N, Constants.Variation, new System.Random());
+            return new Creature(muscles, nodes, creature.cycleDuration, parent, newSyn0, newSyn1);
         }
 
         public int CompareTo(Creature other)
@@ -255,7 +256,6 @@ namespace Evolution
 
         void Train()
         {
-            var hiddenSize = 32;
             var input = new Matrix(1, 2 * muscles.Count);
 
             for (var i = 0; i < muscles.Count; i++)
@@ -269,7 +269,7 @@ namespace Evolution
 
             for (var i = 0; i < muscles.Count; i++)
             {
-                muscles[i].Contract = input[0][2 * i + 1] > 0;
+                muscles[i].Contract = output[0][2 * i + 1] > 0;
             }
         }
 
