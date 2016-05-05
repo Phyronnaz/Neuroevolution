@@ -1355,7 +1355,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 606e0715f07a2f64a9a3f6b08dbd5726, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameObjects: []
+  gameObjects:
+  - {fileID: 93226937}
+  - {fileID: 245596169}
+  - {fileID: 841314629}
+  - {fileID: 270612708}
 --- !u!1 &471137974
 GameObject:
   m_ObjectHideFlags: 0
@@ -2373,6 +2377,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TimeMultiplier: {fileID: 1399648231}
+  FrictionAmplitude: {fileID: 1422990044}
   NumberOfMuscles: {fileID: 841314631}
   NumberOfNodes: {fileID: 93226939}
   Generations: {fileID: 1422990044}

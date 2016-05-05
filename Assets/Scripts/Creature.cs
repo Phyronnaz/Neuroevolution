@@ -8,26 +8,28 @@ namespace Evolution
         readonly List<Muscle> muscles;
         readonly List<Node> nodes;
         readonly Transform transform;
+        readonly Matrix synapse_0;
+        readonly Matrix synapse_1;
         float cycleDuration;
         float time;
+        int hiddenSize = 32;
 
 
         public Creature(List<Muscle> muscles, List<Node> nodes, float cycleDuration, Transform transform)
+        {
+            return Creature(muscles, nodes, cycleDuration, transform, Matrix.Random(2 * muscles.Count, hiddenSize), Matrix.Random(hiddenSize, muscles.Count));
+        }
+        public Creature(List<Muscle> muscles, List<Node> nodes, float cycleDuration, Transform transform, Matrix synapse_0, Matrix synapse_1)
         {
             this.muscles = muscles;
             this.nodes = nodes;
             this.cycleDuration = cycleDuration;
             this.transform = transform;
+            this.matrix = matrix;
             foreach (var n in nodes)
             {
                 n.NodeRenderer.GetComponent<Collider2D>().enabled = false;
             }
-            //		matrix = new Matrix (new float[][] {
-            //			new float[]{ 0, 0, 1 },
-            //			new float[]{ 0, 1, 1 },
-            //			new float[]{ 1, 0, 1 },
-            //			new float[]{ 1, 1, 1 }
-            //		});
         }
 
 
@@ -41,7 +43,8 @@ namespace Evolution
                 numberOfNodes = Random.Range(3, 6);
                 numberOfMuscles = Random.Range(numberOfNodes, numberOfNodes * 4);
             }
-            else {
+            else
+            {
                 numberOfNodes = Constants.NumberOfNodes;
                 numberOfMuscles = Constants.NumberOfMuscles;
             }
@@ -91,7 +94,8 @@ namespace Evolution
                 {
                     alreadyAdded = true;
                 }
-                else {
+                else
+                {
                     foreach (var muscle in muscles)
                     {
                         if (muscle.Equals(t))
@@ -104,7 +108,7 @@ namespace Evolution
 
                 if (!alreadyAdded)
                 {
-                    muscles.Add(IntelligentMuscle.RandomMuscle(nodes[t.a], nodes[t.b], cycleDuration, color, parent));
+                    muscles.Add(Muscle.RandomMuscle(nodes[t.a], nodes[t.b], cycleDuration, false, color, parent));
                     k++;
                 }
             }
@@ -122,10 +126,10 @@ namespace Evolution
             return new Creature(muscles, nodes, cycleDuration, parent);
         }
 
-        public Creature Clone(float variation, Color color)
+        public static Creature CloneCreature(Creature creature, float variation, Color color)
         {
-            var numberOfNodes = this.nodes.Count;
-            var numberOfMuscles = this.muscles.Count;
+            var numberOfNodes = creature.nodes.Count;
+            var numberOfMuscles = creature.muscles.Count;
             //		Color color = Random.ColorHSV ();
             // Create creature
             var parent = new GameObject().transform;
@@ -138,14 +142,14 @@ namespace Evolution
             // Generate nodes
             for (var i = 0; i < numberOfNodes; i++)
             {
-                nodes.Add(new Node(nodes[i].Position, parent, color, i));
+                nodes.Add(new Node(creature.nodes[i].Position, parent, color, i));
             }
 
             // Generate muscles
             for (var j = 0; j < numberOfMuscles; j++)
             {
-                var m = muscles[j];
-                muscles.Add(m.Clone(nodes[m.Left.Id], nodes[m.Right.Id], variation, color, parent));
+                var m = creature.muscles[j];
+                muscles.Add(Muscle.CloneMuscle(m, nodes[m.Left.Id], nodes[m.Right.Id], variation, color, parent));
             }
 
             // Update graphics
@@ -158,7 +162,7 @@ namespace Evolution
                 n.UpdateGraphics();
             }
 
-            return new Creature(muscles, nodes, cycleDuration, parent);
+            return new Creature(muscles, nodes, creature.cycleDuration, parent);
         }
 
         public int CompareTo(Creature other)
@@ -174,20 +178,16 @@ namespace Evolution
             // Update muscles and nodes
             if (Constants.NeuralNetwork)
             {
-
+                Train();
             }
-            else {
+            else
+            {
                 foreach (var m in muscles)
                 {
-                    //TODO: Put in IntelligentMuscle class
-                    if (m is IntelligentMuscle)
-                    {
-                        var im = (IntelligentMuscle)m;
-                        if ((time > im.ChangeTime && !im.BeginWithContraction) || (time < im.ChangeTime && im.BeginWithContraction))
-                            im.Contract();
-                        else
-                            im.Extend();
-                    }
+                    if ((time > m.ChangeTime && !m.BeginWithContraction) || (time < m.ChangeTime && m.BeginWithContraction))
+                        m.Contract = true;
+                    else
+                        m.Contract = false;
                     m.Update();
                 }
             }
@@ -252,46 +252,37 @@ namespace Evolution
             }
             Object.Destroy(transform.gameObject);
         }
+
+        void Train()
+        {
+            var hiddenSize = 32;
+            var input = new Matrix(1, 2 * muscles.Count);
+
+            for (var i = 0; i < muscles.Count; i++)
+            {
+                input[0][2 * i] = muscles[i].Ratio;
+                input[0][2 * i + 1] = (muscles[i].Contract) ? 1 : -1;
+            }
+
+            var hd1 = Sigma(Matrix.Dot(input, synapse_0));
+            var output = Matrix.Dot(hd1, synapse_1);
+
+            for (var i = 0; i < muscles.Count; i++)
+            {
+                muscles[i].Contract = input[0][2 * i + 1] > 0;
+            }
+        }
+
+        Matrix Sigma(Matrix m)
+        {
+            for (var x = 0; x < m.M; x++)
+            {
+                for (var y = 0; y < m.N; y++)
+                {
+                    m[x][y] = 1 / (1 + Mathf.Exp(-m[x][y]));
+                }
+            }
+            return m;
+        }
     }
 }
-
-#region Comment
-
-//
-//	float Sigma (float x)
-//	{
-//		return 1 / (1 + Mathf.Exp (-x));
-//	}
-//
-//	void Train ()
-//	{
-//		var hiddenSize = 32;
-//
-////
-////X = np.array([  MuscleN.taille “””float””,
-////MuscleN.etat “””1. si muscle étendu, 0. sinon”””,
-////MuscleN.relation”””float”””])
-////
-////
-////
-////# seed random numbers to make calculation
-////# deterministic (just a good practice)
-////synapse_0 = 2*np.random.random((3,hiddenSize)) - 1
-////synapse_1 = 2*np.random.random((hiddenSize,1)) - 1
-////
-////
-////
-////# initialize weights randomly with mean 0
-////syn0 = 2*np.random.random((3,1)) - 1
-////
-////for iter in range(10000):
-////
-////# forward propagation
-////l0 = X
-////l1 = nonlin(np.dot(l0,syn0))
-////
-////print "Output After Training:"
-////
-////print l1
-//	}
-#endregion
