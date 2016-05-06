@@ -86,9 +86,18 @@ namespace Assets.Scripts.Neuroevolution
             controller.RemoveCreaturesFartherThan(50);
 
             //Update UI
-            DistanceText.text = "Distance : " + max;
-            TimeText.text = "Time : " + controller.CurrentTime;
-            SpeedText.text = "Speed:" + max / controller.CurrentTime;
+            var m = max.ToString();
+            if (m.Length > 5)
+                m = m.Substring(0, 5);
+            var t = controller.CurrentTime.ToString();
+            if (t.Length > 7)
+                t = t.Substring(0, 7);
+            var s = (max / controller.CurrentTime).ToString();
+            if (s.Length > 6)
+                s = s.Substring(0, 6);
+            DistanceText.text = "Distance : " + m;
+            TimeText.text = "Time : " + t;
+            SpeedText.text = "Speed:" + s;
 
             RenderCreatures();
 
@@ -139,7 +148,9 @@ namespace Assets.Scripts.Neuroevolution
         void ControllerUpdate()
         {
             if (controller != null)
+            {
                 controller.Update((int)Mathf.Exp(TimeMultiplierSlider.value));
+            }
         }
     }
 }

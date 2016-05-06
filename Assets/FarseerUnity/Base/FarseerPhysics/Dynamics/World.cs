@@ -732,12 +732,12 @@ namespace FarseerPhysics.Dynamics
 #endif
 			
 			//GABS:PROFILER
-			UnityEngine.Profiler.BeginSample("FPE::World::ProcessChanges");
+			//UnityEngine.Profiler.BeginSample("FPE::World::ProcessChanges");
 
             ProcessChanges();
 			
 			//GABS:PROFILER
-			UnityEngine.Profiler.EndSample();
+			//UnityEngine.Profiler.EndSample();
 
 #if (!SILVERLIGHT)
             if (Settings.EnableDiagnostics)
@@ -769,7 +769,7 @@ namespace FarseerPhysics.Dynamics
             step.dtRatio = _invDt0 * dt;
 			
 			//GABS:PROFILER
-			UnityEngine.Profiler.BeginSample("FPE::World::Controllers");
+			//UnityEngine.Profiler.BeginSample("FPE::World::Controllers");
 
             //Update controllers
             for (int i = 0; i < ControllerList.Count; i++)
@@ -778,7 +778,7 @@ namespace FarseerPhysics.Dynamics
             }
 			
 			//GABS:PROFILER
-			UnityEngine.Profiler.EndSample();
+			//UnityEngine.Profiler.EndSample();
 
 #if (!SILVERLIGHT)
             if (Settings.EnableDiagnostics)
@@ -786,13 +786,13 @@ namespace FarseerPhysics.Dynamics
 #endif
 			
 			//GABS:PROFILER
-			UnityEngine.Profiler.BeginSample("FPE::World::Contacts");
+			//UnityEngine.Profiler.BeginSample("FPE::World::Contacts");
 
             // Update contacts. This is where some contacts are destroyed.
             ContactManager.Collide();
 			
 			//GABS:PROFILER
-			UnityEngine.Profiler.EndSample();
+			//UnityEngine.Profiler.EndSample();
 
 #if (!SILVERLIGHT)
             if (Settings.EnableDiagnostics)
@@ -800,13 +800,13 @@ namespace FarseerPhysics.Dynamics
 #endif
 			
 			//GABS:PROFILER
-			UnityEngine.Profiler.BeginSample("FPE::World::VSolver");
+			//UnityEngine.Profiler.BeginSample("FPE::World::VSolver");
 			
             // Integrate velocities, solve velocity raints, and integrate positions.
             Solve(ref step);
 			
 			//GABS:PROFILER
-			UnityEngine.Profiler.EndSample();
+			//UnityEngine.Profiler.EndSample();
 			
 
 #if (!SILVERLIGHT)
@@ -814,7 +814,7 @@ namespace FarseerPhysics.Dynamics
                 SolveUpdateTime = _watch.ElapsedTicks - (AddRemoveTime + ControllersUpdateTime + ContactsUpdateTime);
 #endif
 			//GABS:PROFILER
-			UnityEngine.Profiler.BeginSample("FPE::World::TOI");
+			//UnityEngine.Profiler.BeginSample("FPE::World::TOI");
 
             // Handle TOI events.
             if (Settings.ContinuousPhysics)
@@ -823,7 +823,7 @@ namespace FarseerPhysics.Dynamics
             }
 			
 			//GABS:PROFILER
-			UnityEngine.Profiler.EndSample();
+			//UnityEngine.Profiler.EndSample();
 
 #if (!SILVERLIGHT)
             if (Settings.EnableDiagnostics)
@@ -943,7 +943,7 @@ namespace FarseerPhysics.Dynamics
         private void Solve(ref TimeStep step)
         {
 			//GABS:PROFILER
-			UnityEngine.Profiler.BeginSample("Island.Reset");
+			//UnityEngine.Profiler.BeginSample("Island.Reset");
 			
             // Size the island for the worst case.
             Island.Reset(BodyList.Count,
@@ -985,10 +985,10 @@ namespace FarseerPhysics.Dynamics
                 _stack = new Body[Math.Max(_stack.Length * 2, stackSize)];
 			
 			//GABS:PROFILER
-			UnityEngine.Profiler.EndSample();
+			//UnityEngine.Profiler.EndSample();
 			
 			//GABS:PROFILER
-			UnityEngine.Profiler.BeginSample("Main Loop");
+			//UnityEngine.Profiler.BeginSample("Main Loop");
 
 #if USE_AWAKE_BODY_SET
 
@@ -1047,7 +1047,7 @@ namespace FarseerPhysics.Dynamics
                     }
 						
 					//GABS:PROFILER
-					UnityEngine.Profiler.BeginSample("Contact Search");
+					//UnityEngine.Profiler.BeginSample("Contact Search");
 
                     // Search all contacts connected to this body.
                     for (ContactEdge ce = b.ContactList; ce != null; ce = ce.Next)
@@ -1090,12 +1090,12 @@ namespace FarseerPhysics.Dynamics
                         SetIsland(other);
                         //other.Flags |= BodyFlags.Island;
                     }
-						
-					//GABS:PROFILER
-					UnityEngine.Profiler.EndSample();
-						
-					//GABS:PROFILER
-					UnityEngine.Profiler.BeginSample("Joint Search");
+
+                    //GABS:PROFILER
+                    //UnityEngine.Profiler.EndSample();
+
+                    //GABS:PROFILER
+                    //UnityEngine.Profiler.BeginSample("Joint Search");
 
                     // Search all joints connect to this body.
                     for (JointEdge je = b.JointList; je != null; je = je.Next)
@@ -1138,16 +1138,16 @@ namespace FarseerPhysics.Dynamics
                     }
 						
 					//GABS:PROFILER
-					UnityEngine.Profiler.EndSample();
+					//UnityEngine.Profiler.EndSample();
                 }
 					
 				//GABS:PROFILER
-				UnityEngine.Profiler.BeginSample("Island.Solve");
+				//UnityEngine.Profiler.BeginSample("Island.Solve");
 
                 Island.Solve(ref step, ref Gravity);
 					
 				//GABS:PROFILER
-				UnityEngine.Profiler.EndSample();
+				//UnityEngine.Profiler.EndSample();
 
                 // Post solve cleanup.
                 for (int i = 0; i < Island.BodyCount; ++i)
@@ -1162,10 +1162,10 @@ namespace FarseerPhysics.Dynamics
             }
 				
 			//GABS:PROFILER
-			UnityEngine.Profiler.EndSample();
+			//UnityEngine.Profiler.EndSample();
 				
 			//GABS:PROFILER
-			UnityEngine.Profiler.BeginSample("Bodyloop2");
+			//UnityEngine.Profiler.BeginSample("Bodyloop2");
 
             // Synchronize fixtures, check for out of range bodies.
 #if USE_ISLAND_SET
@@ -1194,7 +1194,7 @@ namespace FarseerPhysics.Dynamics
 				
 				
 			//GABS:PROFILER
-			UnityEngine.Profiler.EndSample();
+			//UnityEngine.Profiler.EndSample();
 				
 #if OPTIMIZE_TOI
             foreach (var b in IslandSet)
@@ -1210,13 +1210,13 @@ namespace FarseerPhysics.Dynamics
 #endif
 				
 			//GABS:PROFILER
-			UnityEngine.Profiler.BeginSample("FindNewContacts");
+			//UnityEngine.Profiler.BeginSample("FindNewContacts");
 
             // Look for new contacts.
             ContactManager.FindNewContacts();
 				
 			//GABS:PROFILER
-			UnityEngine.Profiler.EndSample();
+			//UnityEngine.Profiler.EndSample();
 
 #if USE_AWAKE_BODY_SET
             AwakeBodyList.Clear();

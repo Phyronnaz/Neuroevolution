@@ -24,6 +24,7 @@ namespace Assets.Scripts.Neuroevolution
         {
             this.revoluteJoints = new List<RevoluteJoint>();
             world = new World(new FVector2(0, -9.8f));
+            world.ProcessChanges();
             Speeds = new List<float>();
             InitialPositions = positions;
             Synapses = synapses;
@@ -31,32 +32,25 @@ namespace Assets.Scripts.Neuroevolution
             DistanceJoints = distanceJoints;
             RevoluteJoints = revoluteJoints;
 
-
-            foreach(var p in positions)
+            foreach (var p in positions)
             {
                 world.AddBody(BodyFactory.CreateCircle(world, 1, 1, p));
             }
+            world.ProcessChanges();
             foreach (var b in world.BodyList)
             {
                 b.CollidesWith = Category.Cat1;
                 b.CollisionCategories = Category.Cat10;
+                b.LinearVelocity = FVector2.One * (-100);
+                b.Awake = true;
             }
+            world.ProcessChanges();
             var ground = BodyFactory.CreateRectangle(world, 1000000, 1, 1, FVector2.Zero);
             ground.IsStatic = true;
             ground.CollisionCategories = Category.Cat1;
             ground.CollidesWith = Category.Cat10;
             world.AddBody(ground);
-            world.Step(0.0000001f);
-
-            Debug.Log(positions.Count);
-            Debug.Log(world.BodyList.Count);
-            foreach (var d in distanceJoints)
-            {
-                Debug.Log("------------------------------------------------");
-                Debug.Log(d.a);
-                Debug.Log(d.b);
-                AddDistanceJoint(d.a, d.b);
-            }
+            world.ProcessChanges();
 
             foreach (var r in revoluteJoints)
             {

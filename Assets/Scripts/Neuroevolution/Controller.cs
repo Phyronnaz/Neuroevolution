@@ -38,6 +38,7 @@ namespace Assets.Scripts.Neuroevolution
 
         public void Update(int testDuration)
         {
+            Debug.Log(Creatures[0].GetBodies()[0].Position.Y);
             // Update creatures
             var numberOfThreads = Mathf.Min(NumberOfThreads, Creatures.Count);
             var threads = new List<Thread>();

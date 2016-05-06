@@ -32,10 +32,10 @@ namespace Assets.Scripts.Neuroevolution
                     lines.ForEach(Object.Destroy);
                 }
                 lines = new List<LineRenderer>();
+                var material = new Material(Shader.Find("Diffuse"));
                 for (var k = 0; k < distanceJoints.Count; k++)
                 {
-                    var l = new LineRenderer();
-                    var material = new Material(Shader.Find("Diffuse"));
+                    var l = (new GameObject()).AddComponent<LineRenderer>();
                     l.material = material;
                     l.SetColors(color, color);
                     lines.Add(l);
@@ -78,7 +78,7 @@ namespace Assets.Scripts.Neuroevolution
                 }
                 foreach (var n in nodes)
                 {
-                    n.GetComponent<SpriteRenderer>().color = color;
+                    n.GetComponent<SpriteRenderer>().color = new Color(1.0f - color.r, 1.0f - color.g, 1.0f - color.b);
                 }
             }
         }
