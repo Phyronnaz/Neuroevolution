@@ -113,7 +113,6 @@
     <None Include="Assets\FarseerUnity\Base\FarseerDebugViewUnity\FDView.shader" />
     <None Include="Assets\FarseerUnity\Support Files\Tests\Shaders\Color.shader" />
     <None Include="Assets\FarseerUnity\Support Files\Tests\Shaders\Transparent Vertex Colored.shader" />
-    <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
     <None Include="Assets\Standard Assets\Fonts\OpenSans\License!.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />

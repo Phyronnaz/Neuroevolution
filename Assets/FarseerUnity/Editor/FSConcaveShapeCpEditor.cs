@@ -21,13 +21,13 @@ public class FSConcaveShapeCpEditor : Editor
 	
 	public override void OnInspectorGUI ()
 	{
-		EditorGUIUtility.LookLikeControls();
-		EditTarget.Update();
+        //EditorGUIUtility.LookLikeControls();
+        EditTarget.Update();
 		EditorGUILayout.BeginVertical();
 		EditorGUILayout.Separator();
 		target0.PointInput = (FSShapePointInput)EditorGUILayout.EnumPopup("Define points by", target0.PointInput);
-		EditorGUIUtility.LookLikeInspector();
-		EditorGUILayout.Separator();
+		//EditorGUIUtility.LookLikeInspector();
+        EditorGUILayout.Separator();
 		if(target0.PointInput == FSShapePointInput.Transform)
 		{
 			if(target0.TransformPoints == null)

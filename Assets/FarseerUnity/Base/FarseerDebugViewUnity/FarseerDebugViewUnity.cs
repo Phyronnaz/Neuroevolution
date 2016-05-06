@@ -36,10 +36,10 @@ namespace FarseerPhysics.DebugViews
         //private SpriteFont _font;
         //private GraphicsDevice _device;
         private FVector2[] _tempVertices = new FVector2[Settings.MaxPolygonVertices];
-        private List<StringData> _stringData;
+        //private List<StringData> _stringData;
 
-        private FMatrix _localProjection;
-        private FMatrix _localView;
+        //private FMatrix _localProjection;
+        //private FMatrix _localView;
 
         //Shapes
         public Color DefaultShapeColor = new Color(0.9f, 0.7f, 0.7f);

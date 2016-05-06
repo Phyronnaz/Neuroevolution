@@ -1100,7 +1100,7 @@ namespace FarseerPhysics.Collision
             FVector2 _v0, _v1, _v2, _v3;
             FVector2 _normal0, _normal1, _normal2;
             FVector2 _normal;
-            VertexType _type1, _type2;
+            //VertexType _type1, _type2;
             FVector2 _lowerLimit, _upperLimit;
             float _radius;
             bool _front;

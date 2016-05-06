@@ -6,13 +6,13 @@ using FarseerPhysics.Dynamics;
 
 namespace Assets.Scripts.Neuroevolution
 {
-    class CreatureRenderer : MonoBehaviour
+    public class CreatureRenderer
     {
         List<Transform> nodes;
         List<LineRenderer> lines;
-        Color color = Random.ColorHSV();
+        Color color;
 
-        void Update(List<Body> bodies, List<FarseerJoint> joints)
+        public void Update(List<Body> bodies, List<FarseerJoint> joints, Color color)
         {
             //Select distances joints
             var distanceJoints = new List<DistanceJoint>();
@@ -29,13 +29,10 @@ namespace Assets.Scripts.Neuroevolution
             {
                 if (lines != null)
                 {
-                    foreach (var l in lines)
-                    {
-                        Destroy(l);
-                    }
+                    lines.ForEach(Object.Destroy);
                 }
                 lines = new List<LineRenderer>();
-                foreach (var j in distanceJoints)
+                for (var k = 0; k < distanceJoints.Count; k++)
                 {
                     var l = new LineRenderer();
                     var material = new Material(Shader.Find("Diffuse"));
@@ -44,7 +41,7 @@ namespace Assets.Scripts.Neuroevolution
                     lines.Add(l);
                 }
             }
-            for(var i = 0; i < lines.Count; i ++)
+            for (var i = 0; i < lines.Count; i++)
             {
                 lines[i].SetPosition(0, new Vector3(distanceJoints[i].BodyA.Position.X, distanceJoints[i].BodyA.Position.Y, 0));
                 lines[i].SetPosition(1, new Vector3(distanceJoints[i].BodyB.Position.X, distanceJoints[i].BodyB.Position.Y, 0));
@@ -53,10 +50,14 @@ namespace Assets.Scripts.Neuroevolution
             //Update nodes
             if (nodes == null || nodes.Count != bodies.Count)
             {
+                if (nodes != null)
+                {
+                    nodes.ForEach(Object.Destroy);
+                }
                 nodes = new List<Transform>();
                 foreach (var b in bodies)
                 {
-                    var go = Instantiate(Resources.Load("Circle"), new Vector2(b.Position.X, b.Position.Y), Quaternion.identity) as GameObject;
+                    var go = Object.Instantiate(Resources.Load("Circle"), new Vector2(b.Position.X, b.Position.Y), Quaternion.identity) as GameObject;
                     go.GetComponent<SpriteRenderer>().color = new Color(1.0f - color.r, 1.0f - color.g, 1.0f - color.b);
                     nodes.Add(go.transform);
                 }
@@ -68,6 +69,24 @@ namespace Assets.Scripts.Neuroevolution
                     nodes[i].position = new Vector2(bodies[i].Position.X, bodies[i].Position.Y);
                 }
             }
+            if (color != this.color)
+            {
+                this.color = color;
+                foreach (var l in lines)
+                {
+                    l.material.color = color;
+                }
+                foreach (var n in nodes)
+                {
+                    n.GetComponent<SpriteRenderer>().color = color;
+                }
+            }
+        }
+
+        public void Destroy()
+        {
+            lines.ForEach(Object.Destroy);
+            nodes.ForEach(Object.Destroy);
         }
     }
 }

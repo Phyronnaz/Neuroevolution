@@ -202,29 +202,20 @@
     <Compile Include="Assets\FarseerUnity\FSWorldComponent.cs" />
     <Compile Include="Assets\FarseerUnity\Support Files\Test_iOS\TestII.cs" />
     <Compile Include="Assets\FarseerUnity\Support Files\Tutorials [PDF]\Tutorials\Part 4\CollisionEventsDone\TestCollisionEventsDoneCp.cs" />
-    <Compile Include="Assets\Scripts\ChildNode.cs" />
-    <Compile Include="Assets\Scripts\Constants.cs" />
-    <Compile Include="Assets\Scripts\Controller.cs" />
-    <Compile Include="Assets\Scripts\ControllerScript.cs" />
-    <Compile Include="Assets\Scripts\Creature.cs" />
     <Compile Include="Assets\Scripts\GameObjectActivator.cs" />
-    <Compile Include="Assets\Scripts\Generate.cs" />
-    <Compile Include="Assets\Scripts\Matrix.cs" />
     <Compile Include="Assets\Scripts\MouseOnlyControls.cs" />
-    <Compile Include="Assets\Scripts\Muscle.cs" />
-    <Compile Include="Assets\Scripts\MuscleRenderer.cs" />
+    <Compile Include="Assets\Scripts\Neuroevolution\Controller.cs" />
     <Compile Include="Assets\Scripts\Neuroevolution\Creature.cs" />
     <Compile Include="Assets\Scripts\Neuroevolution\CreatureRenderer.cs" />
-    <Compile Include="Assets\Scripts\Node.cs" />
-    <Compile Include="Assets\Scripts\NodeRenderer.cs" />
-    <Compile Include="Assets\Scripts\Tuple.cs" />
-    <Compile Include="Assets\Scripts\UI.cs" />
+    <Compile Include="Assets\Scripts\Neuroevolution\Editor.cs" />
+    <Compile Include="Assets\Scripts\Neuroevolution\JointsStructs.cs" />
+    <Compile Include="Assets\Scripts\Neuroevolution\Main.cs" />
+    <Compile Include="Assets\Scripts\Neuroevolution\Matrix.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\FarseerUnity\Base\FarseerDebugViewUnity\FDView.shader" />
     <None Include="Assets\FarseerUnity\Support Files\Tests\Shaders\Color.shader" />
     <None Include="Assets\FarseerUnity\Support Files\Tests\Shaders\Transparent Vertex Colored.shader" />
-    <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
     <None Include="Assets\Standard Assets\Fonts\OpenSans\License!.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />

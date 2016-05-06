@@ -56,7 +56,7 @@ namespace FarseerPhysics.Dynamics.Joints
         private float _gamma;
 
         // Solver temp
-        private int _indexA;
+        //private int _indexA;
         private int _indexB;
         private FVector2 _rB;
         private FVector2 _localCenterB;
