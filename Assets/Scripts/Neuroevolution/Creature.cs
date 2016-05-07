@@ -4,13 +4,13 @@ using FarseerPhysics.Dynamics.Joints;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
-using UnityEngine;
+using Mathf = UnityEngine.Mathf;
 
 namespace Assets.Scripts.Neuroevolution
 {
-    public class Creature
+    public class Creature : IComparable
     {
-        public readonly List<FVector2> InitialPositions;
+        public readonly List<Vector2> InitialPositions;
         public readonly List<DistanceJointStruct> DistanceJoints;
         public readonly List<RevoluteJointStruct> RevoluteJoints;
         public readonly List<Matrix> Synapses;
@@ -19,11 +19,13 @@ namespace Assets.Scripts.Neuroevolution
         readonly World world;
         List<RevoluteJoint> revoluteJoints;
 
+        public float currentTime;
 
-        public Creature(List<FVector2> positions, List<DistanceJointStruct> distanceJoints, List<RevoluteJointStruct> revoluteJoints, List<Matrix> synapses, int generation)
+
+        public Creature(List<Vector2> positions, List<DistanceJointStruct> distanceJoints, List<RevoluteJointStruct> revoluteJoints, List<Matrix> synapses, int generation)
         {
             this.revoluteJoints = new List<RevoluteJoint>();
-            world = new World(new FVector2(0, -9.8f));
+            world = new World(new Vector2(0, -9.8f));
             world.ProcessChanges();
             Speeds = new List<float>();
             InitialPositions = positions;
@@ -34,18 +36,18 @@ namespace Assets.Scripts.Neuroevolution
 
             foreach (var p in positions)
             {
-                world.AddBody(BodyFactory.CreateCircle(world, 1, 1, p));
+                world.AddBody(BodyFactory.CreateCircle(world, 1, 1, p, null));
             }
             world.ProcessChanges();
             foreach (var b in world.BodyList)
             {
                 b.CollidesWith = Category.Cat1;
                 b.CollisionCategories = Category.Cat10;
-                b.LinearVelocity = FVector2.One * (-100);
-                b.Awake = true;
+                b.IsStatic = false;
+                b.IgnoreCCD = true;
             }
             world.ProcessChanges();
-            var ground = BodyFactory.CreateRectangle(world, 1000000, 1, 1, FVector2.Zero);
+            var ground = BodyFactory.CreateRectangle(world, 1000000, 1, 1, Vector2.Zero, null);
             ground.IsStatic = true;
             ground.CollisionCategories = Category.Cat1;
             ground.CollidesWith = Category.Cat10;
@@ -56,6 +58,11 @@ namespace Assets.Scripts.Neuroevolution
             {
                 AddRevoluteJoint(r.a, r.b, r.anchor, r.lowerLimit, r.upperLimit, r.speed);
             }
+            foreach (var d in distanceJoints)
+            {
+                AddDistanceJoint(d.a, d.b);
+            }
+            world.ProcessChanges();
         }
 
 
@@ -64,7 +71,7 @@ namespace Assets.Scripts.Neuroevolution
             var synapses = new List<Matrix>();
             for (var k = 0; k < creature.Synapses.Count; k++)
             {
-                synapses[k] = creature.Synapses[k] + Matrix.Random(creature.Synapses[k].M, creature.Synapses[k].N) * variation;
+                synapses.Add(creature.Synapses[k] + Matrix.Random(creature.Synapses[k].M, creature.Synapses[k].N) * variation);
             }
             return new Creature(creature.InitialPositions, creature.DistanceJoints, creature.RevoluteJoints, synapses, creature.Generation + 1);
         }
@@ -73,7 +80,9 @@ namespace Assets.Scripts.Neuroevolution
         {
             world.Step(dt);
             Train();
+            currentTime += dt;
         }
+
         void Train()
         {
             var neuralNetwork = new Matrix(1, 2 * revoluteJoints.Count);
@@ -86,15 +95,16 @@ namespace Assets.Scripts.Neuroevolution
 
             for (var k = 0; k < Synapses.Count; k++)
             {
+                UnityEngine.Debug.Log(neuralNetwork.N);
+                UnityEngine.Debug.Log(Synapses[k].M);
                 neuralNetwork = Sigma(Matrix.Dot(neuralNetwork, Synapses[k]));
             }
 
             for (var i = 0; i < revoluteJoints.Count; i++)
             {
-                revoluteJoints[i].MotorSpeed = neuralNetwork[0][2 * i + 1] * Speeds[i];
+                revoluteJoints[i].MotorSpeed = neuralNetwork[0][i] * Speeds[i];
             }
         }
-
         Matrix Sigma(Matrix m)
         {
             for (var x = 0; x < m.M; x++)
@@ -117,24 +127,30 @@ namespace Assets.Scripts.Neuroevolution
 
         void AddDistanceJoint(int a, int b)
         {
-            world.AddJoint(JointFactory.CreateDistanceJoint(world, world.BodyList[a], world.BodyList[b], FVector2.Zero, FVector2.Zero));
+            world.AddJoint(JointFactory.CreateDistanceJoint(world, world.BodyList[a], world.BodyList[b], Vector2.Zero, Vector2.Zero));
         }
 
         void AddRevoluteJoint(int a, int b, int anchor, float lowerLimit, float upperLimit, float speed)
         {
             Speeds.Add(speed);
-            var j = JointFactory.CreateRevoluteJoint(world.BodyList[a], world.BodyList[b], world.BodyList[anchor].Position);
+            var anchorA = world.BodyList[anchor].Position - world.BodyList[a].Position;
+            var anchorB = world.BodyList[anchor].Position - world.BodyList[b].Position;
+            var j = JointFactory.CreateRevoluteJoint(world, world.BodyList[a], world.BodyList[b], anchorA, anchorB, false);
             j.SetLimits(lowerLimit, upperLimit);
+            j.LimitEnabled = true;
+            j.MotorEnabled = true;
+            j.Enabled = true;
             world.AddJoint(j);
             revoluteJoints.Add(j);
         }
 
         public List<Body> GetBodies()
         {
+            UnityEngine.Debug.Log(currentTime);
             return world.BodyList.GetRange(0, world.BodyList.Count - 1);
         }
 
-        public List<FarseerJoint> GetJoints()
+        public List<Joint> GetJoints()
         {
             return world.JointList;
         }
@@ -147,6 +163,18 @@ namespace Assets.Scripts.Neuroevolution
                 a += b.Position.X;
             }
             return a / world.BodyList.Count;
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is Creature)
+            {
+                return GetAveragePosition().CompareTo(((Creature)obj).GetAveragePosition());
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

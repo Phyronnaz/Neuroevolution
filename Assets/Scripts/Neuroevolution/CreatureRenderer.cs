@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using FarseerPhysics.Dynamics.Joints;
+using Joint = FarseerPhysics.Dynamics.Joints.Joint;
 using FarseerPhysics.Dynamics;
 
 
@@ -12,7 +13,7 @@ namespace Assets.Scripts.Neuroevolution
         List<LineRenderer> lines;
         Color color;
 
-        public void Update(List<Body> bodies, List<FarseerJoint> joints, Color color)
+        public void Update(List<Body> bodies, List<Joint> joints, Color color)
         {
             //Select distances joints
             var distanceJoints = new List<DistanceJoint>();
@@ -85,8 +86,14 @@ namespace Assets.Scripts.Neuroevolution
 
         public void Destroy()
         {
-            lines.ForEach(Object.Destroy);
-            nodes.ForEach(Object.Destroy);
+            foreach(var l in lines)
+            {
+                Object.Destroy(l.gameObject);
+            }
+            foreach (var n in nodes)
+            {
+                Object.Destroy(n.gameObject);
+            }
         }
     }
 }

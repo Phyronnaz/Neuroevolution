@@ -50,13 +50,17 @@ namespace Assets.Scripts.Neuroevolution
 
         public void Train()
         {
-            var variation = int.Parse(InitialPopulationVariationField.text);
+            if (controller == null)
+            {
+                InitializeController();
+            }
+            var variation = float.Parse(InitialPopulationVariationField.text);
             while (controller.Creatures.Count < int.Parse(InitialPopulationSizeField.text))
             {
                 var randomCreature = controller.Creatures[Random.Range(0, controller.Creatures.Count)];
                 controller.Creatures.Add(Creature.CloneCreature(randomCreature, variation));
             }
-            controller.Train(int.Parse(GenerationsField.text), int.Parse(TestDurationField.text), int.Parse(VariationField.text));
+            controller.Train(int.Parse(GenerationsField.text), int.Parse(TestDurationField.text), float.Parse(VariationField.text));
         }
 
         public void EditUpdate()
