@@ -19,7 +19,7 @@ namespace Assets.Scripts.Neuroevolution
         Controller controller;
         Editor editor;
         bool edit;
-        const int hiddenSize = 20;
+        int hiddenSize = 4;
         const int hiddenCount = 1;
 
         public void Awake()
@@ -35,6 +35,10 @@ namespace Assets.Scripts.Neuroevolution
 
         public void InitializeController()
         {
+            if (hiddenSize < editor.GetRevoluteJoints().Count * 2)
+            {
+                hiddenSize = editor.GetRevoluteJoints().Count * 2;
+            }
             var s = new List<Matrix>();
             s.Add(Matrix.Random(editor.GetRevoluteJoints().Count * 2, hiddenSize));
             for (var k = 1; k < hiddenCount; k++)
@@ -42,7 +46,13 @@ namespace Assets.Scripts.Neuroevolution
                 s.Add(Matrix.Random(hiddenSize, hiddenSize));
             }
             s.Add(Matrix.Random(hiddenSize, editor.GetRevoluteJoints().Count));
-            var c = new Creature(editor.GetPositions(), editor.GetDistanceJoints(), editor.GetRevoluteJoints(), s, 0);
+
+            var cg = new List<float>();
+            for (var k = 0; k < editor.GetRevoluteJoints().Count; k++)
+            {
+                cg.Add(Random.value * 10);
+            }
+            var c = new Creature(editor.GetPositions(), editor.GetDistanceJoints(), editor.GetRevoluteJoints(), s, cg, 0);
             edit = false;
             editor.Destroy();
             controller = new Controller(c);

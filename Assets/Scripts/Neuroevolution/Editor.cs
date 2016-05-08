@@ -186,13 +186,13 @@ namespace Assets.Scripts.Neuroevolution
                 var b = new Vector2(nodesPositions[secondNodeIndex].X, nodesPositions[secondNodeIndex].Y);
                 var anchor = new Vector2(nodesPositions[anchorNodeIndex].X, nodesPositions[anchorNodeIndex].Y);
                 var degAngle = Vector2.Angle(a - anchor, b - anchor);
-                lowerLimit = Mathf.Clamp(lowerLimit, Mathf.Deg2Rad * degAngle, Mathf.PI * 2);
+                lowerLimit = Mathf.Clamp(lowerLimit, 0, Mathf.PI * 2);
                 upperLimit = Mathf.Clamp(upperLimit, lowerLimit, Mathf.PI * 2);
             }
             if (Input.GetKeyDown(KeyCode.Return))
             {
                 //TODO: replace speed
-                revoluteJoints.Add(new RevoluteJointStruct(firstNodeIndex, secondNodeIndex, anchorNodeIndex, lowerLimit, upperLimit, 200));
+                revoluteJoints.Add(new RevoluteJointStruct(firstNodeIndex, secondNodeIndex, anchorNodeIndex, lowerLimit, upperLimit, 2000));
                 if (firstNodeIndex != -1)
                 {
                     nodesGameObjects[firstNodeIndex].GetComponent<SpriteRenderer>().color = new Color(1 - color.r, 1 - color.g, 1 - color.b);

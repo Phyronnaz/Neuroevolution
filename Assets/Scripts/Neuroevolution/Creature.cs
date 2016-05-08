@@ -16,18 +16,19 @@ namespace Assets.Scripts.Neuroevolution
         public readonly List<Matrix> Synapses;
         public readonly int Generation;
         public readonly List<float> Speeds;
+        public readonly List<float> ChangeTimes;
         readonly World world;
         List<RevoluteJoint> revoluteJoints;
+        float currentTime;
+        int count;
 
-        public float currentTime;
-
-
-        public Creature(List<Vector2> positions, List<DistanceJointStruct> distanceJoints, List<RevoluteJointStruct> revoluteJoints, List<Matrix> synapses, int generation)
+        public Creature(List<Vector2> positions, List<DistanceJointStruct> distanceJoints, List<RevoluteJointStruct> revoluteJoints, List<Matrix> synapses, List<float> changeTimes, int generation)
         {
             this.revoluteJoints = new List<RevoluteJoint>();
             world = new World(new Vector2(0, -9.8f));
             world.ProcessChanges();
             Speeds = new List<float>();
+            ChangeTimes = changeTimes;
             InitialPositions = positions;
             Synapses = synapses;
             Generation = generation;
@@ -45,6 +46,7 @@ namespace Assets.Scripts.Neuroevolution
                 b.CollisionCategories = Category.Cat10;
                 b.IsStatic = false;
                 b.IgnoreCCD = true;
+                b.Friction = 100000;
             }
             world.ProcessChanges();
             var ground = BodyFactory.CreateRectangle(world, 1000000, 1, 1, Vector2.Zero, null);
@@ -71,38 +73,71 @@ namespace Assets.Scripts.Neuroevolution
             var synapses = new List<Matrix>();
             for (var k = 0; k < creature.Synapses.Count; k++)
             {
-                synapses.Add(creature.Synapses[k] + Matrix.Random(creature.Synapses[k].M, creature.Synapses[k].N) * variation);
+                synapses.Add(Matrix.Random(creature.Synapses[k].M, creature.Synapses[k].N));// creature.Synapses[k] + Matrix.Random(creature.Synapses[k].M, creature.Synapses[k].N) * variation);
             }
-            return new Creature(creature.InitialPositions, creature.DistanceJoints, creature.RevoluteJoints, synapses, creature.Generation + 1);
+            var cg = new List<float>();
+            for (var k = 0; k < creature.ChangeTimes.Count; k++)
+            {
+                cg.Add(creature.ChangeTimes[k] + (UnityEngine.Random.value * 2 - 1) * variation);
+            }
+            return new Creature(creature.InitialPositions, creature.DistanceJoints, creature.RevoluteJoints, synapses, cg, creature.Generation + 1);
         }
 
         public void Update(float dt)
         {
             world.Step(dt);
-            Train();
             currentTime += dt;
+            count++;
+            if (currentTime > 10)
+            {
+                currentTime = 0;
+            }
+            if (count == 1)
+            {
+                count = 0;
+                Train();
+            }
         }
 
         void Train()
         {
+            for (var k = 0; k < ChangeTimes.Count; k++)
+            {
+                if (currentTime > ChangeTimes[k] && revoluteJoints[k].MotorSpeed >= 0)
+                {
+                    revoluteJoints[k].MotorSpeed = -Speeds[k];
+                }
+                else if (currentTime < ChangeTimes[k] && revoluteJoints[k].MotorSpeed <= 0)
+                {
+                    revoluteJoints[k].MotorSpeed = Speeds[k];
+                }
+
+            }
+            return;
             var neuralNetwork = new Matrix(1, 2 * revoluteJoints.Count);
 
             for (var i = 0; i < revoluteJoints.Count; i++)
             {
-                neuralNetwork[0][2 * i] = revoluteJoints[i].JointAngle / Mathf.PI;
+                var r = revoluteJoints[i];
+                neuralNetwork[0][2 * i] = (r.JointAngle - r.LowerLimit) / (r.UpperLimit - r.LowerLimit) * 2 - 1;
                 neuralNetwork[0][2 * i + 1] = (revoluteJoints[i].MotorSpeed > 0) ? 1 : -1;
             }
 
             for (var k = 0; k < Synapses.Count; k++)
             {
-                UnityEngine.Debug.Log(neuralNetwork.N);
-                UnityEngine.Debug.Log(Synapses[k].M);
                 neuralNetwork = Sigma(Matrix.Dot(neuralNetwork, Synapses[k]));
             }
 
             for (var i = 0; i < revoluteJoints.Count; i++)
             {
-                revoluteJoints[i].MotorSpeed = neuralNetwork[0][i] * Speeds[i];
+                if (neuralNetwork[0][i] > 0)
+                {
+                    revoluteJoints[i].MotorSpeed = Speeds[i];
+                }
+                else
+                {
+                    revoluteJoints[i].MotorSpeed = -Speeds[i];
+                }
             }
         }
         Matrix Sigma(Matrix m)
@@ -138,15 +173,15 @@ namespace Assets.Scripts.Neuroevolution
             var j = JointFactory.CreateRevoluteJoint(world, world.BodyList[a], world.BodyList[b], anchorA, anchorB, false);
             j.SetLimits(lowerLimit, upperLimit);
             j.LimitEnabled = true;
-            j.MotorEnabled = true;
             j.Enabled = true;
+            j.MotorEnabled = true;
+            j.MaxMotorTorque = 100;
             world.AddJoint(j);
             revoluteJoints.Add(j);
         }
 
         public List<Body> GetBodies()
         {
-            UnityEngine.Debug.Log(currentTime);
             return world.BodyList.GetRange(0, world.BodyList.Count - 1);
         }
 
