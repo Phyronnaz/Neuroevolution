@@ -40,7 +40,7 @@ namespace Assets.Scripts.Neuroevolution
                 hiddenSize = editor.GetRevoluteJoints().Count * 2;
             }
             var s = new List<Matrix>();
-            s.Add(Matrix.Random(editor.GetRevoluteJoints().Count * 2, hiddenSize));
+            s.Add(Matrix.Random(editor.GetRevoluteJoints().Count * 2 + 1, hiddenSize));
             for (var k = 1; k < hiddenCount; k++)
             {
                 s.Add(Matrix.Random(hiddenSize, hiddenSize));
@@ -50,7 +50,7 @@ namespace Assets.Scripts.Neuroevolution
             var cg = new List<float>();
             for (var k = 0; k < editor.GetRevoluteJoints().Count; k++)
             {
-                cg.Add(Random.value * 10);
+                cg.Add(5);
             }
             var c = new Creature(editor.GetPositions(), editor.GetDistanceJoints(), editor.GetRevoluteJoints(), s, cg, 0);
             edit = false;

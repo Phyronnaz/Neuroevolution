@@ -46,7 +46,7 @@ namespace Assets.Scripts.Neuroevolution
                 b.CollisionCategories = Category.Cat10;
                 b.IsStatic = false;
                 b.IgnoreCCD = true;
-                b.Friction = 100000;
+                b.Friction = 100;
             }
             world.ProcessChanges();
             var ground = BodyFactory.CreateRectangle(world, 1000000, 1, 1, Vector2.Zero, null);
@@ -88,7 +88,7 @@ namespace Assets.Scripts.Neuroevolution
             world.Step(dt);
             currentTime += dt;
             count++;
-            if (currentTime > 10)
+            if (currentTime > 2)
             {
                 currentTime = 0;
             }
@@ -101,20 +101,20 @@ namespace Assets.Scripts.Neuroevolution
 
         void Train()
         {
-            for (var k = 0; k < ChangeTimes.Count; k++)
-            {
-                if (currentTime > ChangeTimes[k] && revoluteJoints[k].MotorSpeed >= 0)
-                {
-                    revoluteJoints[k].MotorSpeed = -Speeds[k];
-                }
-                else if (currentTime < ChangeTimes[k] && revoluteJoints[k].MotorSpeed <= 0)
-                {
-                    revoluteJoints[k].MotorSpeed = Speeds[k];
-                }
-
-            }
-            return;
-            var neuralNetwork = new Matrix(1, 2 * revoluteJoints.Count);
+//            for (var k = 0; k < ChangeTimes.Count; k++)
+//            {
+//                if (currentTime > ChangeTimes[k] && revoluteJoints[k].MotorSpeed >= 0)
+//                {
+//                    revoluteJoints[k].MotorSpeed = -Speeds[k];
+//                }
+//                else if (currentTime < ChangeTimes[k] && revoluteJoints[k].MotorSpeed <= 0)
+//                {
+//                    revoluteJoints[k].MotorSpeed = Speeds[k];
+//                }
+//
+//            }
+//            return;
+            var neuralNetwork = new Matrix(1, 2 * revoluteJoints.Count + 1);
 
             for (var i = 0; i < revoluteJoints.Count; i++)
             {
@@ -123,6 +123,8 @@ namespace Assets.Scripts.Neuroevolution
                 neuralNetwork[0][2 * i + 1] = (revoluteJoints[i].MotorSpeed > 0) ? 1 : -1;
             }
 
+			neuralNetwork [0] [2 * revoluteJoints.Count - 1] = currentTime - 1;
+
             for (var k = 0; k < Synapses.Count; k++)
             {
                 neuralNetwork = Sigma(Matrix.Dot(neuralNetwork, Synapses[k]));
@@ -130,14 +132,7 @@ namespace Assets.Scripts.Neuroevolution
 
             for (var i = 0; i < revoluteJoints.Count; i++)
             {
-                if (neuralNetwork[0][i] > 0)
-                {
-                    revoluteJoints[i].MotorSpeed = Speeds[i];
-                }
-                else
-                {
-                    revoluteJoints[i].MotorSpeed = -Speeds[i];
-                }
+				revoluteJoints [i].MotorSpeed = neuralNetwork [0] [i] * Speeds [i];
             }
         }
         Matrix Sigma(Matrix m)
@@ -146,7 +141,7 @@ namespace Assets.Scripts.Neuroevolution
             {
                 for (var y = 0; y < m.N; y++)
                 {
-                    m[x][y] = 1 / (1 + Mathf.Exp(-m[x][y]));
+                    m[x][y] = 1 / (1 + Mathf.Exp(-m[x][y])) * 2 - 1;
                 }
             }
             return m;
@@ -157,6 +152,7 @@ namespace Assets.Scripts.Neuroevolution
             for (var k = 0; k < InitialPositions.Count; k++)
             {
                 world.BodyList[k].Position = InitialPositions[k];
+				world.BodyList [k].ResetDynamics();
             }
         }
 
@@ -175,7 +171,7 @@ namespace Assets.Scripts.Neuroevolution
             j.LimitEnabled = true;
             j.Enabled = true;
             j.MotorEnabled = true;
-            j.MaxMotorTorque = 100;
+            j.MaxMotorTorque = 1000;
             world.AddJoint(j);
             revoluteJoints.Add(j);
         }
