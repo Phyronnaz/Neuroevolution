@@ -36,48 +36,59 @@ namespace Assets.Scripts.Neuroevolution
         }
 
 
-        static void ThreadedJob(System.Object data)
-        {
-            var creature = ((CreatureUpdateStruct)data).creature;
-            var testDuration = ((CreatureUpdateStruct)data).testDuration;
-            for (var k = 0; k < testDuration; k++)
-            {
-                creature.Update(DeltaTime);
-            }
+        //static void ThreadedJob(System.Object data)
+        //{
+        //    var creature = ((CreatureUpdateStruct)data).creature;
+        //    var testDuration = ((CreatureUpdateStruct)data).testDuration;
+        //    for (var k = 0; k < testDuration; k++)
+        //    {
+        //        creature.Update(DeltaTime);
+        //    }
 
+        //}
+
+        static void ThreadedJob(List<Creature> creatures, int testDuration)
+        {
+            foreach (var c in creatures)
+            {
+                for (var k = 0; k < testDuration; k++)
+                {
+                    c.Update(DeltaTime);
+                }
+            }
         }
 
         public void Update(int testDuration)
         {
             // Update creatures
-            //var numberOfThreads = Mathf.Min(NumberOfThreads, Creatures.Count);
-            //var threads = new List<Thread>();
-            //var count = Creatures.Count - Creatures.Count % numberOfThreads;
-            //int h = count / numberOfThreads;
-            //for (var k = 0; k < numberOfThreads; k++)
-            //{
-            //    var creaturesToProcess = Creatures.GetRange(k * h, h);
-            //    threads.Add(new Thread(() => ThreadedJob(creaturesToProcess, testDuration)));
-            //    threads[threads.Count - 1].Start();
-            //    //ThreadedJob(creaturesToProcess, testDuration);
-            //}
-            //if (count != Creatures.Count)
-            //{
-            //    var endCreaturesToProcess = Creatures.GetRange(count, Creatures.Count - count);
-            //    threads.Add(new Thread(() => ThreadedJob(endCreaturesToProcess, testDuration)));
-            //    threads[threads.Count - 1].Start();
-            //    //ThreadedJob(endCreaturesToProcess, testDuration);
-            //}
-            //// Wait for threads to end
-            //foreach (var t in threads)
-            //{
-            //    t.Join();
-            //}
-
-            foreach (var creature in Creatures)
+            var numberOfThreads = Mathf.Min(NumberOfThreads, Creatures.Count);
+            var threads = new List<Thread>();
+            var count = Creatures.Count - Creatures.Count % numberOfThreads;
+            int h = count / numberOfThreads;
+            for (var k = 0; k < numberOfThreads; k++)
             {
-                ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadedJob), new CreatureUpdateStruct(testDuration, creature));
+                var creaturesToProcess = Creatures.GetRange(k * h, h);
+                threads.Add(new Thread(() => ThreadedJob(creaturesToProcess, testDuration)));
+                threads[threads.Count - 1].Start();
+                //ThreadedJob(creaturesToProcess, testDuration);
             }
+            if (count != Creatures.Count)
+            {
+                var endCreaturesToProcess = Creatures.GetRange(count, Creatures.Count - count);
+                threads.Add(new Thread(() => ThreadedJob(endCreaturesToProcess, testDuration)));
+                threads[threads.Count - 1].Start();
+                //ThreadedJob(endCreaturesToProcess, testDuration);
+            }
+            // Wait for threads to end
+            foreach (var t in threads)
+            {
+                t.Join();
+            }
+
+            //foreach (var creature in Creatures)
+            //{
+            //    ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadedJob), new CreatureUpdateStruct(testDuration, creature));
+            //}
 
             // Update time
             CurrentTime += DeltaTime * testDuration;
