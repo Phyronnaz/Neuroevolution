@@ -36,7 +36,14 @@ namespace Assets.Scripts.Neuroevolution
                 ThreadPool.QueueUserWorkItem(state => ThreadedJob(Creatures[x], testDuration, waitHandles[x]));
             }
 
-            WaitHandle.WaitAll(waitHandles);
+            foreach(var w in waitHandles)
+            {
+                w.WaitOne(10000); //10s max
+                if (!w.Set())
+                {
+                    Debug.LogError("Thread take too long");
+                }
+            }
 
             // Update time
             CurrentTime += DeltaTime * testDuration;

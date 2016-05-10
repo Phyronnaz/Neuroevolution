@@ -180,7 +180,7 @@ namespace Assets.Scripts.Neuroevolution
             {
                 a += b.Position.X;
             }
-            return a / world.BodyList.Count;
+            return a / (world.BodyList.Count - 1); //-1 : ground
         }
 
         public int CompareTo(object obj)

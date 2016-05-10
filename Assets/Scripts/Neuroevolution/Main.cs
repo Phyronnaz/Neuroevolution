@@ -13,6 +13,7 @@ namespace Assets.Scripts.Neuroevolution
         public InputField InitialPopulationSizeField;
         public InputField InitialPopulationVariationField;
         public InputField VariationField;
+        public InputField HiddenLayersCountField;
         public Text DistanceText;
         public Text TimeText;
         public Text SpeedText;
@@ -22,7 +23,6 @@ namespace Assets.Scripts.Neuroevolution
         Editor editor;
         bool edit;
         const int hiddenSize = 4; //Auto increased if needed
-        const int hiddenCount = 2;
 
         public void Awake()
         {
@@ -41,7 +41,7 @@ namespace Assets.Scripts.Neuroevolution
             h = Mathf.Max(h, editor.GetRevoluteJoints().Count * 2 + 1);
             var s = new List<Matrix>();
             s.Add(Matrix.Random(editor.GetRevoluteJoints().Count * 2 + 1, h));
-            for (var k = 1; k < hiddenCount; k++)
+            for (var k = 1; k < int.Parse(HiddenLayersCountField.text); k++)
             {
                 s.Add(Matrix.Random(h, h));
             }
