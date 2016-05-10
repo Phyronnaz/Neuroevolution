@@ -1466,7 +1466,7 @@ MonoBehaviour:
   InitialPopulationSizeField: {fileID: 1353247509}
   InitialPopulationVariationField: {fileID: 586600836}
   VariationField: {fileID: 1696657865}
-  HiddenLayersCountField: {fileID: 0}
+  HiddenLayersCountField: {fileID: 1521944818}
   DistanceText: {fileID: 1554280799}
   TimeText: {fileID: 2054150414}
   SpeedText: {fileID: 2141074328}
