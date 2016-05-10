@@ -84,8 +84,10 @@ namespace Assets.Scripts.Neuroevolution
             var threads = new List<Thread>();
             foreach (var c in Creatures)
             {
+                //ThreadedJob(c, testDuration);
                 threads.Add(new Thread(() => ThreadedJob(c, testDuration)));
             }
+            //return; 
             foreach (var t in threads)
             {
                 t.Start();

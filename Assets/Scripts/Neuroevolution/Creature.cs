@@ -22,13 +22,13 @@ namespace Assets.Scripts.Neuroevolution
         float currentTime;
         int count;
 
-        public Creature(List<Vector2> positions, List<DistanceJointStruct> distanceJoints, List<RevoluteJointStruct> revoluteJoints, List<Matrix> synapses, List<float> changeTimes, int generation)
+        public Creature(List<Vector2> positions, List<DistanceJointStruct> distanceJoints, 
+            List<RevoluteJointStruct> revoluteJoints, List<Matrix> synapses, int generation)
         {
             this.revoluteJoints = new List<RevoluteJoint>();
-            world = new World(new Vector2(0, -9.8f));
+            world = new World(new Vector2(0, 0 * -9.8f));
             world.ProcessChanges();
             Speeds = new List<float>();
-            ChangeTimes = changeTimes;
             InitialPositions = positions;
             Synapses = synapses;
             Generation = generation;
@@ -73,14 +73,10 @@ namespace Assets.Scripts.Neuroevolution
             var synapses = new List<Matrix>();
             for (var k = 0; k < creature.Synapses.Count; k++)
             {
-                synapses.Add(Matrix.Random(creature.Synapses[k].M, creature.Synapses[k].N));// creature.Synapses[k] + Matrix.Random(creature.Synapses[k].M, creature.Synapses[k].N) * variation);
+                synapses.Add(creature.Synapses[k] + Matrix.Random(creature.Synapses[k].M, creature.Synapses[k].N) * variation);
             }
-            var cg = new List<float>();
-            for (var k = 0; k < creature.ChangeTimes.Count; k++)
-            {
-                cg.Add(creature.ChangeTimes[k] + (UnityEngine.Random.value * 2 - 1) * variation);
-            }
-            return new Creature(creature.InitialPositions, creature.DistanceJoints, creature.RevoluteJoints, synapses, cg, creature.Generation + 1);
+            return new Creature(creature.InitialPositions, creature.DistanceJoints, creature.RevoluteJoints,
+                synapses, creature.Generation + 1);
         }
 
         public void Update(float dt)
@@ -88,7 +84,8 @@ namespace Assets.Scripts.Neuroevolution
             world.Step(dt);
             currentTime += dt;
             count++;
-            if (currentTime > 2)
+            //10 = 2
+            if (currentTime > 10)
             {
                 currentTime = 0;
             }
@@ -101,19 +98,19 @@ namespace Assets.Scripts.Neuroevolution
 
         void Train()
         {
-//            for (var k = 0; k < ChangeTimes.Count; k++)
-//            {
-//                if (currentTime > ChangeTimes[k] && revoluteJoints[k].MotorSpeed >= 0)
-//                {
-//                    revoluteJoints[k].MotorSpeed = -Speeds[k];
-//                }
-//                else if (currentTime < ChangeTimes[k] && revoluteJoints[k].MotorSpeed <= 0)
-//                {
-//                    revoluteJoints[k].MotorSpeed = Speeds[k];
-//                }
-//
-//            }
-//            return;
+            for (var k = 0; k < revoluteJoints.Count; k++)
+            {
+                if (currentTime > 5 && revoluteJoints[k].MotorSpeed >= 0)
+                {
+                    revoluteJoints[k].MotorSpeed = -Speeds[k];
+                }
+                else if (currentTime < 5 && revoluteJoints[k].MotorSpeed <= 0)
+                {
+                    revoluteJoints[k].MotorSpeed = Speeds[k];
+                }
+
+            }
+            return;
             var neuralNetwork = new Matrix(1, 2 * revoluteJoints.Count + 1);
 
             for (var i = 0; i < revoluteJoints.Count; i++)
@@ -167,8 +164,8 @@ namespace Assets.Scripts.Neuroevolution
             var anchorA = world.BodyList[anchor].Position - world.BodyList[a].Position;
             var anchorB = world.BodyList[anchor].Position - world.BodyList[b].Position;
             var j = JointFactory.CreateRevoluteJoint(world, world.BodyList[a], world.BodyList[b], anchorA, anchorB, false);
-            j.SetLimits(lowerLimit, upperLimit);
             j.LimitEnabled = true;
+            j.SetLimits(lowerLimit, upperLimit);
             j.Enabled = true;
             j.MotorEnabled = true;
             j.MaxMotorTorque = 1000;
