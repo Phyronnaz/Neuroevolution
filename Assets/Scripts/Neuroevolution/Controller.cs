@@ -17,46 +17,27 @@ namespace Assets.Scripts.Neuroevolution
             Creatures = creatures;
         }
 
-        static void ThreadedJob(Creature c, int testDuration)
+        static void ThreadedJob(Creature c, int testDuration, AutoResetEvent waitHandle)
         {
             for (var k = 0; k < testDuration; k++)
             {
                 c.Update(DeltaTime);
             }
+            waitHandle.Set();
         }
 
         public void Update(int testDuration)
         {
-            if (false)
+            var waitHandles = new AutoResetEvent[Creatures.Count];
+            for (var k = 0; k < Creatures.Count; k++)
             {
-                // Update creatures
-                var threads = new List<Thread>();
-                //Create threads
-                foreach (var c in Creatures)
-                {
-                    threads.Add(new Thread(() => ThreadedJob(c, testDuration)));
-                }
-                //Start threads 
-                foreach (var t in threads)
-                {
-                    //t.IsBackground = true;
-                    t.Start();
-                }
-                // Wait for threads to end
-                //foreach (var t in threads)
-                //{
-                //    t.Join();
-                //}
-                threads[0].Join();
-                threads[1].Join();
+                int x = k; //Because of shared data
+                waitHandles[x] = new AutoResetEvent(false);
+                ThreadPool.QueueUserWorkItem(state => ThreadedJob(Creatures[x], testDuration, waitHandles[x]));
             }
-            else
-            {
-                foreach (var c in Creatures)
-                {
-                    ThreadedJob(c, testDuration);
-                }
-            }
+
+            WaitHandle.WaitAll(waitHandles);
+
             // Update time
             CurrentTime += DeltaTime * testDuration;
         }
