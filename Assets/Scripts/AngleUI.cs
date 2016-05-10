@@ -21,6 +21,10 @@ public class AngleUI
             go.GetComponent<SpriteRenderer>().color = color;
             points.Add(go);
         }
+        points[0].GetComponent<SpriteRenderer>().color = Color.black;
+        points[numberOfPoints / 4].GetComponent<SpriteRenderer>().color = Color.black;
+        points[numberOfPoints / 4 * 2].GetComponent<SpriteRenderer>().color = Color.black;
+        points[numberOfPoints / 4 * 3].GetComponent<SpriteRenderer>().color = Color.black;
     }
 
     public void SetPosition(Vector2 position)

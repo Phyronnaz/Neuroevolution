@@ -6,6 +6,7 @@ namespace Assets.Scripts.Neuroevolution
 {
     public class Main : MonoBehaviour
     {
+        //UI
         public Slider TimeMultiplierSlider;
         public InputField GenerationsField;
         public InputField TestDurationField;
@@ -16,10 +17,11 @@ namespace Assets.Scripts.Neuroevolution
         public Text TimeText;
         public Text SpeedText;
         List<CreatureRenderer> creatureRenderers;
+        //Others
         Controller controller;
         Editor editor;
         bool edit;
-        int hiddenSize = 4;
+        const int hiddenSize = 4; //Auto increased if needed
         const int hiddenCount = 2;
 
         public void Awake()
@@ -35,36 +37,48 @@ namespace Assets.Scripts.Neuroevolution
 
         public void InitializeController()
         {
-            if (hiddenSize < editor.GetRevoluteJoints().Count * 2)
-            {
-                hiddenSize = editor.GetRevoluteJoints().Count * 2;
-            }
+            var h = hiddenSize;
+            h = Mathf.Max(h, editor.GetRevoluteJoints().Count * 2 + 1);
             var s = new List<Matrix>();
-            s.Add(Matrix.Random(editor.GetRevoluteJoints().Count * 2 + 1, hiddenSize));
+            s.Add(Matrix.Random(editor.GetRevoluteJoints().Count * 2 + 1, h));
             for (var k = 1; k < hiddenCount; k++)
             {
-                s.Add(Matrix.Random(hiddenSize, hiddenSize));
+                s.Add(Matrix.Random(h, h));
             }
-            s.Add(Matrix.Random(hiddenSize, editor.GetRevoluteJoints().Count));
-            
+            s.Add(Matrix.Random(h, editor.GetRevoluteJoints().Count));
+
             var c = new Creature(editor.GetPositions(), editor.GetDistanceJoints(), editor.GetRevoluteJoints(), s, 0);
             edit = false;
             editor.Destroy();
-            controller = new Controller(c);
+            var l = new List<Creature>();
+            l.Add(c);
+            //l.Add(Creature.CloneCreature(c, 0));
+            controller = new Controller(l);
         }
 
+        /// <summary>
+        /// Called by UI
+        /// </summary>
         public void Train()
         {
             if (controller == null)
             {
                 InitializeController();
             }
-            var variation = float.Parse(InitialPopulationVariationField.text);
+
+            //Adjust creatures number
+            var initialVariation = float.Parse(InitialPopulationVariationField.text);
             while (controller.Creatures.Count < int.Parse(InitialPopulationSizeField.text))
             {
                 var randomCreature = controller.Creatures[Random.Range(0, controller.Creatures.Count)];
-                controller.Creatures.Add(Creature.CloneCreature(randomCreature, variation));
+                controller.Creatures.Add(Creature.CloneCreature(randomCreature, initialVariation));
             }
+            while (controller.Creatures.Count > int.Parse(InitialPopulationSizeField.text))
+            {
+                controller.Creatures.RemoveAt(Random.Range(0, controller.Creatures.Count));
+            }
+
+            //Begin train
             controller.Train(int.Parse(GenerationsField.text), int.Parse(TestDurationField.text), float.Parse(VariationField.text));
         }
 
@@ -88,7 +102,7 @@ namespace Assets.Scripts.Neuroevolution
 
             // Update camera position
             var tmp = transform.position;
-            tmp.x = Mathf.Lerp(tmp.x, max, Time.deltaTime * Mathf.Exp(TimeMultiplierSlider.value) / 10 + 0.01f);
+            tmp.x = Mathf.Lerp(tmp.x, max + 5, Time.deltaTime * Mathf.Exp(TimeMultiplierSlider.value) / 10 + 0.01f);
             transform.position = tmp;
 
             //Remove slowest creatures
@@ -108,8 +122,10 @@ namespace Assets.Scripts.Neuroevolution
             TimeText.text = "Time : " + t;
             SpeedText.text = "Speed:" + s;
 
+            //Render creatures
             RenderCreatures();
 
+            //Input
             if (Input.GetKeyDown(KeyCode.A))
             {
                 controller.ResetCreatures();
@@ -138,7 +154,17 @@ namespace Assets.Scripts.Neuroevolution
             for (var k = 0; k < creatureRenderers.Count; k++)
             {
                 var c = controller.Creatures[k];
-                creatureRenderers[k].Update(c.GetBodies(), c.GetJoints(), new Color(c.Generation / 50, c.Generation / 50, c.Generation / 50));
+                float x;
+                int g;
+                if (int.TryParse(GenerationsField.text, out g))
+                {
+                    x = c.Generation / g;
+                }
+                else
+                {
+                    x = 0;
+                }
+                creatureRenderers[k].Update(c.GetBodies(), c.GetJoints(), new Color(x, x, x));
             }
         }
 
