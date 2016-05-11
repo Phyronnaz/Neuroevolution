@@ -178,7 +178,10 @@ namespace Assets.Scripts.Neuroevolution
             var a = 0f;
             foreach (var b in world.BodyList)
             {
-                a += b.Position.X;
+                if (!b.IsStatic)
+                {
+                    a += b.Position.X;
+                }
             }
             return a / (world.BodyList.Count - 1); //-1 : ground
         }

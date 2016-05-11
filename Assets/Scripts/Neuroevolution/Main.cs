@@ -57,6 +57,7 @@ namespace Assets.Scripts.Neuroevolution
             l.Add(c);
             //l.Add(Creature.CloneCreature(c, 0));
             controller = new Controller(l);
+            RenderCreatures();
         }
 
         /// <summary>

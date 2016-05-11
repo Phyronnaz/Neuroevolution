@@ -19,7 +19,7 @@ namespace Assets.Scripts.Neuroevolution
 
         static void ThreadedJob(Creature c, int testDuration, AutoResetEvent waitHandle)
         {
-            for (var k = 0; k < testDuration; k++)
+            for (var k = 0; k < testDuration / DeltaTime; k++)
             {
                 c.Update(DeltaTime);
             }
@@ -36,7 +36,7 @@ namespace Assets.Scripts.Neuroevolution
                 ThreadPool.QueueUserWorkItem(state => ThreadedJob(Creatures[x], testDuration, waitHandles[x]));
             }
 
-            foreach(var w in waitHandles)
+            foreach (var w in waitHandles)
             {
                 w.WaitOne(10000); //10s max
                 if (!w.Set())
@@ -66,10 +66,48 @@ namespace Assets.Scripts.Neuroevolution
 
         public void Train(int generations, int testDuration, float variation)
         {
+            ResetCreatures();
+            var score = new List<List<float>>();
             for (var k = 0; k < generations; k++)
             {
                 Update(testDuration);
+                var l = new List<float>();
+                foreach (var c in Creatures)
+                {
+                    l.Add(c.GetAveragePosition());
+                }
+                score.Add(l);
                 GenerateNextGeneration(variation);
+            }
+            var fileName = Application.dataPath + @"\score_00.csv";
+            while(System.IO.File.Exists(fileName))
+            {
+                var i = int.Parse(fileName[fileName.Length - 6].ToString() + fileName[fileName.Length - 5]);
+                i++;
+                System.Text.StringBuilder sb = new System.Text.StringBuilder(fileName); 
+                sb[fileName.Length - 6] = i.ToString()[0];
+                sb[fileName.Length - 5] = i.ToString()[1];
+                fileName = sb.ToString();
+
+            }
+            using (System.IO.StreamWriter file =
+            new System.IO.StreamWriter(fileName, true))
+            {
+                var s = "Generation; ";
+                for (int k = 0; k < Creatures.Count; k++)
+                {
+                    s += "Creature " + k + ";";
+                }
+                file.WriteLine(s);
+                for (int k = 0; k < score.Count; k++)
+                {
+                    var l = k.ToString() + ";";
+                    foreach (var f in score[k])
+                    {
+                        l += f.ToString() + ";";
+                    }
+                    file.WriteLine(l);
+                }
             }
             CurrentTime = 0;
         }
