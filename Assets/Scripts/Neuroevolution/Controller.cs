@@ -70,7 +70,7 @@ namespace Assets.Scripts.Neuroevolution
             var score = new List<List<float>>();
             for (var k = 0; k < generations; k++)
             {
-                Update(testDuration / testDuration);
+                Update((int)(testDuration / DeltaTime));
                 var l = new List<float>();
                 foreach (var c in Creatures)
                 {
