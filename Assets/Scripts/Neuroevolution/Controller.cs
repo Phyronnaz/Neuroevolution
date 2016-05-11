@@ -19,7 +19,7 @@ namespace Assets.Scripts.Neuroevolution
 
         static void ThreadedJob(Creature c, int testDuration, AutoResetEvent waitHandle)
         {
-            for (var k = 0; k < testDuration / DeltaTime; k++)
+            for (var k = 0; k < testDuration; k++)
             {
                 c.Update(DeltaTime);
             }
@@ -70,7 +70,7 @@ namespace Assets.Scripts.Neuroevolution
             var score = new List<List<float>>();
             for (var k = 0; k < generations; k++)
             {
-                Update(testDuration);
+                Update(testDuration / testDuration);
                 var l = new List<float>();
                 foreach (var c in Creatures)
                 {
@@ -79,16 +79,10 @@ namespace Assets.Scripts.Neuroevolution
                 score.Add(l);
                 GenerateNextGeneration(variation);
             }
-            var fileName = Application.dataPath + @"\score_00.csv";
-            while(System.IO.File.Exists(fileName))
+            var fileName = Application.dataPath + @"\score.csv";
+            while (System.IO.File.Exists(fileName))
             {
-                var i = int.Parse(fileName[fileName.Length - 6].ToString() + fileName[fileName.Length - 5]);
-                i++;
-                System.Text.StringBuilder sb = new System.Text.StringBuilder(fileName); 
-                sb[fileName.Length - 6] = i.ToString()[0];
-                sb[fileName.Length - 5] = i.ToString()[1];
-                fileName = sb.ToString();
-
+                fileName += "-";
             }
             using (System.IO.StreamWriter file =
             new System.IO.StreamWriter(fileName, true))
@@ -132,7 +126,7 @@ namespace Assets.Scripts.Neuroevolution
 
         public void ResetCreatures()
         {
-            for(var k = 0; k< Creatures.Count; k++)
+            for (var k = 0; k < Creatures.Count; k++)
             {
                 Creatures[k] = Creature.CloneCreature(Creatures[k], 0);
             }
