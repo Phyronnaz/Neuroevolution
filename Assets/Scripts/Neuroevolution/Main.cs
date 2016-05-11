@@ -33,6 +33,9 @@ namespace Assets.Scripts.Neuroevolution
             edit = true;
             editor = new Editor();
             creatureRenderers = new List<CreatureRenderer>();
+            var tmp = transform.position;
+            tmp.x = 0;
+            transform.position = tmp;
         }
 
         public void InitializeController()
