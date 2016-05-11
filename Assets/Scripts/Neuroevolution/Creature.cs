@@ -154,14 +154,14 @@ namespace Assets.Scripts.Neuroevolution
             return m;
         }
 
-        public void Reset()
-        {
-            for (var k = 0; k < InitialPositions.Count; k++)
-            {
-                world.BodyList[k].Position = InitialPositions[k];
-                world.BodyList[k].ResetDynamics();
-            }
-        }
+        //public void Reset()
+        //{
+        //    for (var k = 0; k < InitialPositions.Count; k++)
+        //    {
+        //        world.BodyList[k].Position = InitialPositions[k];
+        //        world.BodyList[k].ResetDynamics();
+        //    }
+        //}
 
         public List<Body> GetBodies()
         {

@@ -132,9 +132,9 @@ namespace Assets.Scripts.Neuroevolution
 
         public void ResetCreatures()
         {
-            foreach (var c in Creatures)
+            for(var k = 0; k< Creatures.Count; k++)
             {
-                c.Reset();
+                Creatures[k] = Creature.CloneCreature(Creatures[k], 0);
             }
         }
     }
