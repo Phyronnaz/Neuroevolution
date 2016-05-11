@@ -38,7 +38,7 @@ namespace Assets.Scripts.Neuroevolution
 
             foreach (var w in waitHandles)
             {
-                w.WaitOne(10000); //10s max
+                w.WaitOne();
                 if (!w.Set())
                 {
                     Debug.LogError("Thread take too long");
@@ -80,14 +80,10 @@ namespace Assets.Scripts.Neuroevolution
                 GenerateNextGeneration(variation);
             }
             var fileName = Application.dataPath + @"\score.csv";
-            while (System.IO.File.Exists(fileName))
-            {
-                fileName += "-";
-            }
             using (System.IO.StreamWriter file =
             new System.IO.StreamWriter(fileName, true))
             {
-                var s = "Generation; ";
+                var s = "Variation; Generation; ";
                 for (int k = 0; k < Creatures.Count; k++)
                 {
                     s += "Creature " + k + ";";
@@ -95,7 +91,7 @@ namespace Assets.Scripts.Neuroevolution
                 file.WriteLine(s);
                 for (int k = 0; k < score.Count; k++)
                 {
-                    var l = k.ToString() + ";";
+                    var l = variation.ToString() + ";" + k.ToString() + ";";
                     foreach (var f in score[k])
                     {
                         l += f.ToString() + ";";

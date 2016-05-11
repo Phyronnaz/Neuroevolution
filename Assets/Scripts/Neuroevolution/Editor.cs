@@ -37,8 +37,8 @@ namespace Assets.Scripts.Neuroevolution
             revoluteJoints = new List<RevoluteJointStruct>();
             editMode = EditMode.Nodes;
             AddLine();
-            lowerLimitUI = new AngleUI(Vector2.zero, 100, 3, Color.blue);
-            upperLimitUI = new AngleUI(Vector2.zero, 100, 3.3f, Color.red);
+            lowerLimitUI = new AngleUI(Vector2.zero, 100, 3, Color.blue, true);
+            upperLimitUI = new AngleUI(Vector2.zero, 100, 3f, Color.red, false);
             lowerLimitUI.SetActive(false);
             upperLimitUI.SetActive(false);
         }
@@ -148,7 +148,7 @@ namespace Assets.Scripts.Neuroevolution
                     {
                         currentMuscleNodeIndex = nodeIndex;
                     }
-                    else
+                    else if (currentMuscleNodeIndex != nodeIndex)
                     {
                         distanceJoints.Add(new DistanceJointStruct(currentMuscleNodeIndex, nodeIndex));
                         currentLine.SetPosition(1, new Vector2(hit.transform.position.x, hit.transform.position.y));
@@ -197,13 +197,13 @@ namespace Assets.Scripts.Neuroevolution
                         firstNodeGameObject = hit.transform.gameObject;
                         firstNodeGameObject.GetComponent<SpriteRenderer>().color = Color.green;
                     }
-                    else if (anchorNodeIndex == -1)
+                    else if (anchorNodeIndex == -1 && nodeIndex != firstNodeIndex)
                     {
                         anchorNodeIndex = nodeIndex;
                         anchorNodeGameObject = hit.transform.gameObject;
                         anchorNodeGameObject.GetComponent<SpriteRenderer>().color = Color.blue;
                     }
-                    else
+                    else if(nodeIndex != firstNodeIndex && nodeIndex != anchorNodeIndex)
                     {
                         secondNodeIndex = nodeIndex;
                         secondNodeGameObject = hit.transform.gameObject;
@@ -216,8 +216,8 @@ namespace Assets.Scripts.Neuroevolution
                 upperLimit += 0.01f * Input.GetAxis("Vertical");
                 lowerLimit += 0.01f * Input.GetAxis("Horizontal");
 
-                lowerLimit = Mathf.Clamp(lowerLimit, 0, Mathf.PI * 2);
-                upperLimit = Mathf.Clamp(upperLimit, lowerLimit, Mathf.PI * 2);
+                lowerLimit = Mathf.Clamp(lowerLimit, 0, Mathf.PI);
+                upperLimit = Mathf.Clamp(upperLimit, 0, Mathf.PI);
             }
             if (Input.GetKeyDown(KeyCode.Return))
             {
@@ -227,7 +227,7 @@ namespace Assets.Scripts.Neuroevolution
                 var anchor = ToVector2(positions[anchorNodeIndex]);
                 var angle = Vector2.Angle(a - anchor, b - anchor) * Mathf.Deg2Rad;
                 revoluteJoints.Add(new RevoluteJointStruct(firstNodeIndex, secondNodeIndex, anchorNodeIndex,
-                    lowerLimit + angle, upperLimit + angle, 2000));
+                    lowerLimit, upperLimit, 2000));
 
                 firstNodeGameObject.GetComponent<SpriteRenderer>().color = Color.white;
                 anchorNodeGameObject.GetComponent<SpriteRenderer>().color = Color.white;

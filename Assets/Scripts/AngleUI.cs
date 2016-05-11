@@ -8,7 +8,7 @@ public class AngleUI
     Vector2 position;
     int numberOfPoints;
 
-    public AngleUI(Vector2 position, int numberOfPoints, float radius, Color color)
+    public AngleUI(Vector2 position, int numberOfPoints, float radius, Color color, bool invert)
     {
         this.position = position;
         this.numberOfPoints = numberOfPoints;
@@ -16,7 +16,7 @@ public class AngleUI
         for (var k = 0; k < numberOfPoints; k++)
         {
             var angle = Mathf.PI * 2 * k / numberOfPoints;
-            var p = new Vector2(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius) + position;
+            var p = new Vector2(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius * (invert ? -1 : 1)) + position;
             var go = Object.Instantiate(Resources.Load("LittleCircle"), p, Quaternion.identity) as GameObject;
             go.GetComponent<SpriteRenderer>().color = color;
             points.Add(go);

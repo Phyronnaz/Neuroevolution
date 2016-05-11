@@ -18,7 +18,7 @@ namespace Assets.Scripts.Neuroevolution
         readonly World world;
         List<RevoluteJoint> revoluteJoints;
         float time;
-        float timeModulo = 2;
+        float timeModulo = 3;
 
         public Creature(List<Vector2> positions, List<DistanceJointStruct> distanceJoints,
             List<RevoluteJointStruct> revoluteJoints, List<Matrix> synapses, int generation)
@@ -39,7 +39,7 @@ namespace Assets.Scripts.Neuroevolution
                 body.CollisionCategories = Category.Cat2;
                 body.IsStatic = false;
                 body.IgnoreCCD = true;
-                body.Friction = 100;
+                body.Friction = 25;
                 world.AddBody(body);
             }
             //Add ground
@@ -86,13 +86,14 @@ namespace Assets.Scripts.Neuroevolution
             var anchorB = world.BodyList[r.anchor].Position - world.BodyList[r.b].Position;
             var j = JointFactory.CreateRevoluteJoint(world, world.BodyList[r.a], world.BodyList[r.b], anchorA, anchorB, false);
             j.LimitEnabled = true;
-            j.SetLimits(r.lowerLimit, r.upperLimit);
+            j.SetLimits(-r.lowerLimit, r.upperLimit);
             j.Enabled = true;
             j.MotorEnabled = true;
             j.MaxMotorTorque = 1000;
             world.AddJoint(j);
             revoluteJoints.Add(j);
         }
+
         public void Update(float dt)
         {
             world.Step(dt);
@@ -102,6 +103,7 @@ namespace Assets.Scripts.Neuroevolution
 
         void Train()
         {
+            //timeModulo = 10;
             //for (var k = 0; k < revoluteJoints.Count; k++)
             //{
             //    if (time % timeModulo > 5 && revoluteJoints[k].MotorSpeed >= 0)
