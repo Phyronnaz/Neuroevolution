@@ -27,6 +27,7 @@ namespace Assets.Scripts.Neuroevolution
         public void Awake()
         {
             InvokeRepeating("ControllerUpdate", 0, Controller.DeltaTime);
+            Random.seed = 10;
         }
         public void Start()
         {

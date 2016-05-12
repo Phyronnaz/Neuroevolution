@@ -69,17 +69,12 @@
 
         public static Matrix Random(int xLength, int yLength)
         {
-            return Random(xLength, yLength, new System.Random());
-        }
-
-        public static Matrix Random(int xLength, int yLength, System.Random r)
-        {
             var m = new Matrix(xLength, yLength);
             for (var x = 0; x < m.M; x++)
             {
                 for (var y = 0; y < m.N; y++)
                 {
-                    m[x][y] = (float)r.NextDouble() * 2 - 1;
+                    m[x][y] = UnityEngine.Random.value * 2 - 1;
                 }
             }
             return m;
