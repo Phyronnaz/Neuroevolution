@@ -2,6 +2,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 using ProgressBar;
+using System.Xml.Serialization;
+using System.IO;
+using System.Windows.Forms;
+using System;
 
 namespace Assets.Scripts.Neuroevolution
 {
@@ -102,6 +106,41 @@ namespace Assets.Scripts.Neuroevolution
                 editor.Destroy();
                 editor = new Editor();
             }
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                Stream myStream = null;
+                OpenFileDialog openFileDialog1 = new OpenFileDialog();
+
+                openFileDialog1.InitialDirectory = "c:\\";
+                openFileDialog1.Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*";
+                openFileDialog1.FilterIndex = 1;
+                openFileDialog1.RestoreDirectory = true;
+
+                if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        if ((myStream = openFileDialog1.OpenFile()) != null)
+                        {
+                            using (myStream)
+                            {
+                                XmlSerializer serializer = new XmlSerializer(typeof(CreatureSaveStruct));
+                                var c = (CreatureSaveStruct)serializer.Deserialize(myStream);
+                                var l = new List<Creature>();
+                                l.Add(c.ToCreature());
+                                controller = new Controller(l);
+
+                                edit = false;
+                                editor.Destroy();
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
+                    }
+                }
+            }
         }
         public void InitializeController()
         {
@@ -181,6 +220,26 @@ namespace Assets.Scripts.Neuroevolution
                         c.Destroy();
                     }
                     Start();
+                }
+                if (Input.GetKeyDown(KeyCode.S))
+                {
+                    Stream myStream;
+                    SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+
+                    saveFileDialog1.Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*";
+                    saveFileDialog1.FilterIndex = 1;
+                    saveFileDialog1.RestoreDirectory = true;
+
+                    if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                    {
+                        if ((myStream = saveFileDialog1.OpenFile()) != null)
+                        {
+                            var save = new CreatureSaveStruct(controller.GetBestCreature());
+                            XmlSerializer serializer = new XmlSerializer(typeof(CreatureSaveStruct));
+                            serializer.Serialize(myStream, save);
+                            myStream.Close();
+                        }
+                    }
                 }
             }
         }

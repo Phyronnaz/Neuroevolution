@@ -88,6 +88,9 @@
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>Library\UnityAssemblies\SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms">
+      <HintPath>Assets\Plugins\System.Windows.Forms.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Neuroevolution.CSharp.Plugins.csproj">

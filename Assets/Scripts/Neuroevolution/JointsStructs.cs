@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Runtime.Serialization;
+using System;
+using System.Xml.Serialization;
 
 namespace Assets.Scripts.Neuroevolution
 {
+    [Serializable]
+    [XmlRoot(ElementName = "DistanceJoint")]
     public struct DistanceJointStruct
     {
         public int a;
@@ -17,6 +18,8 @@ namespace Assets.Scripts.Neuroevolution
         }
     }
 
+    [Serializable]
+    [XmlRoot(ElementName = "RevoluteJoint")]
     public struct RevoluteJointStruct
     {
         public int a;
@@ -26,7 +29,7 @@ namespace Assets.Scripts.Neuroevolution
         public float upperLimit;
         public float speed;
 
-        public RevoluteJointStruct (int a, int b, int anchor, float lowerLimit, float upperLimit, float speed)
+        public RevoluteJointStruct(int a, int b, int anchor, float lowerLimit, float upperLimit, float speed)
         {
             this.a = a;
             this.b = b;

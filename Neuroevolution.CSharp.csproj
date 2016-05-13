@@ -61,6 +61,9 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms">
+      <HintPath>Assets\Plugins\System.Windows.Forms.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Neuroevolution.CSharp.Plugins.csproj">
@@ -197,6 +200,7 @@
     <Compile Include="Assets\Scripts\Neuroevolution\Controller.cs" />
     <Compile Include="Assets\Scripts\Neuroevolution\Creature.cs" />
     <Compile Include="Assets\Scripts\Neuroevolution\CreatureRenderer.cs" />
+    <Compile Include="Assets\Scripts\Neuroevolution\CreatureSaveStruct.cs" />
     <Compile Include="Assets\Scripts\Neuroevolution\CustomRandom.cs" />
     <Compile Include="Assets\Scripts\Neuroevolution\Editor.cs" />
     <Compile Include="Assets\Scripts\Neuroevolution\JointsStructs.cs" />

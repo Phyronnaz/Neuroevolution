@@ -61,6 +61,9 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms">
+      <HintPath>Assets\Plugins\System.Windows.Forms.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Standard Assets\Utility\FPSCounter.cs" />

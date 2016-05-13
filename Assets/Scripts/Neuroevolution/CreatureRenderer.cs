@@ -39,6 +39,7 @@ namespace Assets.Scripts.Neuroevolution
                     var l = (new GameObject()).AddComponent<LineRenderer>();
                     l.material = material;
                     l.SetColors(color, color);
+                    l.SetWidth(0.5f, 0.5f);
                     lines.Add(l);
                 }
             }
@@ -86,7 +87,7 @@ namespace Assets.Scripts.Neuroevolution
 
         public void Destroy()
         {
-            foreach(var l in lines)
+            foreach (var l in lines)
             {
                 Object.Destroy(l.gameObject);
             }

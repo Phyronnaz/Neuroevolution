@@ -34,7 +34,7 @@ namespace Assets.Scripts.Neuroevolution
             //Add nodes
             foreach (var p in positions)
             {
-                var body = BodyFactory.CreateCircle(world, 1, 1, p, null);
+                var body = BodyFactory.CreateCircle(world, 0.5f, 10, p, null);
                 body.CollidesWith = Category.Cat1;
                 body.CollisionCategories = Category.Cat2;
                 body.IsStatic = false;

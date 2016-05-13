@@ -47,9 +47,9 @@ namespace Assets.Scripts.Neuroevolution
         {
             AddLine();
             editMode = EditMode.RotationMuscles;
-            var a = new FVector2(-10, 15);
+            var a = new FVector2(-2, 15);
             var b = new FVector2(0, 5);
-            var c = new FVector2(-10, 10);
+            var c = new FVector2(2, 10);
 
 
 
@@ -95,6 +95,7 @@ namespace Assets.Scripts.Neuroevolution
             currentLine = (new GameObject()).AddComponent<LineRenderer>();
             currentLine.material = new Material(Shader.Find("Diffuse"));
             currentLine.material.color = Color.black;
+            currentLine.SetWidth(0.5f, 0.5f);
             objects.Add(currentLine);
         }
 
