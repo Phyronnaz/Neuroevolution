@@ -74,7 +74,7 @@
             {
                 for (var y = 0; y < m.N; y++)
                 {
-                    m[x][y] = UnityEngine.Random.value * 2 - 1;
+                    m[x][y] = CustomRandom.GetSignedValue();
                 }
             }
             return m;

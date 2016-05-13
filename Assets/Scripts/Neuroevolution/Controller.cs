@@ -10,12 +10,20 @@ namespace Assets.Scripts.Neuroevolution
         public List<Creature> Creatures;
         public float CurrentTime;
         public const float DeltaTime = 0.01f;
+        public bool IsTraining;
+        public int CurrentGeneration;
+        public int TotalGenerations;
+        public float TrainStartTime;
+        public string DataPath = Application.dataPath;
 
 
         public Controller(List<Creature> creatures)
         {
             Creatures = creatures;
         }
+
+
+
 
         static void ThreadedJob(Creature c, int testDuration, AutoResetEvent waitHandle)
         {
@@ -24,6 +32,75 @@ namespace Assets.Scripts.Neuroevolution
                 c.Update(DeltaTime);
             }
             waitHandle.Set();
+        }
+
+        static void TrainThread(Controller controller, int generations, int testDuration, float variation)
+        {
+            controller.IsTraining = true;
+            controller.ResetCreatures();
+            controller.TotalGenerations = generations;
+
+            var score = new List<List<float>>();
+
+            //Start training
+            for (var k = 0; k < generations; k++)
+            {
+                //Update creatures
+                controller.Update((int)(testDuration / DeltaTime));
+
+                //Save the scores
+                var l = new List<float>();
+                foreach (var c in controller.Creatures)
+                {
+                    l.Add(c.GetAveragePosition());
+                }
+                score.Add(l);
+
+                //Generate next generation
+                controller.Creatures.Sort();
+                controller.ResetCreatures();
+                if (controller.Creatures.Count % 2 != 0)
+                {
+                    controller.Creatures.Add(Creature.CloneCreature(controller.Creatures[0], variation));
+                }
+                for (var i = 0; i < controller.Creatures.Count / 2; i++)
+                {
+                    controller.Creatures[i] = Creature.CloneCreature(controller.Creatures[i + controller.Creatures.Count / 2], variation);
+                }
+                controller.CurrentGeneration = k + 1;
+            }
+
+            //Score output in csv
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(controller.DataPath + @"\score.csv", true))
+            {
+                var s = "Variation; Generation; ";
+                for (int k = 0; k < controller.Creatures.Count; k++)
+                {
+                    s += "Creature " + k + ";";
+                }
+                file.WriteLine(s);
+                for (int k = 0; k < score.Count; k++)
+                {
+                    var l = variation.ToString() + ";" + k.ToString() + ";";
+                    foreach (var f in score[k])
+                    {
+                        l += f.ToString() + ";";
+                    }
+                    file.WriteLine(l);
+                }
+            }
+
+            //Reset variables
+            controller.CurrentTime = 0;
+            controller.IsTraining = false;
+        }
+
+
+        public void Train(int generations, int testDuration, float variation)
+        {
+            TrainStartTime = Time.time;
+            var t = new Thread(() => TrainThread(this, generations, testDuration, variation));
+            t.Start();
         }
 
         public void Update(int testDuration)
@@ -49,58 +126,7 @@ namespace Assets.Scripts.Neuroevolution
             CurrentTime += DeltaTime * testDuration;
         }
 
-        public void GenerateNextGeneration(float variation)
-        {
-            Creatures.Sort();
-            ResetCreatures();
-            if (Creatures.Count % 2 != 0)
-            {
-                Creatures.Add(Creature.CloneCreature(Creatures[0], variation));
-            }
-            for (var k = 0; k < Creatures.Count / 2; k++)
-            {
-                Creatures[k] = Creature.CloneCreature(Creatures[k + Creatures.Count / 2], variation);
-            }
 
-        }
-
-        public void Train(int generations, int testDuration, float variation)
-        {
-            ResetCreatures();
-            var score = new List<List<float>>();
-            for (var k = 0; k < generations; k++)
-            {
-                Update((int)(testDuration / DeltaTime));
-                var l = new List<float>();
-                foreach (var c in Creatures)
-                {
-                    l.Add(c.GetAveragePosition());
-                }
-                score.Add(l);
-                GenerateNextGeneration(variation);
-            }
-            var fileName = Application.dataPath + @"\score.csv";
-            using (System.IO.StreamWriter file =
-            new System.IO.StreamWriter(fileName, true))
-            {
-                var s = "Variation; Generation; ";
-                for (int k = 0; k < Creatures.Count; k++)
-                {
-                    s += "Creature " + k + ";";
-                }
-                file.WriteLine(s);
-                for (int k = 0; k < score.Count; k++)
-                {
-                    var l = variation.ToString() + ";" + k.ToString() + ";";
-                    foreach (var f in score[k])
-                    {
-                        l += f.ToString() + ";";
-                    }
-                    file.WriteLine(l);
-                }
-            }
-            CurrentTime = 0;
-        }
 
         public float GetMaxPosition()
         {
@@ -112,7 +138,6 @@ namespace Assets.Scripts.Neuroevolution
             }
             return max;
         }
-
 
         public void RemoveCreaturesFartherThan(float distance)
         {

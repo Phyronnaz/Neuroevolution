@@ -188,12 +188,16 @@
     <Compile Include="Assets\Farseer Physics Engine 3.5\Factories\JointFactory.cs" />
     <Compile Include="Assets\Farseer Physics Engine 3.5\Factories\LinkFactory.cs" />
     <Compile Include="Assets\Farseer Physics Engine 3.5\Settings.cs" />
+    <Compile Include="Assets\ProgressBar\Script\ProgressBarBehaviour.cs" />
+    <Compile Include="Assets\ProgressBar\Script\ProgressRadialBehaviour.cs" />
+    <Compile Include="Assets\ProgressBar\Script\Utils.cs" />
     <Compile Include="Assets\Scripts\AngleUI.cs" />
     <Compile Include="Assets\Scripts\GameObjectActivator.cs" />
     <Compile Include="Assets\Scripts\MouseOnlyControls.cs" />
     <Compile Include="Assets\Scripts\Neuroevolution\Controller.cs" />
     <Compile Include="Assets\Scripts\Neuroevolution\Creature.cs" />
     <Compile Include="Assets\Scripts\Neuroevolution\CreatureRenderer.cs" />
+    <Compile Include="Assets\Scripts\Neuroevolution\CustomRandom.cs" />
     <Compile Include="Assets\Scripts\Neuroevolution\Editor.cs" />
     <Compile Include="Assets\Scripts\Neuroevolution\JointsStructs.cs" />
     <Compile Include="Assets\Scripts\Neuroevolution\Main.cs" />

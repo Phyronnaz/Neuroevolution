@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using ProgressBar;
 
 namespace Assets.Scripts.Neuroevolution
 {
@@ -17,6 +18,8 @@ namespace Assets.Scripts.Neuroevolution
         public Text DistanceText;
         public Text TimeText;
         public Text SpeedText;
+        public Text TimeRemainingText;
+        public ProgressBarBehaviour ProgressBar;
         List<CreatureRenderer> creatureRenderers;
         //Others
         Controller controller;
@@ -27,10 +30,18 @@ namespace Assets.Scripts.Neuroevolution
         public void Awake()
         {
             InvokeRepeating("ControllerUpdate", 0, Controller.DeltaTime);
-            Random.seed = 10;
         }
+        void ControllerUpdate()
+        {
+            if (controller != null && !controller.IsTraining)
+            {
+                controller.Update((int)Mathf.Exp(TimeMultiplierSlider.value));
+            }
+        }
+
         public void Start()
         {
+            ProgressBar.gameObject.SetActive(false);
             edit = true;
             editor = new Editor();
             creatureRenderers = new List<CreatureRenderer>();
@@ -39,6 +50,59 @@ namespace Assets.Scripts.Neuroevolution
             transform.position = tmp;
         }
 
+
+        /// <summary>
+        /// Called by UI
+        /// </summary>
+        public void Train()
+        {
+            if (controller == null)
+            {
+                InitializeController();
+            }
+
+            //Adjust creatures number
+            var initialVariation = float.Parse(InitialPopulationVariationField.text);
+            while (controller.Creatures.Count < int.Parse(InitialPopulationSizeField.text))
+            {
+                var randomCreature = controller.Creatures[CustomRandom.Range(0, controller.Creatures.Count)];
+                controller.Creatures.Add(Creature.CloneCreature(randomCreature, initialVariation));
+            }
+            while (controller.Creatures.Count > int.Parse(InitialPopulationSizeField.text))
+            {
+                controller.Creatures.RemoveAt(CustomRandom.Range(0, controller.Creatures.Count));
+            }
+
+            //Begin train
+            controller.Train(int.Parse(GenerationsField.text), int.Parse(TestDurationField.text), float.Parse(VariationField.text));
+        }
+
+
+        public void Update()
+        {
+            if (edit)
+            {
+                EditUpdate();
+            }
+            else
+            {
+                PlayUpdate();
+            }
+        }
+
+        public void EditUpdate()
+        {
+            editor.Update();
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                InitializeController();
+            }
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                editor.Destroy();
+                editor = new Editor();
+            }
+        }
         public void InitializeController()
         {
             var h = hiddenSize;
@@ -61,91 +125,65 @@ namespace Assets.Scripts.Neuroevolution
             RenderCreatures();
         }
 
-        /// <summary>
-        /// Called by UI
-        /// </summary>
-        public void Train()
-        {
-            if (controller == null)
-            {
-                InitializeController();
-            }
-
-            //Adjust creatures number
-            var initialVariation = float.Parse(InitialPopulationVariationField.text);
-            while (controller.Creatures.Count < int.Parse(InitialPopulationSizeField.text))
-            {
-                var randomCreature = controller.Creatures[Random.Range(0, controller.Creatures.Count)];
-                controller.Creatures.Add(Creature.CloneCreature(randomCreature, initialVariation));
-            }
-            while (controller.Creatures.Count > int.Parse(InitialPopulationSizeField.text))
-            {
-                controller.Creatures.RemoveAt(Random.Range(0, controller.Creatures.Count));
-            }
-
-            //Begin train
-            controller.Train(int.Parse(GenerationsField.text), int.Parse(TestDurationField.text), float.Parse(VariationField.text));
-        }
-
-        public void EditUpdate()
-        {
-            editor.Update();
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                InitializeController();
-            }
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                editor.Destroy();
-                editor = new Editor();
-            }
-        }
-
         public void PlayUpdate()
         {
-            var max = controller.GetMaxPosition();
-
-            // Update camera position
-            var tmp = transform.position;
-            tmp.x = Mathf.Lerp(tmp.x, max + 5, Time.deltaTime * Mathf.Exp(TimeMultiplierSlider.value) + 0.01f);
-            transform.position = tmp;
-
-            //Remove slowest creatures
-            controller.RemoveCreaturesFartherThan(100);
-
-            //Update UI
-            var m = max.ToString();
-            if (m.Length > 5)
-                m = m.Substring(0, 5);
-            var t = controller.CurrentTime.ToString();
-            if (t.Length > 7)
-                t = t.Substring(0, 7);
-            var s = (max / controller.CurrentTime).ToString();
-            if (s.Length > 6)
-                s = s.Substring(0, 6);
-            DistanceText.text = "Distance : " + m;
-            TimeText.text = "Time : " + t;
-            SpeedText.text = "Speed:" + s;
-
-            //Render creatures
-            RenderCreatures();
-
-            //Input
-            if (Input.GetKeyDown(KeyCode.A))
+            if (controller.IsTraining)
             {
-                controller.ResetCreatures();
-                controller.CurrentTime = 0;
+                //Progress bar
+                ProgressBar.gameObject.SetActive(true);
+                ProgressBar.ProgressSpeed = 10000;
+                ProgressBar.SetFillerSizeAsPercentage((float)controller.CurrentGeneration / controller.TotalGenerations * 100f);
+                //Time
+                var speed = (Time.time - controller.TrainStartTime) / controller.CurrentGeneration;
+                TimeRemainingText.text = (int)(speed * (controller.TotalGenerations - controller.CurrentGeneration)) + "s remaining";
             }
-            if (Input.GetKeyDown(KeyCode.R))
+            else
             {
-                foreach (var c in creatureRenderers)
+                ProgressBar.gameObject.SetActive(false);
+
+                var max = controller.GetMaxPosition();
+
+                // Update camera position
+                var tmp = transform.position;
+                tmp.x = Mathf.Lerp(tmp.x, max + 5, Time.deltaTime * Mathf.Exp(TimeMultiplierSlider.value) + 0.01f);
+                transform.position = tmp;
+
+                //Remove slowest creatures
+                controller.RemoveCreaturesFartherThan(100);
+
+                //Update UI
+                var m = max.ToString();
+                if (m.Length > 5)
+                    m = m.Substring(0, 5);
+                var t = controller.CurrentTime.ToString();
+                if (t.Length > 7)
+                    t = t.Substring(0, 7);
+                var s = (max / controller.CurrentTime).ToString();
+                if (s.Length > 6)
+                    s = s.Substring(0, 6);
+                DistanceText.text = "Distance : " + m;
+                TimeText.text = "Time : " + t;
+                SpeedText.text = "Speed:" + s;
+
+                //Render creatures
+                RenderCreatures();
+
+                //Input
+                if (Input.GetKeyDown(KeyCode.A))
                 {
-                    c.Destroy();
+                    controller.ResetCreatures();
+                    controller.CurrentTime = 0;
                 }
-                Start();
+                if (Input.GetKeyDown(KeyCode.R))
+                {
+                    foreach (var c in creatureRenderers)
+                    {
+                        c.Destroy();
+                    }
+                    Start();
+                }
             }
         }
-
         void RenderCreatures()
         {
             while (creatureRenderers.Count < controller.Creatures.Count)
@@ -174,24 +212,5 @@ namespace Assets.Scripts.Neuroevolution
             }
         }
 
-        public void Update()
-        {
-            if (edit)
-            {
-                EditUpdate();
-            }
-            else
-            {
-                PlayUpdate();
-            }
-        }
-
-        void ControllerUpdate()
-        {
-            if (controller != null)
-            {
-                controller.Update((int)Mathf.Exp(TimeMultiplierSlider.value));
-            }
-        }
     }
 }

@@ -49,7 +49,7 @@ namespace Assets.Scripts.Neuroevolution
             editMode = EditMode.RotationMuscles;
             var a = new FVector2(-10, 15);
             var b = new FVector2(0, 5);
-            var c = new FVector2(10, 10);
+            var c = new FVector2(-10, 10);
 
 
 
