@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 namespace ProgressBar
 {
+#pragma warning disable 0649
     /// <summary>
     /// This Script is directed at radially progressing designs.
     /// </summary>

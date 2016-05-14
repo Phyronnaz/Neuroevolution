@@ -228,7 +228,6 @@ namespace Assets.Scripts.Neuroevolution
                 var anchor = ToVector2(positions[anchorNodeIndex]);
                 var angle = Vector2.Angle(a - anchor, b - anchor) * Mathf.Deg2Rad;
                 revoluteJoints.Add(new RevoluteJointStruct(firstNodeIndex, secondNodeIndex, anchorNodeIndex,
-                    lowerLimit, upperLimit, 2000));
 
                 firstNodeGameObject.GetComponent<SpriteRenderer>().color = Color.white;
                 anchorNodeGameObject.GetComponent<SpriteRenderer>().color = Color.white;

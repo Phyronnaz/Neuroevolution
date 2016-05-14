@@ -15,16 +15,14 @@ namespace Assets.Scripts.Neuroevolution
         public readonly List<DistanceJointStruct> DistanceJoints;
         public readonly List<RevoluteJointStruct> RevoluteJoints;
         public readonly List<Matrix> Synapses;
-        public readonly int Generation;
 
         public CreatureSaveStruct(List<Vector2> initialPositions, List<DistanceJointStruct> distanceJoints,
-            List<RevoluteJointStruct> revoluteJoints, List<Matrix> synapses, int generation)
+            List<RevoluteJointStruct> revoluteJoints, List<Matrix> synapses)
         {
             InitialPositions = initialPositions;
             DistanceJoints = distanceJoints;
             RevoluteJoints = revoluteJoints;
             Synapses = synapses;
-            Generation = generation;
         }
 
         public CreatureSaveStruct(Creature creature)
@@ -33,12 +31,11 @@ namespace Assets.Scripts.Neuroevolution
             DistanceJoints = creature.DistanceJoints;
             RevoluteJoints = creature.RevoluteJoints;
             Synapses = creature.Synapses;
-            Generation = creature.Generation;
         }
 
         public Creature ToCreature()
         {
-            return new Creature(InitialPositions, DistanceJoints, RevoluteJoints, Synapses, Generation);
+            return new Creature(InitialPositions, DistanceJoints, RevoluteJoints, Synapses);
         }
     }
 }

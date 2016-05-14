@@ -22,7 +22,11 @@ namespace Assets.Scripts.Neuroevolution
             Creatures = creatures;
         }
 
-
+        public Controller(Creature creature)
+        {
+            Creatures = new List<Creature>();
+            Creatures.Add(creature);
+        }
 
 
         static void ThreadedJob(Creature c, int testDuration, AutoResetEvent waitHandle)
@@ -40,7 +44,9 @@ namespace Assets.Scripts.Neuroevolution
             controller.ResetCreatures();
             controller.TotalGenerations = generations;
 
-            var score = new List<List<float>>();
+            var scores = new List<List<float>>();
+            var genomes = new List<List<int>>();
+            var parents = new List<List<int>>();
 
             //Start training
             for (var k = 0; k < generations; k++)
@@ -48,13 +54,19 @@ namespace Assets.Scripts.Neuroevolution
                 //Update creatures
                 controller.Update((int)(testDuration / DeltaTime));
 
-                //Save the scores
-                var l = new List<float>();
+                //Save the scores, genomes and parents
+                var s = new List<float>();
+                var g = new List<int>();
+                var p = new List<int>();
                 foreach (var c in controller.Creatures)
                 {
-                    l.Add(c.GetAveragePosition());
+                    s.Add(c.GetAveragePosition());
+                    g.Add(c.Genome);
+                    p.Add(c.Parent);
                 }
-                score.Add(l);
+                scores.Add(s);
+                genomes.Add(g);
+                parents.Add(p);
 
                 //Generate next generation
                 controller.Creatures.Sort();
@@ -73,20 +85,16 @@ namespace Assets.Scripts.Neuroevolution
             //Score output in csv
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(controller.DataPath + @"\score.csv", true))
             {
-                var s = "Variation; Generation; ";
-                for (int k = 0; k < controller.Creatures.Count; k++)
-                {
-                    s += "Creature " + k + ";";
-                }
+                var s = "Variation; Generation; Genome; Parent; Score";
                 file.WriteLine(s);
-                for (int k = 0; k < score.Count; k++)
+                for (int k = 0; k < scores.Count; k++)
                 {
-                    var l = variation.ToString() + ";" + k.ToString() + ";";
-                    foreach (var f in score[k])
+                    for (var i = 0; i < scores[k].Count; i++)
                     {
-                        l += f.ToString() + ";";
+                        var l = variation.ToString() + ";" + k.ToString() + ";";
+                        l += genomes[k][i].ToString() + "; " + parents[k][i].ToString() + "; " + scores[k][i].ToString();
+                        file.WriteLine(l);
                     }
-                    file.WriteLine(l);
                 }
             }
 
@@ -139,7 +147,7 @@ namespace Assets.Scripts.Neuroevolution
             return max;
         }
 
-        public Creature GetBestCreature ()
+        public Creature GetBestCreature()
         {
             Creature max = Creatures[0];
             foreach (var c in Creatures)
@@ -160,7 +168,7 @@ namespace Assets.Scripts.Neuroevolution
         {
             for (var k = 0; k < Creatures.Count; k++)
             {
-                Creatures[k] = Creature.CloneCreature(Creatures[k], 0);
+                Creatures[k] = Creature.DuplicateCreature(Creatures[k]);
             }
         }
     }
