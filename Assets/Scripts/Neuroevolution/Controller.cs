@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -51,6 +51,7 @@ namespace Assets.Scripts.Neuroevolution
             //Start training
             for (var k = 0; k < generations; k++)
             {
+
                 //Update creatures
                 controller.Update((int)(testDuration / DeltaTime));
 
@@ -68,18 +69,10 @@ namespace Assets.Scripts.Neuroevolution
                 genomes.Add(g);
                 parents.Add(p);
 
-                //Debug
-                if (k == generations - 1)
-                {
-                    foreach (var c in controller.Creatures)
-                    {
-                        Debug.Log(c.GetFitness());
-                    }
-                }
 
                 //Generate next generation
                 controller.Creatures.Sort();
-                controller.ResetCreatures();
+
                 if (controller.Creatures.Count % 2 != 0)
                 {
                     controller.Creatures.Add(Creature.CloneCreature(controller.Creatures[0], variation));
@@ -87,6 +80,10 @@ namespace Assets.Scripts.Neuroevolution
                 for (var i = 0; i < controller.Creatures.Count / 2; i++)
                 {
                     controller.Creatures[i] = Creature.CloneCreature(controller.Creatures[i + controller.Creatures.Count / 2], variation);
+                }
+                for (var i = controller.Creatures.Count / 2; i < controller.Creatures.Count; i++)
+                {
+                    controller.Creatures[i] = Creature.DuplicateCreature(controller.Creatures[i]);
                 }
                 controller.CurrentGeneration = k + 1;
             }
@@ -137,10 +134,6 @@ namespace Assets.Scripts.Neuroevolution
             foreach (var w in waitHandles)
             {
                 w.WaitOne();
-                if (!w.Set())
-                {
-                    Debug.LogError("Thread take too long");
-                }
             }
 
             // Update time
@@ -155,7 +148,9 @@ namespace Assets.Scripts.Neuroevolution
             foreach (var c in Creatures)
             {
                 if (c.GetAveragePosition() > max)
+                {
                     max = c.GetAveragePosition();
+                }
             }
             return max;
         }

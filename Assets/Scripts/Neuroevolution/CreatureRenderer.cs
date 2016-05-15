@@ -77,6 +77,7 @@ namespace Assets.Scripts.Neuroevolution
                 foreach (var l in lines)
                 {
                     l.material.color = color;
+                    l.SetColors(color, color);
                 }
                 foreach (var n in nodes)
                 {

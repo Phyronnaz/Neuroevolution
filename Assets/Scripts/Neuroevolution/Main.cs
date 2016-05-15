@@ -253,7 +253,7 @@ namespace Assets.Scripts.Neuroevolution
                 int g;
                 if (int.TryParse(GenerationsField.text, out g))
                 {
-                    x = c.Generation / g;
+                    x = (float)c.Generation / g;
                 }
                 else
                 {

@@ -27,16 +27,14 @@ namespace Assets.Scripts.Neuroevolution
         public int anchor;
         public float lowerLimit;
         public float upperLimit;
-        public float speed;
 
-        public RevoluteJointStruct(int a, int b, int anchor, float lowerLimit, float upperLimit, float speed)
+        public RevoluteJointStruct(int a, int b, int anchor, float lowerLimit, float upperLimit)
         {
             this.a = a;
             this.b = b;
             this.anchor = anchor;
             this.lowerLimit = lowerLimit;
             this.upperLimit = upperLimit;
-            this.speed = speed;
         }
     }
 }

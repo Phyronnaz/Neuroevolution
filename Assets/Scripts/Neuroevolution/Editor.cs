@@ -271,13 +271,11 @@ namespace Assets.Scripts.Neuroevolution
             }
             if (Input.GetKeyDown(KeyCode.Return))
             {
-                //TODO: replace speed
                 var a = ToVector2(positions[firstNodeIndex]);
                 var b = ToVector2(positions[secondNodeIndex]);
                 var anchor = ToVector2(positions[anchorNodeIndex]);
                 var angle = Vector2.Angle(a - anchor, b - anchor) * Mathf.Deg2Rad;
-                revoluteJoints.Add(new RevoluteJointStruct(firstNodeIndex, secondNodeIndex, anchorNodeIndex,
-                    lowerLimit, upperLimit, 1000));
+                revoluteJoints.Add(new RevoluteJointStruct(firstNodeIndex, secondNodeIndex, anchorNodeIndex, lowerLimit, upperLimit));
 
                 firstNodeGameObject.GetComponent<SpriteRenderer>().color = Color.white;
                 anchorNodeGameObject.GetComponent<SpriteRenderer>().color = Color.white;
@@ -368,15 +366,7 @@ namespace Assets.Scripts.Neuroevolution
 
         public int GetRotationNode()
         {
-            if (rotationNodeIndex == -1)
-            {
-                Debug.LogWarning("Default rotation node");
-                return 0;
-            }
-            else
-            {
-                return rotationNodeIndex;
-            }
+            return rotationNodeIndex;
         }
         public void Destroy()
         {

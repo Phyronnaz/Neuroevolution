@@ -21,8 +21,8 @@ namespace Assets.Scripts.Neuroevolution
         World world;
         List<RevoluteJoint> revoluteJoints;
         float time;
-        float timeModulo = 3;
         float initialRotation;
+        bool useRotation;
 
         static int genomeCount;
 
@@ -68,7 +68,7 @@ namespace Assets.Scripts.Neuroevolution
             Genome = genome;
             Parent = parent;
             this.revoluteJoints = new List<RevoluteJoint>();
-            world = new World(new Vector2(0, -9.8f));
+            world = new World(new Vector2(0, Globals.WorldYGravity));
             InitialPositions = positions;
             Synapses = synapses;
             Generation = generation;
@@ -79,11 +79,11 @@ namespace Assets.Scripts.Neuroevolution
             //Add nodes
             foreach (var p in positions)
             {
-                var body = BodyFactory.CreateCircle(world, 0.5f, 10, p, null);
+                var body = BodyFactory.CreateCircle(world, 0.5f, Globals.BodyDensity, p, null);
                 body.CollidesWith = Category.Cat1;
                 body.CollisionCategories = Category.Cat2;
                 body.IsStatic = false;
-                body.Friction = 10;
+                body.Friction = Globals.BodyFriction;
                 world.AddBody(body);
             }
             //Add ground
@@ -105,7 +105,11 @@ namespace Assets.Scripts.Neuroevolution
                 AddDistanceJoint(d);
             }
             world.ProcessChanges();
-            initialRotation = world.BodyList[rotationNode].Rotation;
+            if (rotationNode != -1)
+            {
+                useRotation = true;
+                initialRotation = world.BodyList[rotationNode].Rotation;
+            }
         }
 
         void AddDistanceJoint(DistanceJointStruct d)
@@ -121,9 +125,8 @@ namespace Assets.Scripts.Neuroevolution
             j.LimitEnabled = true;
             j.SetLimits(-r.lowerLimit, r.upperLimit);
             j.Enabled = true;
-            j.MotorSpeed = 0.1f;
             j.MotorEnabled = true;
-            j.MaxMotorTorque = 1000;
+            j.MaxMotorTorque = Globals.MaxMotorTorque;
             world.AddJoint(j);
             revoluteJoints.Add(j);
         }
@@ -172,45 +175,49 @@ namespace Assets.Scripts.Neuroevolution
 
         void Train()
         {
-            //timeModulo = 10;
-            //for (var k = 0; k < revoluteJoints.Count; k++)
-            //{
-            //    if (time % timeModulo > 5)
-            //    {
-            //        revoluteJoints[k].MotorSpeed = RevoluteJoints[k].speed;
-            //    }
-            //    else
-            //    {
-            //        revoluteJoints[k].MotorSpeed = -RevoluteJoints[k].speed;
-            //    }
-
-            //}
-            //return;
-            var neuralNetwork = new Matrix(1, 2 * revoluteJoints.Count + 1);
-
-            //Revolute joints entries
-            for (var i = 0; i < revoluteJoints.Count; i++)
+            if (Globals.Debug)
             {
-                var r = revoluteJoints[i];
-                //Angle between -1 and 1 based on limits
-                neuralNetwork[0][2 * i] = (r.JointAngle - r.LowerLimit) / (r.UpperLimit - r.LowerLimit) * 2 - 1;
-                //Rotation direction
-                neuralNetwork[0][2 * i + 1] = (revoluteJoints[i].MotorSpeed > 0) ? 1 : -1;
+                foreach (var r in revoluteJoints)
+                {
+                    if (time % 10 > 5)
+                    {
+                        r.MotorSpeed = Globals.MotorTorque;
+                    }
+                    else
+                    {
+                        r.MotorSpeed = -Globals.MotorTorque;
+                    }
+
+                }
             }
-
-            //Time entry
-            neuralNetwork[0][2 * revoluteJoints.Count] = 2 * (time % timeModulo) / timeModulo - 1;
-
-            //Process
-            for (var k = 0; k < Synapses.Count; k++)
+            else
             {
-                neuralNetwork = Sigma(Matrix.Dot(neuralNetwork, Synapses[k]));
-            }
+                var neuralNetwork = new Matrix(1, 2 * revoluteJoints.Count + 1);
 
-            //Change speeds
-            for (var i = 0; i < revoluteJoints.Count; i++)
-            {
-                revoluteJoints[i].MotorSpeed = Controller.DeltaTime * neuralNetwork[0][i] * RevoluteJoints[i].speed;
+                //Revolute joints entries
+                for (var i = 0; i < revoluteJoints.Count; i++)
+                {
+                    var r = revoluteJoints[i];
+                    //Angle between -1 and 1 based on limits
+                    neuralNetwork[0][2 * i] = (r.JointAngle - r.LowerLimit) / (r.UpperLimit - r.LowerLimit) * 2 - 1;
+                    //Rotation direction
+                    neuralNetwork[0][2 * i + 1] = (revoluteJoints[i].MotorSpeed > 0) ? 1 : -1;
+                }
+
+                //Time entry
+                neuralNetwork[0][2 * revoluteJoints.Count] = 2 * (time % Globals.CycleDuration) / Globals.CycleDuration - 1;
+
+                //Process
+                for (var k = 0; k < Synapses.Count; k++)
+                {
+                    neuralNetwork = Sigma(Matrix.Dot(neuralNetwork, Synapses[k]));
+                }
+
+                //Change speeds
+                for (var i = 0; i < revoluteJoints.Count; i++)
+                {
+                    revoluteJoints[i].MotorSpeed = Controller.DeltaTime * neuralNetwork[0][i] * Globals.MotorTorque;
+                }
             }
         }
 
@@ -244,8 +251,12 @@ namespace Assets.Scripts.Neuroevolution
 
         public float GetFitness()
         {
-            var x = (Mathf.Abs(world.BodyList[RotationNode].Rotation - initialRotation) > Mathf.PI / 4) ? -1 : 1;
-            return GetAveragePosition() + x * 1000;
+            var x = 0f;
+            if (useRotation)
+            {
+                x = (Mathf.Abs(world.BodyList[RotationNode].Rotation - initialRotation) > Globals.MaxAngle) ? -1 : 1;
+            }
+            return GetAveragePosition() + x * Globals.BadAngleImpact;
         }
 
         public int CompareTo(object obj)
