@@ -6,6 +6,7 @@ using System.Xml.Serialization;
 using System.IO;
 using System.Windows.Forms;
 using System;
+using UnityEngine.EventSystems;
 
 namespace Assets.Scripts.Neuroevolution
 {
@@ -103,45 +104,48 @@ namespace Assets.Scripts.Neuroevolution
         public void EditUpdate()
         {
             editor.Update();
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (EventSystem.current.currentSelectedGameObject == null)
             {
-                InitializeController();
-            }
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                editor.Destroy();
-                editor = new Editor();
-            }
-            if (Input.GetKeyDown(KeyCode.L))
-            {
-                Stream myStream = null;
-                OpenFileDialog openFileDialog1 = new OpenFileDialog();
-
-                openFileDialog1.InitialDirectory = "c:\\";
-                openFileDialog1.Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*";
-                openFileDialog1.FilterIndex = 1;
-                openFileDialog1.RestoreDirectory = true;
-
-                if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                if (Input.GetKeyDown(KeyCode.Space))
                 {
-                    try
-                    {
-                        if ((myStream = openFileDialog1.OpenFile()) != null)
-                        {
-                            using (myStream)
-                            {
-                                XmlSerializer serializer = new XmlSerializer(typeof(CreatureSaveStruct));
-                                var c = (CreatureSaveStruct)serializer.Deserialize(myStream);
-                                controller = new Controller(c.ToCreature());
+                    InitializeController();
+                }
+                if (Input.GetKeyDown(KeyCode.R))
+                {
+                    editor.Destroy();
+                    editor = new Editor();
+                }
+                if (Input.GetKeyDown(KeyCode.L))
+                {
+                    Stream myStream = null;
+                    OpenFileDialog openFileDialog1 = new OpenFileDialog();
 
-                                edit = false;
-                                editor.Destroy();
+                    openFileDialog1.InitialDirectory = "c:\\";
+                    openFileDialog1.Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*";
+                    openFileDialog1.FilterIndex = 1;
+                    openFileDialog1.RestoreDirectory = true;
+
+                    if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                    {
+                        try
+                        {
+                            if ((myStream = openFileDialog1.OpenFile()) != null)
+                            {
+                                using (myStream)
+                                {
+                                    XmlSerializer serializer = new XmlSerializer(typeof(CreatureSaveStruct));
+                                    var c = (CreatureSaveStruct)serializer.Deserialize(myStream);
+                                    controller = new Controller(c.ToCreature());
+
+                                    edit = false;
+                                    editor.Destroy();
+                                }
                             }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
+                        }
                     }
                 }
             }
