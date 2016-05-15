@@ -254,7 +254,7 @@ namespace Assets.Scripts.Neuroevolution
             var x = 0f;
             if (useRotation)
             {
-                x = (Mathf.Abs(world.BodyList[RotationNode].Rotation - initialRotation) > Globals.MaxAngle) ? -1 : 1;
+                x = (Mathf.Abs(world.BodyList[RotationNode].Rotation - initialRotation) > Globals.MaxAngle) ? -1 : 0;
             }
             return GetAveragePosition() + x * Globals.BadAngleImpact;
         }

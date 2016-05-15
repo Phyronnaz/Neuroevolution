@@ -225,9 +225,9 @@ namespace Assets.Scripts.Neuroevolution
             //Cancel edit
             if (Input.GetMouseButtonDown(1))
             {
-                firstNodeGameObject.GetComponent<SpriteRenderer>().color = Color.white;
-                anchorNodeGameObject.GetComponent<SpriteRenderer>().color = Color.white;
-                secondNodeGameObject.GetComponent<SpriteRenderer>().color = Color.white;
+                if (firstNodeGameObject != null) firstNodeGameObject.GetComponent<SpriteRenderer>().color = Color.white;
+                if (anchorNodeGameObject != null) anchorNodeGameObject.GetComponent<SpriteRenderer>().color = Color.white;
+                if (secondNodeGameObject != null) secondNodeGameObject.GetComponent<SpriteRenderer>().color = Color.white;
                 firstNodeIndex = -1;
                 secondNodeIndex = -1;
                 anchorNodeIndex = -1;
