@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 namespace Assets.Scripts.Neuroevolution
 {
-    enum EditMode { Nodes, DistanceMuscles, RotationMuscles }
+    enum EditMode { Nodes, DistanceMuscles, RotationMuscles, RotationNode }
     public class Editor
     {
         List<FVector2> positions;
@@ -13,6 +13,9 @@ namespace Assets.Scripts.Neuroevolution
         List<RevoluteJointStruct> revoluteJoints;
         List<Object> objects;
         EditMode editMode;
+        //Nodes
+        bool clamp;
+        List<GameObject> grid;
         //Distance
         int currentMuscleNodeIndex = -1; //Index of the node which is the start of the muscle currently created
         LineRenderer currentLine;
@@ -27,6 +30,9 @@ namespace Assets.Scripts.Neuroevolution
         float lowerLimit = 1;
         AngleUI lowerLimitUI;
         AngleUI upperLimitUI;
+        //Rotation node
+        int rotationNodeIndex = -1;
+        GameObject rotationNodeGameObject;
 
 
         public Editor()
@@ -41,10 +47,39 @@ namespace Assets.Scripts.Neuroevolution
             upperLimitUI = new AngleUI(Vector2.zero, 100, 3f, Color.red, false);
             lowerLimitUI.SetActive(false);
             upperLimitUI.SetActive(false);
+            grid = new List<GameObject>();
+            for (var x = -40; x < 40; x++)
+            {
+                for (var y = 1; y < 30; y++)
+                {
+                    var go = Object.Instantiate(Resources.Load("LittleCircle"), new Vector2(x, y), Quaternion.identity) as GameObject;
+                    if (x % 10 == 0 ^ y % 10 == 0)
+                    {
+                        go.GetComponent<SpriteRenderer>().color = Color.cyan;
+                    }
+                    else if (x % 5 == 0 ^ y % 5 == 0)
+                    {
+                        go.GetComponent<SpriteRenderer>().color = Color.yellow;
+                    }
+                    else if (x % 10 == 0 && y % 10 == 0)
+                    {
+                        go.GetComponent<SpriteRenderer>().color = Color.red;
+                    }
+                    else
+                    {
+                        go.GetComponent<SpriteRenderer>().color = Color.grey;
+                    }
+                    go.SetActive(false);
+                    grid.Add(go);
+                    objects.Add(go);
+                }
+            }
+            GameObject.Find("HidePanel").GetComponent<MeshRenderer>().enabled = false;
         }
 
         public void AddPrefabs()
         {
+            rotationNodeIndex = 0;
             AddLine();
             editMode = EditMode.RotationMuscles;
             var a = new FVector2(-2, 15);
@@ -101,6 +136,15 @@ namespace Assets.Scripts.Neuroevolution
 
         void EditNodes()
         {
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                clamp = !clamp;
+                foreach (var g in grid)
+                {
+                    g.SetActive(clamp);
+                }
+                GameObject.Find("HidePanel").GetComponent<MeshRenderer>().enabled = clamp;
+            }
             if (Input.GetMouseButtonDown(0) && EventSystem.current.currentSelectedGameObject == null)
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -110,6 +154,11 @@ namespace Assets.Scripts.Neuroevolution
                 {
                     var p = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                     p.z = 0;
+                    if (clamp)
+                    {
+                        p.x = Mathf.Round(p.x);
+                        p.y = Mathf.Round(p.y);
+                    }
                     var go = Object.Instantiate(Resources.Load("Circle"), p, Quaternion.identity) as GameObject;
                     go.name = positions.Count.ToString();
                     go.GetComponent<SpriteRenderer>().color = Color.white;
@@ -204,7 +253,7 @@ namespace Assets.Scripts.Neuroevolution
                         anchorNodeGameObject = hit.transform.gameObject;
                         anchorNodeGameObject.GetComponent<SpriteRenderer>().color = Color.blue;
                     }
-                    else if(nodeIndex != firstNodeIndex && nodeIndex != anchorNodeIndex)
+                    else if (nodeIndex != firstNodeIndex && nodeIndex != anchorNodeIndex)
                     {
                         secondNodeIndex = nodeIndex;
                         secondNodeGameObject = hit.transform.gameObject;
@@ -228,6 +277,7 @@ namespace Assets.Scripts.Neuroevolution
                 var anchor = ToVector2(positions[anchorNodeIndex]);
                 var angle = Vector2.Angle(a - anchor, b - anchor) * Mathf.Deg2Rad;
                 revoluteJoints.Add(new RevoluteJointStruct(firstNodeIndex, secondNodeIndex, anchorNodeIndex,
+                    lowerLimit, upperLimit, 1000));
 
                 firstNodeGameObject.GetComponent<SpriteRenderer>().color = Color.white;
                 anchorNodeGameObject.GetComponent<SpriteRenderer>().color = Color.white;
@@ -235,6 +285,27 @@ namespace Assets.Scripts.Neuroevolution
                 firstNodeIndex = -1;
                 secondNodeIndex = -1;
                 anchorNodeIndex = -1;
+            }
+        }
+
+        void EditRotationNode()
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
+
+                int nodeIndex;
+                if (hit.collider != null && int.TryParse(hit.collider.name, out nodeIndex))
+                {
+                    rotationNodeIndex = nodeIndex;
+                    if (rotationNodeGameObject != null)
+                    {
+                        rotationNodeGameObject.GetComponent<SpriteRenderer>().color = Color.white;
+                    }
+                    rotationNodeGameObject = hit.transform.gameObject;
+                    rotationNodeGameObject.GetComponent<SpriteRenderer>().color = Color.yellow;
+                }
             }
         }
 
@@ -254,6 +325,9 @@ namespace Assets.Scripts.Neuroevolution
                 case EditMode.RotationMuscles:
                     EditRotationMuscles();
                     break;
+                case EditMode.RotationNode:
+                    EditRotationNode();
+                    break;
             }
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
@@ -266,6 +340,10 @@ namespace Assets.Scripts.Neuroevolution
             if (Input.GetKeyDown(KeyCode.Alpha3))
             {
                 editMode = EditMode.RotationMuscles;
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                editMode = EditMode.RotationNode;
             }
             if (Input.GetKeyDown(KeyCode.G))
             {
@@ -288,6 +366,18 @@ namespace Assets.Scripts.Neuroevolution
             return revoluteJoints;
         }
 
+        public int GetRotationNode()
+        {
+            if (rotationNodeIndex == -1)
+            {
+                Debug.LogWarning("Default rotation node");
+                return 0;
+            }
+            else
+            {
+                return rotationNodeIndex;
+            }
+        }
         public void Destroy()
         {
             foreach (var o in objects)
@@ -296,6 +386,7 @@ namespace Assets.Scripts.Neuroevolution
             }
             lowerLimitUI.Destroy();
             upperLimitUI.Destroy();
+            GameObject.Find("HidePanel").GetComponent<MeshRenderer>().enabled = false;
         }
     }
 }

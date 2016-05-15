@@ -16,9 +16,9 @@ namespace Assets.Scripts.Neuroevolution
         public InputField GenerationsField;
         public InputField TestDurationField;
         public InputField InitialPopulationSizeField;
-        public InputField InitialPopulationVariationField;
         public InputField VariationField;
         public InputField HiddenLayersCountField;
+        public InputField FileNameField;
         public Text DistanceText;
         public Text TimeText;
         public Text SpeedText;
@@ -30,6 +30,8 @@ namespace Assets.Scripts.Neuroevolution
         Editor editor;
         bool edit;
         const int hiddenSize = 4; //Auto increased if needed
+        float remainingTime = Mathf.Infinity;
+
 
         public void Awake()
         {
@@ -60,17 +62,17 @@ namespace Assets.Scripts.Neuroevolution
         /// </summary>
         public void Train()
         {
+            remainingTime = Mathf.Infinity;
             if (controller == null)
             {
                 InitializeController();
             }
 
             //Adjust creatures number
-            var initialVariation = float.Parse(InitialPopulationVariationField.text);
             while (controller.Creatures.Count < int.Parse(InitialPopulationSizeField.text))
             {
-                var randomCreature = controller.Creatures[CustomRandom.Range(0, controller.Creatures.Count)];
-                controller.Creatures.Add(Creature.CloneCreature(randomCreature, initialVariation));
+                var r = controller.Creatures[CustomRandom.Range(0, controller.Creatures.Count)];
+                controller.Creatures.Add(new Creature(r.InitialPositions, r.DistanceJoints, r.RevoluteJoints, r.RotationNode, hiddenSize, int.Parse(HiddenLayersCountField.text)));
             }
             while (controller.Creatures.Count > int.Parse(InitialPopulationSizeField.text))
             {
@@ -78,9 +80,9 @@ namespace Assets.Scripts.Neuroevolution
             }
 
             //Begin train
-            controller.Train(int.Parse(GenerationsField.text), int.Parse(TestDurationField.text), float.Parse(VariationField.text));
+            controller.Train(int.Parse(GenerationsField.text), int.Parse(TestDurationField.text), float.Parse(VariationField.text), FileNameField.text);
         }
-
+        
 
         public void Update()
         {
@@ -126,9 +128,7 @@ namespace Assets.Scripts.Neuroevolution
                             {
                                 XmlSerializer serializer = new XmlSerializer(typeof(CreatureSaveStruct));
                                 var c = (CreatureSaveStruct)serializer.Deserialize(myStream);
-                                var l = new List<Creature>();
-                                l.Add(c.ToCreature());
-                                controller = new Controller(l);
+                                controller = new Controller(c.ToCreature());
 
                                 edit = false;
                                 editor.Destroy();
@@ -144,23 +144,10 @@ namespace Assets.Scripts.Neuroevolution
         }
         public void InitializeController()
         {
-            var h = hiddenSize;
-            h = Mathf.Max(h, editor.GetRevoluteJoints().Count * 2 + 1);
-            var s = new List<Matrix>();
-            s.Add(Matrix.Random(editor.GetRevoluteJoints().Count * 2 + 1, h));
-            for (var k = 1; k < int.Parse(HiddenLayersCountField.text); k++)
-            {
-                s.Add(Matrix.Random(h, h));
-            }
-            s.Add(Matrix.Random(h, editor.GetRevoluteJoints().Count));
-
-            var c = new Creature(editor.GetPositions(), editor.GetDistanceJoints(), editor.GetRevoluteJoints(), s, 0);
+            var c = new Creature(editor.GetPositions(), editor.GetDistanceJoints(), editor.GetRevoluteJoints(), editor.GetRotationNode(), hiddenSize, int.Parse(HiddenLayersCountField.text));
             edit = false;
             editor.Destroy();
-            var l = new List<Creature>();
-            l.Add(c);
-            //l.Add(Creature.CloneCreature(c, 0));
-            controller = new Controller(l);
+            controller = new Controller(c);
             RenderCreatures();
         }
 
@@ -174,7 +161,12 @@ namespace Assets.Scripts.Neuroevolution
                 ProgressBar.SetFillerSizeAsPercentage((float)controller.CurrentGeneration / controller.TotalGenerations * 100f);
                 //Time
                 var speed = (Time.time - controller.TrainStartTime) / controller.CurrentGeneration;
-                TimeRemainingText.text = (int)(speed * (controller.TotalGenerations - controller.CurrentGeneration)) + "s remaining";
+                var x = Mathf.Min(speed * (controller.TotalGenerations - controller.CurrentGeneration), remainingTime);
+                if (x > 1)
+                {
+                    remainingTime = x;
+                }
+                TimeRemainingText.text = (int)remainingTime + "s remaining";
             }
             else
             {

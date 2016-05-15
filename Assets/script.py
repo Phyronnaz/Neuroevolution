@@ -3,7 +3,7 @@ from io import StringIO
 import numpy as np
 import csv
 
-scsv = open("score.csv", "r").read()
+scsv = open("score_adaptive_0.001_100.csv", "r").read()
 
 f = StringIO(scsv)
 reader = csv.reader(f, delimiter=';')

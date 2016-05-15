@@ -38,7 +38,7 @@ namespace Assets.Scripts.Neuroevolution
             waitHandle.Set();
         }
 
-        static void TrainThread(Controller controller, int generations, int testDuration, float variation)
+        static void TrainThread(Controller controller, int generations, int testDuration, float variation, string fileName)
         {
             controller.IsTraining = true;
             controller.ResetCreatures();
@@ -68,6 +68,15 @@ namespace Assets.Scripts.Neuroevolution
                 genomes.Add(g);
                 parents.Add(p);
 
+                //Debug
+                if (k == generations - 1)
+                {
+                    foreach (var c in controller.Creatures)
+                    {
+                        Debug.Log(c.GetFitness());
+                    }
+                }
+
                 //Generate next generation
                 controller.Creatures.Sort();
                 controller.ResetCreatures();
@@ -83,17 +92,21 @@ namespace Assets.Scripts.Neuroevolution
             }
 
             //Score output in csv
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(controller.DataPath + @"\score.csv", true))
+            if (fileName != "")
             {
-                var s = "Variation; Generation; Genome; Parent; Score";
-                file.WriteLine(s);
-                for (int k = 0; k < scores.Count; k++)
+
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(controller.DataPath + @"\" + fileName + ".csv", true))
                 {
-                    for (var i = 0; i < scores[k].Count; i++)
+                    var s = "Variation; Generation; Genome; Parent; Score";
+                    file.WriteLine(s);
+                    for (int k = 0; k < scores.Count; k++)
                     {
-                        var l = variation.ToString() + ";" + k.ToString() + ";";
-                        l += genomes[k][i].ToString() + "; " + parents[k][i].ToString() + "; " + scores[k][i].ToString();
-                        file.WriteLine(l);
+                        for (var i = 0; i < scores[k].Count; i++)
+                        {
+                            var l = variation.ToString() + ";" + k.ToString() + ";";
+                            l += genomes[k][i].ToString() + "; " + parents[k][i].ToString() + "; " + scores[k][i].ToString();
+                            file.WriteLine(l);
+                        }
                     }
                 }
             }
@@ -104,10 +117,10 @@ namespace Assets.Scripts.Neuroevolution
         }
 
 
-        public void Train(int generations, int testDuration, float variation)
+        public void Train(int generations, int testDuration, float variation, string fileName)
         {
             TrainStartTime = Time.time;
-            var t = new Thread(() => TrainThread(this, generations, testDuration, variation));
+            var t = new Thread(() => TrainThread(this, generations, testDuration, variation, fileName));
             t.Start();
         }
 
