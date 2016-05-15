@@ -64,6 +64,12 @@
     <Reference Include="System.Windows.Forms">
       <HintPath>Assets\Plugins\System.Windows.Forms.dll</HintPath>
     </Reference>
+    <Reference Include="I18N">
+      <HintPath>Assets\Plugins\I18N.dll</HintPath>
+    </Reference>
+    <Reference Include="I18N.West">
+      <HintPath>Assets\Plugins\I18N.West.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Standard Assets\Utility\FPSCounter.cs" />

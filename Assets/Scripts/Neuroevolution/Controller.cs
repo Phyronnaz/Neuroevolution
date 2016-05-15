@@ -38,6 +38,11 @@ namespace Assets.Scripts.Neuroevolution
             waitHandle.Set();
         }
 
+        public static float GetVariation(int currentGeneration, int totalGenerations)
+        {
+            return 0.1f / currentGeneration;
+        }
+
         static void TrainThread(Controller controller, int generations, int testDuration, float variation, string fileName)
         {
             controller.IsTraining = true;
@@ -70,16 +75,18 @@ namespace Assets.Scripts.Neuroevolution
                 parents.Add(p);
 
 
+                var v = (variation == -1) ? GetVariation(k + 1, generations) : variation;
+
                 //Generate next generation
                 controller.Creatures.Sort();
 
                 if (controller.Creatures.Count % 2 != 0)
                 {
-                    controller.Creatures.Add(Creature.CloneCreature(controller.Creatures[0], variation));
+                    controller.Creatures.Add(Creature.CloneCreature(controller.Creatures[0], v));
                 }
                 for (var i = 0; i < controller.Creatures.Count / 2; i++)
                 {
-                    controller.Creatures[i] = Creature.CloneCreature(controller.Creatures[i + controller.Creatures.Count / 2], variation);
+                    controller.Creatures[i] = Creature.CloneCreature(controller.Creatures[i + controller.Creatures.Count / 2], v);
                 }
                 for (var i = controller.Creatures.Count / 2; i < controller.Creatures.Count; i++)
                 {

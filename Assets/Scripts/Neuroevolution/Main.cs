@@ -82,10 +82,14 @@ namespace Assets.Scripts.Neuroevolution
             //Begin train
             controller.Train(int.Parse(GenerationsField.text), int.Parse(TestDurationField.text), float.Parse(VariationField.text), FileNameField.text);
         }
-        
+
 
         public void Update()
         {
+            if (Input.GetKeyDown(KeyCode.F11))
+            {
+                UnityEngine.Screen.fullScreen = !UnityEngine.Screen.fullScreen;
+            }
             if (edit)
             {
                 EditUpdate();
