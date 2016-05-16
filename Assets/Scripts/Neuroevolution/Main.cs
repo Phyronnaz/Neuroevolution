@@ -27,20 +27,20 @@ namespace Assets.Scripts.Neuroevolution
         public Text PowerText;
         public Text TimeRemainingText;
         public ProgressBarBehaviour ProgressBar;
-        List<CreatureRenderer> creatureRenderers;
+        private List<CreatureRenderer> creatureRenderers;
         //Others
-        Controller controller;
-        Editor editor;
-        bool edit;
-        const int hiddenSize = 4; //Auto increased if needed
-        float remainingTime = Mathf.Infinity;
+        private Controller controller;
+        private Editor editor;
+        private bool edit;
+        private const int hiddenSize = 4; //Auto increased if needed
+        private float remainingTime = Mathf.Infinity;
 
 
         public void Awake()
         {
             InvokeRepeating("ControllerUpdate", 0, Controller.DeltaTime);
         }
-        void ControllerUpdate()
+        private void ControllerUpdate()
         {
             if (controller != null && !controller.IsTraining)
             {
@@ -60,11 +60,11 @@ namespace Assets.Scripts.Neuroevolution
         }
 
 
-        /// <summary>
-        /// Called by UI
-        /// </summary>
         public void Train()
         {
+            //Called by UI
+
+
             remainingTime = Mathf.Infinity;
             if (controller == null)
             {
@@ -75,7 +75,7 @@ namespace Assets.Scripts.Neuroevolution
             while (controller.Creatures.Count < int.Parse(InitialPopulationSizeField.text))
             {
                 var r = controller.Creatures[CustomRandom.Range(0, controller.Creatures.Count)];
-                controller.Creatures.Add(new Creature(r.InitialPositions, r.DistanceJoints, r.RevoluteJoints, r.RotationNode, hiddenSize, int.Parse(HiddenLayersCountField.text)));
+                controller.Creatures.Add(r.RandomClone());
             }
             while (controller.Creatures.Count > int.Parse(InitialPopulationSizeField.text))
             {
@@ -108,15 +108,18 @@ namespace Assets.Scripts.Neuroevolution
             editor.Update();
             if (EventSystem.current.currentSelectedGameObject == null)
             {
+                //Start
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
                     InitializeController();
                 }
+                //Restart
                 if (Input.GetKeyDown(KeyCode.R))
                 {
                     editor.Destroy();
                     editor = new Editor();
                 }
+                //Load file
                 if (Input.GetKeyDown(KeyCode.L))
                 {
                     Stream myStream = null;
@@ -154,7 +157,8 @@ namespace Assets.Scripts.Neuroevolution
         }
         public void InitializeController()
         {
-            var c = new Creature(editor.GetPositions(), editor.GetDistanceJoints(), editor.GetRevoluteJoints(), editor.GetRotationNode(), hiddenSize, int.Parse(HiddenLayersCountField.text));
+            var ct = new CreatureStruct(editor.GetPositions(), editor.GetDistanceJoints(), editor.GetRevoluteJoints(), editor.GetRotationNode());
+            var c = new Creature(ct, hiddenSize, int.Parse(HiddenLayersCountField.text));
             edit = false;
             editor.Destroy();
             controller = new Controller(c);
@@ -205,11 +209,11 @@ namespace Assets.Scripts.Neuroevolution
                 if (s.Length > 6)
                     s = s.Substring(0, 6);
 
-                var e = max.Energy.ToString();
+                var e = max.GetEnergy().ToString();
                 if (e.Length > 5)
                     e = e.Substring(0, 5);
 
-                var p = (max.Energy / controller.CurrentTime).ToString();
+                var p = (max.GetEnergy() / controller.CurrentTime).ToString();
                 if (p.Length > 5)
                     p = p.Substring(0, 5);
 
@@ -249,7 +253,7 @@ namespace Assets.Scripts.Neuroevolution
                     {
                         if ((myStream = saveFileDialog1.OpenFile()) != null)
                         {
-                            var save = new CreatureSaveStruct(controller.GetBestCreature());
+                            var save = controller.GetBestCreature().GetSave();
                             XmlSerializer serializer = new XmlSerializer(typeof(CreatureSaveStruct));
                             serializer.Serialize(myStream, save);
                             myStream.Close();
@@ -258,7 +262,7 @@ namespace Assets.Scripts.Neuroevolution
                 }
             }
         }
-        void RenderCreatures()
+        private void RenderCreatures()
         {
             while (creatureRenderers.Count < controller.Creatures.Count)
             {
@@ -276,7 +280,7 @@ namespace Assets.Scripts.Neuroevolution
                 int g;
                 if (int.TryParse(GenerationsField.text, out g))
                 {
-                    x = (float)c.Generation / g;
+                    x = (float)c.GetGeneration() / g;
                 }
                 else
                 {

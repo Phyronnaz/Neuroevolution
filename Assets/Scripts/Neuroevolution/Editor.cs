@@ -8,31 +8,31 @@ namespace Assets.Scripts.Neuroevolution
     enum EditMode { Nodes, DistanceMuscles, RotationMuscles, RotationNode }
     public class Editor
     {
-        List<FVector2> positions;
-        List<DistanceJointStruct> distanceJoints;
-        List<RevoluteJointStruct> revoluteJoints;
-        List<Object> objects;
-        EditMode editMode;
+        private List<FVector2> positions;
+        private List<DistanceJointStruct> distanceJoints;
+        private List<RevoluteJointStruct> revoluteJoints;
+        private List<Object> objects;
+        private EditMode editMode;
         //Nodes
-        bool clamp;
-        List<GameObject> grid;
+        private bool clamp;
+        private List<GameObject> grid;
         //Distance
-        int currentMuscleNodeIndex = -1; //Index of the node which is the start of the muscle currently created
-        LineRenderer currentLine;
+        private int currentMuscleNodeIndex = -1; //Index of the node which is the start of the muscle currently created
+        private LineRenderer currentLine;
         //Rotation
-        int firstNodeIndex = -1;
-        int anchorNodeIndex = -1;
-        int secondNodeIndex = -1;
-        GameObject firstNodeGameObject;
-        GameObject secondNodeGameObject;
-        GameObject anchorNodeGameObject;
-        float upperLimit = 1;
-        float lowerLimit = 1;
-        AngleUI lowerLimitUI;
-        AngleUI upperLimitUI;
+        private int firstNodeIndex = -1;
+        private int anchorNodeIndex = -1;
+        private int secondNodeIndex = -1;
+        private GameObject firstNodeGameObject;
+        private GameObject secondNodeGameObject;
+        private GameObject anchorNodeGameObject;
+        private float upperLimit = 1;
+        private float lowerLimit = 1;
+        private AngleUI lowerLimitUI;
+        private AngleUI upperLimitUI;
         //Rotation node
-        int rotationNodeIndex = -1;
-        GameObject rotationNodeGameObject;
+        private int rotationNodeIndex = -1;
+        private GameObject rotationNodeGameObject;
 
 
         public Editor()
@@ -77,6 +77,13 @@ namespace Assets.Scripts.Neuroevolution
             GameObject.Find("HidePanel").GetComponent<MeshRenderer>().enabled = false;
         }
 
+
+        private static Vector2 ToVector2(FVector2 fvector2)
+        {
+            return new Vector2(fvector2.X, fvector2.Y);
+        }
+
+
         public void AddPrefabs()
         {
             rotationNodeIndex = 0;
@@ -120,12 +127,8 @@ namespace Assets.Scripts.Neuroevolution
             objects.Add(secondNodeGameObject);
 
         }
-        public Vector2 ToVector2(FVector2 fvector2)
-        {
-            return new Vector2(fvector2.X, fvector2.Y);
-        }
 
-        void AddLine()
+        private void AddLine()
         {
             currentLine = (new GameObject()).AddComponent<LineRenderer>();
             currentLine.material = new Material(Shader.Find("Diffuse"));
@@ -134,7 +137,51 @@ namespace Assets.Scripts.Neuroevolution
             objects.Add(currentLine);
         }
 
-        void EditNodes()
+
+
+        public void Update()
+        {
+            lowerLimitUI.SetActive(false);
+            upperLimitUI.SetActive(false);
+            currentLine.enabled = false;
+            switch (editMode)
+            {
+                case EditMode.Nodes:
+                    EditNodes();
+                    break;
+                case EditMode.DistanceMuscles:
+                    EditDistanceMuscles();
+                    break;
+                case EditMode.RotationMuscles:
+                    EditRotationMuscles();
+                    break;
+                case EditMode.RotationNode:
+                    EditRotationNode();
+                    break;
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                editMode = EditMode.Nodes;
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                editMode = EditMode.DistanceMuscles;
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                editMode = EditMode.RotationMuscles;
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                editMode = EditMode.RotationNode;
+            }
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                AddPrefabs();
+            }
+        }
+
+        private void EditNodes()
         {
             if (Input.GetKeyDown(KeyCode.C))
             {
@@ -168,7 +215,7 @@ namespace Assets.Scripts.Neuroevolution
             }
         }
 
-        void EditDistanceMuscles()
+        private void EditDistanceMuscles()
         {
             //Render muscle
             if (currentMuscleNodeIndex != -1)
@@ -209,7 +256,7 @@ namespace Assets.Scripts.Neuroevolution
             }
         }
 
-        void EditRotationMuscles()
+        private void EditRotationMuscles()
         {
             //Render
             if (secondNodeIndex != -1)
@@ -286,7 +333,7 @@ namespace Assets.Scripts.Neuroevolution
             }
         }
 
-        void EditRotationNode()
+        private void EditRotationNode()
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -307,47 +354,7 @@ namespace Assets.Scripts.Neuroevolution
             }
         }
 
-        public void Update()
-        {
-            lowerLimitUI.SetActive(false);
-            upperLimitUI.SetActive(false);
-            currentLine.enabled = false;
-            switch (editMode)
-            {
-                case EditMode.Nodes:
-                    EditNodes();
-                    break;
-                case EditMode.DistanceMuscles:
-                    EditDistanceMuscles();
-                    break;
-                case EditMode.RotationMuscles:
-                    EditRotationMuscles();
-                    break;
-                case EditMode.RotationNode:
-                    EditRotationNode();
-                    break;
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                editMode = EditMode.Nodes;
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                editMode = EditMode.DistanceMuscles;
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                editMode = EditMode.RotationMuscles;
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha4))
-            {
-                editMode = EditMode.RotationNode;
-            }
-            if (Input.GetKeyDown(KeyCode.G))
-            {
-                AddPrefabs();
-            }
-        }
+
 
         public List<FVector2> GetPositions()
         {
@@ -368,6 +375,8 @@ namespace Assets.Scripts.Neuroevolution
         {
             return rotationNodeIndex;
         }
+
+
         public void Destroy()
         {
             foreach (var o in objects)

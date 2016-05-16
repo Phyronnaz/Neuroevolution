@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Full v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows64:19</UnityBuildTarget>
     <UnityVersion>5.3.4f1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -63,14 +61,14 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
-    <Reference Include="System.Windows.Forms">
-      <HintPath>Assets\Plugins\System.Windows.Forms.dll</HintPath>
-    </Reference>
     <Reference Include="I18N">
       <HintPath>Assets\Plugins\I18N.dll</HintPath>
     </Reference>
     <Reference Include="I18N.West">
       <HintPath>Assets\Plugins\I18N.West.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <HintPath>Assets\Plugins\System.Windows.Forms.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -209,6 +207,7 @@
     <Compile Include="Assets\Scripts\Neuroevolution\Creature.cs" />
     <Compile Include="Assets\Scripts\Neuroevolution\CreatureRenderer.cs" />
     <Compile Include="Assets\Scripts\Neuroevolution\CreatureSaveStruct.cs" />
+    <Compile Include="Assets\Scripts\Neuroevolution\CreatureStruct.cs" />
     <Compile Include="Assets\Scripts\Neuroevolution\CustomRandom.cs" />
     <Compile Include="Assets\Scripts\Neuroevolution\Editor.cs" />
     <Compile Include="Assets\Scripts\Neuroevolution\Globals.cs" />

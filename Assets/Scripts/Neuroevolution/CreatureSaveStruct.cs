@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 
@@ -12,8 +10,8 @@ namespace Assets.Scripts.Neuroevolution
     public struct CreatureSaveStruct
     {
         public readonly List<Vector2> InitialPositions;
-        public readonly List<DistanceJointStruct> DistanceJoints;
-        public readonly List<RevoluteJointStruct> RevoluteJoints;
+        public readonly List<DistanceJointStruct> DistanceJointStructs;
+        public readonly List<RevoluteJointStruct> RevoluteJointStructs;
         public int RotationNode;
         public readonly List<Matrix> Synapses;
 
@@ -21,24 +19,15 @@ namespace Assets.Scripts.Neuroevolution
             List<RevoluteJointStruct> revoluteJoints, int rotationNode, List<Matrix> synapses)
         {
             InitialPositions = initialPositions;
-            DistanceJoints = distanceJoints;
-            RevoluteJoints = revoluteJoints;
+            DistanceJointStructs = distanceJoints;
+            RevoluteJointStructs = revoluteJoints;
             RotationNode = rotationNode;
             Synapses = synapses;
         }
 
-        public CreatureSaveStruct(Creature creature)
-        {
-            InitialPositions = creature.InitialPositions;
-            DistanceJoints = creature.DistanceJoints;
-            RevoluteJoints = creature.RevoluteJoints;
-            RotationNode = creature.RotationNode;
-            Synapses = creature.Synapses;
-        }
-
         public Creature ToCreature()
         {
-            return new Creature(InitialPositions, DistanceJoints, RevoluteJoints, RotationNode, Synapses);
+            return new Creature(new CreatureStruct(InitialPositions, DistanceJointStructs, RevoluteJointStructs, RotationNode), Synapses);
         }
     }
 }

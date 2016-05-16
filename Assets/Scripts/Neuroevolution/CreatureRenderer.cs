@@ -9,9 +9,9 @@ namespace Assets.Scripts.Neuroevolution
 {
     public class CreatureRenderer
     {
-        List<Transform> nodes;
-        List<LineRenderer> lines;
-        Color color;
+        private List<Transform> nodes;
+        private List<LineRenderer> lines;
+        private Color color;
 
         public void Update(List<Body> bodies, List<Joint> joints, Color color)
         {

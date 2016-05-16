@@ -10,25 +10,27 @@ namespace Assets.Scripts.Neuroevolution
 {
     public class Creature : IComparable
     {
-        public List<Vector2> InitialPositions;
-        public List<DistanceJointStruct> DistanceJoints;
-        public List<RevoluteJointStruct> RevoluteJoints;
-        public int RotationNode;
-        public List<Matrix> Synapses;
-        public int Generation;
-        public int Genome;
-        public int Parent;
-        public float Energy;
-        World world;
-        List<RevoluteJoint> revoluteJoints;
-        float time;
-        float initialRotation;
-        bool useRotation;
-        bool isDead;
+        private readonly List<Vector2> initialPositions;
+        private readonly List<DistanceJointStruct> distanceJointStructs;
+        private readonly List<RevoluteJointStruct> revoluteJointStructs;
+        private readonly int rotationNode;
+        private readonly List<Matrix> synapses;
+        private readonly int generation;
+        private readonly int genome;
+        private readonly int parent;
 
-        static int genomeCount;
+        private readonly World world;
+        private readonly List<RevoluteJoint> revoluteJoints;
 
-        static int GenomeCount
+        private readonly float initialRotation;
+        private readonly bool useRotation;
+
+        private float energy;
+        private float time;
+        private bool isDead;
+
+        private static int genomeCount;
+        private static int GenomeCount
         {
             get
             {
@@ -37,49 +39,44 @@ namespace Assets.Scripts.Neuroevolution
             }
         }
 
-        public Creature(List<Vector2> positions, List<DistanceJointStruct> distanceJoints,
-            List<RevoluteJointStruct> revoluteJoints, int rotationNode, List<Matrix> synapses, int generation, int genome, int parent)
+
+
+        public Creature(CreatureStruct creature, List<Matrix> synapses, int generation, int genome, int parent) : this(creature, generation, genome, parent)
         {
-            Initialize(positions, distanceJoints, revoluteJoints, rotationNode, synapses, generation, genome, parent);
+            this.synapses = synapses;
         }
 
-        public Creature(List<Vector2> positions, List<DistanceJointStruct> distanceJoints,
-            List<RevoluteJointStruct> revoluteJoints, int rotationNode, List<Matrix> synapses)
+        public Creature(CreatureStruct creature, List<Matrix> synapses) : this(creature, 0, GenomeCount, -1)
         {
-            Initialize(positions, distanceJoints, revoluteJoints, rotationNode, synapses, 0, GenomeCount, -1);
+            this.synapses = synapses;
         }
 
-        public Creature(List<Vector2> positions, List<DistanceJointStruct> distanceJoints,
-           List<RevoluteJointStruct> revoluteJoints, int rotationNode, int hiddenSize, int hiddenLayersCount)
+        public Creature(CreatureStruct creature, int hiddenSize, int hiddenLayersCount) : this(creature, 0, GenomeCount, -1)
         {
             hiddenSize = Mathf.Max(hiddenSize, revoluteJoints.Count * 2 + 1);
-            var synapses = new List<Matrix>();
+            synapses = new List<Matrix>();
             synapses.Add(Matrix.Random(revoluteJoints.Count * 2 + 1, hiddenSize));
             for (var k = 1; k < hiddenLayersCount; k++)
             {
                 synapses.Add(Matrix.Random(hiddenSize, hiddenSize));
             }
             synapses.Add(Matrix.Random(hiddenSize, revoluteJoints.Count));
-
-            Initialize(positions, distanceJoints, revoluteJoints, rotationNode, synapses, 0, GenomeCount, -1);
         }
 
-        void Initialize(List<Vector2> positions, List<DistanceJointStruct> distanceJoints,
-        List<RevoluteJointStruct> revoluteJoints, int rotationNode, List<Matrix> synapses, int generation, int genome, int parent)
+        private Creature(CreatureStruct creature, int generation, int genome, int parent)
         {
-            Genome = genome;
-            Parent = parent;
-            this.revoluteJoints = new List<RevoluteJoint>();
+            this.genome = genome;
+            this.parent = parent;
+            this.generation = generation;
+            initialPositions = creature.Positions;
+            distanceJointStructs = creature.DistanceJoints;
+            revoluteJointStructs = creature.RevoluteJoints;
+            rotationNode = creature.RotationNode;
+            revoluteJoints = new List<RevoluteJoint>();
             world = new World(new Vector2(0, Globals.WorldYGravity));
-            InitialPositions = positions;
-            Synapses = synapses;
-            Generation = generation;
-            DistanceJoints = distanceJoints;
-            RevoluteJoints = revoluteJoints;
-            RotationNode = rotationNode;
 
             //Add nodes
-            foreach (var p in positions)
+            foreach (var p in initialPositions)
             {
                 var body = BodyFactory.CreateCircle(world, 0.5f, Globals.BodyDensity, p, null);
                 body.CollidesWith = Category.Cat1;
@@ -98,15 +95,26 @@ namespace Assets.Scripts.Neuroevolution
             world.ProcessChanges();
 
             //Add joints
-            foreach (var r in revoluteJoints)
+            foreach (var r in revoluteJointStructs)
             {
-                AddRevoluteJoint(r);
+                var anchorA = world.BodyList[r.anchor].Position - world.BodyList[r.a].Position;
+                var anchorB = world.BodyList[r.anchor].Position - world.BodyList[r.b].Position;
+                var j = JointFactory.CreateRevoluteJoint(world, world.BodyList[r.a], world.BodyList[r.b], anchorA, anchorB, false);
+                j.LimitEnabled = true;
+                j.SetLimits(-r.lowerLimit, r.upperLimit);
+                j.Enabled = true;
+                j.MotorEnabled = true;
+                j.MaxMotorTorque = Globals.MaxMotorTorque;
+                world.AddJoint(j);
+                revoluteJoints.Add(j);
             }
-            foreach (var d in distanceJoints)
+            foreach (var d in distanceJointStructs)
             {
-                AddDistanceJoint(d);
+                world.AddJoint(JointFactory.CreateDistanceJoint(world, world.BodyList[d.a], world.BodyList[d.b], Vector2.Zero, Vector2.Zero));
             }
             world.ProcessChanges();
+
+            //Rotation node
             if (rotationNode != -1)
             {
                 useRotation = true;
@@ -114,56 +122,29 @@ namespace Assets.Scripts.Neuroevolution
             }
         }
 
-        void AddDistanceJoint(DistanceJointStruct d)
-        {
-            world.AddJoint(JointFactory.CreateDistanceJoint(world, world.BodyList[d.a], world.BodyList[d.b], Vector2.Zero, Vector2.Zero));
-        }
-
-        void AddRevoluteJoint(RevoluteJointStruct r)
-        {
-            var anchorA = world.BodyList[r.anchor].Position - world.BodyList[r.a].Position;
-            var anchorB = world.BodyList[r.anchor].Position - world.BodyList[r.b].Position;
-            var j = JointFactory.CreateRevoluteJoint(world, world.BodyList[r.a], world.BodyList[r.b], anchorA, anchorB, false);
-            j.LimitEnabled = true;
-            j.SetLimits(-r.lowerLimit, r.upperLimit);
-            j.Enabled = true;
-            j.MotorEnabled = true;
-            j.MaxMotorTorque = Globals.MaxMotorTorque;
-            world.AddJoint(j);
-            revoluteJoints.Add(j);
-        }
 
 
-
-        public static Creature CloneCreature(Creature creature, float variation)
+        public Creature Clone(float variation)
         {
             var synapses = new List<Matrix>();
-            for (var k = 0; k < creature.Synapses.Count; k++)
+            for (var k = 0; k < this.synapses.Count; k++)
             {
-                synapses.Add(creature.Synapses[k] + Matrix.Random(creature.Synapses[k].M, creature.Synapses[k].N) * variation);
+                synapses.Add(this.synapses[k] + Matrix.Random(this.synapses[k].M, this.synapses[k].N) * variation);
             }
-            return new Creature(creature.InitialPositions, creature.DistanceJoints, creature.RevoluteJoints, creature.RotationNode,
-                synapses, creature.Generation + 1, GenomeCount, creature.Genome);
+            var c = new CreatureStruct(initialPositions, distanceJointStructs, revoluteJointStructs, rotationNode);
+            return new Creature(c, synapses, generation + 1, GenomeCount, genome);
         }
 
-        public static Creature DuplicateCreature(Creature creature)
+        public Creature Duplicate()
         {
-            return new Creature(creature.InitialPositions, creature.DistanceJoints, creature.RevoluteJoints, creature.RotationNode,
-               creature.Synapses, creature.Generation, creature.Genome, creature.Parent);
+            var c = new CreatureStruct(initialPositions, distanceJointStructs, revoluteJointStructs, rotationNode);
+            return new Creature(c, synapses, generation, genome, parent);
         }
 
-
-
-        Matrix Sigma(Matrix m)
+        public Creature RandomClone()
         {
-            for (var x = 0; x < m.M; x++)
-            {
-                for (var y = 0; y < m.N; y++)
-                {
-                    m[x][y] = 1 / (1 + Mathf.Exp(-m[x][y])) * 2 - 1;
-                }
-            }
-            return m;
+            var c = new CreatureStruct(initialPositions, distanceJointStructs, revoluteJointStructs, rotationNode);
+            return new Creature(c, synapses[0].N, synapses.Count - 1);
         }
 
 
@@ -182,7 +163,7 @@ namespace Assets.Scripts.Neuroevolution
             }
         }
 
-        void Train()
+        private void Train()
         {
             if (Globals.Debug)
             {
@@ -217,9 +198,9 @@ namespace Assets.Scripts.Neuroevolution
                 neuralNetwork[0][2 * revoluteJoints.Count] = 2 * (time % Globals.CycleDuration) / Globals.CycleDuration - 1;
 
                 //Process
-                for (var k = 0; k < Synapses.Count; k++)
+                for (var k = 0; k < synapses.Count; k++)
                 {
-                    neuralNetwork = Sigma(Matrix.Dot(neuralNetwork, Synapses[k]));
+                    neuralNetwork = Sigma(Matrix.Dot(neuralNetwork, synapses[k]));
                 }
 
                 //Change speeds
@@ -227,17 +208,27 @@ namespace Assets.Scripts.Neuroevolution
                 {
                     var x = Controller.DeltaTime * neuralNetwork[0][i] * Globals.MotorTorque;
                     revoluteJoints[i].MotorSpeed = x;
-                    Energy += Mathf.Abs(x);
+                    energy += Mathf.Abs(x);
                 }
             }
         }
-
+        private Matrix Sigma(Matrix m)
+        {
+            for (var x = 0; x < m.M; x++)
+            {
+                for (var y = 0; y < m.N; y++)
+                {
+                    m[x][y] = 1 / (1 + Mathf.Exp(-m[x][y])) * 2 - 1;
+                }
+            }
+            return m;
+        }
 
 
 
         public List<Body> GetBodies()
         {
-            return world.BodyList.GetRange(0, world.BodyList.Count - 1);
+            return world.BodyList;
         }
 
         public List<Joint> GetJoints()
@@ -258,8 +249,6 @@ namespace Assets.Scripts.Neuroevolution
             return a / (world.BodyList.Count - 1); //-1 : ground
         }
 
-
-
         public float GetFitness()
         {
             if (isDead)
@@ -271,10 +260,35 @@ namespace Assets.Scripts.Neuroevolution
                 var x = 0f;
                 if (useRotation)
                 {
-                    x = (Mathf.Abs(world.BodyList[RotationNode].Rotation - initialRotation) > Globals.MaxAngle) ? -1 : 0;
+                    x = (Mathf.Abs(world.BodyList[rotationNode].Rotation - initialRotation) > Globals.MaxAngle) ? -1 : 0;
                 }
-                return (GetAveragePosition() + x * Globals.BadAngleImpact) / Energy;
+                return (GetAveragePosition() + x * Globals.BadAngleImpact) / energy;
             }
+        }
+
+        public int GetGenome()
+        {
+            return genome;
+        }
+
+        public int GetParent()
+        {
+            return parent;
+        }
+
+        public float GetEnergy()
+        {
+            return energy;
+        }
+
+        public int GetGeneration()
+        {
+            return generation;
+        }
+
+        public CreatureSaveStruct GetSave()
+        {
+            return new CreatureSaveStruct(initialPositions, distanceJointStructs, revoluteJointStructs, rotationNode, synapses);
         }
 
         public int CompareTo(object obj)

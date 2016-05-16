@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Diagnostics;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -7,14 +6,13 @@ namespace Assets.Scripts.Neuroevolution
 {
     public class Controller
     {
-        public List<Creature> Creatures;
-        public float CurrentTime;
         public const float DeltaTime = 0.01f;
+        public readonly List<Creature> Creatures;
+        public float CurrentTime;
         public bool IsTraining;
         public int CurrentGeneration;
         public int TotalGenerations;
         public float TrainStartTime;
-        public string DataPath = Application.dataPath;
 
 
         public Controller(List<Creature> creatures)
@@ -29,7 +27,7 @@ namespace Assets.Scripts.Neuroevolution
         }
 
 
-        static void ThreadedJob(Creature c, int testDuration, AutoResetEvent waitHandle)
+        private static void ThreadedJob(Creature c, int testDuration, AutoResetEvent waitHandle)
         {
             for (var k = 0; k < testDuration; k++)
             {
@@ -38,12 +36,12 @@ namespace Assets.Scripts.Neuroevolution
             waitHandle.Set();
         }
 
-        public static float GetVariation(int currentGeneration, int totalGenerations)
+        private static float GetVariation(int currentGeneration, int totalGenerations)
         {
             return 0.1f / currentGeneration;
         }
 
-        static void TrainThread(Controller controller, int generations, int testDuration, float variation, string fileName)
+        private static void TrainThread(Controller controller, int generations, int testDuration, float variation, string fileName)
         {
             controller.IsTraining = true;
             controller.ResetCreatures();
@@ -67,8 +65,8 @@ namespace Assets.Scripts.Neuroevolution
                 foreach (var c in controller.Creatures)
                 {
                     s.Add(c.GetAveragePosition());
-                    g.Add(c.Genome);
-                    p.Add(c.Parent);
+                    g.Add(c.GetGenome());
+                    p.Add(c.GetParent());
                 }
                 scores.Add(s);
                 genomes.Add(g);
@@ -82,15 +80,15 @@ namespace Assets.Scripts.Neuroevolution
 
                 if (controller.Creatures.Count % 2 != 0)
                 {
-                    controller.Creatures.Add(Creature.CloneCreature(controller.Creatures[0], v));
+                    controller.Creatures.Add(controller.Creatures[0].Clone(v));
                 }
                 for (var i = 0; i < controller.Creatures.Count / 2; i++)
                 {
-                    controller.Creatures[i] = Creature.CloneCreature(controller.Creatures[i + controller.Creatures.Count / 2], v);
+                    controller.Creatures[i] = controller.Creatures[i + controller.Creatures.Count / 2].Clone(v);
                 }
                 for (var i = controller.Creatures.Count / 2; i < controller.Creatures.Count; i++)
                 {
-                    controller.Creatures[i] = Creature.DuplicateCreature(controller.Creatures[i]);
+                    controller.Creatures[i] = controller.Creatures[i].Duplicate();
                 }
                 controller.CurrentGeneration = k + 1;
             }
@@ -99,7 +97,7 @@ namespace Assets.Scripts.Neuroevolution
             if (fileName != "")
             {
 
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(controller.DataPath + @"\" + fileName + ".csv", true))
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(Application.dataPath + @"\" + fileName + ".csv", true))
                 {
                     var s = "Variation; Generation; Genome; Parent; Score";
                     file.WriteLine(s);
@@ -149,18 +147,7 @@ namespace Assets.Scripts.Neuroevolution
 
 
 
-        public float GetMaxPosition()
-        {
-            float max = Creatures[0].GetAveragePosition();
-            foreach (var c in Creatures)
-            {
-                if (c.GetAveragePosition() > max)
-                {
-                    max = c.GetAveragePosition();
-                }
-            }
-            return max;
-        }
+        
 
         public Creature GetBestCreature()
         {
@@ -175,7 +162,7 @@ namespace Assets.Scripts.Neuroevolution
 
         public void RemoveCreaturesFartherThan(float distance)
         {
-            var max = GetMaxPosition();
+            var max = GetBestCreature().GetAveragePosition();
             Creatures.RemoveAll(c => c.GetAveragePosition() < max - distance);
         }
 
@@ -183,7 +170,7 @@ namespace Assets.Scripts.Neuroevolution
         {
             for (var k = 0; k < Creatures.Count; k++)
             {
-                Creatures[k] = Creature.DuplicateCreature(Creatures[k]);
+                Creatures[k] = Creatures[k].Duplicate();
             }
         }
     }

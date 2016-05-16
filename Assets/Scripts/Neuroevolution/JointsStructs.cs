@@ -1,5 +1,4 @@
-﻿using System.Runtime.Serialization;
-using System;
+﻿using System;
 using System.Xml.Serialization;
 
 namespace Assets.Scripts.Neuroevolution
