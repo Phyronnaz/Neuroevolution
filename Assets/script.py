@@ -22,43 +22,53 @@ for row in reader:
         genome = int(row[2])
         parent = int(row[3])
         score = float(row[4])
+        fitness = float(row[5])
+        power = float(row[6])
 
         while len(genomes) <= genome:
             genomes.append([])
 
-        genomes[genome].append([parent, generation, score])
+        genomes[genome].append([parent, generation, score, fitness, power])
 
 colors = [np.random.rand(3, 1) for k in genomes]
 
-for i in range(len(genomes)):
-    for g in genomes[i]:
-        if g[0] != -1:
-            for p in genomes[g[0]]:
-                if p[1] == g[1] - 1:
-                    plt.plot([g[1], p[1]], [g[2], p[2]], color=colors[i], marker='o')
-                    break
-            else:
-                plt.plot([g[1], g[1] - 1], [g[2], g[2]], color=colors[i], marker='o')
 
-        else:
-            if g[1] != 0:
-                plt.plot([g[1], g[1] - 1], [g[2], g[2]], color=colors[i], marker='o')
-            else:
-                plt.plot(g[1], g[2], color=colors[i], marker='o')
-    for k in range(len(genomes[i])):
-        g = genomes[i][k]
-        if k == 0 or genomes[i][k][2] != genomes[i][k - 1][2]:
+for j in range(2, 5):
+    plt.figure()
+    for i in range(len(genomes)):
+        for g in genomes[i]:
             if g[0] != -1:
                 for p in genomes[g[0]]:
                     if p[1] == g[1] - 1:
-                        plt.plot([g[1], p[1]], [g[2], p[2]], color=colors[i], marker='o')
+                        plt.plot([g[1], p[1]], [g[j], p[j]], color=colors[i], marker='o')
                         break
+                else:
+                    plt.plot([g[1], g[1] - 1], [g[j], g[j]], color=colors[i], marker='o')
+
             else:
-                plt.plot(g[1], g[2], color=colors[i], marker='o')
+                if g[1] != 0:
+                    plt.plot([g[1], g[1] - 1], [g[j], g[j]], color=colors[i], marker='o')
+                else:
+                    plt.plot(g[1], g[j], color=colors[i], marker='o')
+        for k in range(len(genomes[i])):
+            g = genomes[i][k]
+            if k == 0 or genomes[i][k][j] != genomes[i][k - 1][j]:
+                if g[0] != -1:
+                    for p in genomes[g[0]]:
+                        if p[1] == g[1] - 1:
+                            plt.plot([g[1], p[1]], [g[j], p[j]], color=colors[i], marker='o')
+                            break
+                else:
+                    plt.plot(g[1], g[j], color=colors[i], marker='o')
 
-        else:
-            plt.plot([g[1], g[1] - 1], [g[2], g[2]], color=colors[i], marker='o')
+            else:
+                plt.plot([g[1], g[1] - 1], [g[j], g[j]], color=colors[i], marker='o')
 
-plt.xlabel('Generation')
-plt.ylabel('Score')
+    plt.xlabel('Generation')
+    if j == 2:
+        plt.ylabel('Score')
+    if j == 3:
+        plt.ylabel('Fitness')
+    if j == 4:
+        plt.ylabel('Power')
 plt.show()

@@ -4223,7 +4223,7 @@ RectTransform:
   m_RootOrder: 4
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1.5, y: -41}
+  m_AnchoredPosition: {x: -1.5, y: 0}
   m_SizeDelta: {x: 597, y: 37}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1032780885
@@ -6411,6 +6411,18 @@ Prefab:
     - target: {fileID: 11449066, guid: c0b6535c910df0e4daf5df258aaaf550, type: 2}
       propertyPath: m_Material
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 11449064, guid: c0b6535c910df0e4daf5df258aaaf550, type: 2}
+      propertyPath: m_FontData.m_FontSize
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 11449064, guid: c0b6535c910df0e4daf5df258aaaf550, type: 2}
+      propertyPath: m_FontData.m_MinSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11449064, guid: c0b6535c910df0e4daf5df258aaaf550, type: 2}
+      propertyPath: m_Color.a
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 11449068, guid: c0b6535c910df0e4daf5df258aaaf550, type: 2}
