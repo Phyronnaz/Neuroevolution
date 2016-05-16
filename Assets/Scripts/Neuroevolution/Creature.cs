@@ -206,7 +206,7 @@ namespace Assets.Scripts.Neuroevolution
                 //Change speeds
                 for (var i = 0; i < revoluteJoints.Count; i++)
                 {
-                    var x = Controller.DeltaTime * neuralNetwork[0][i] * Globals.MotorTorque;
+                    var x = Globals.DeltaTime * neuralNetwork[0][i] * Globals.MotorTorque;
                     revoluteJoints[i].MotorSpeed = x;
                     energy += Mathf.Abs(x);
                 }

@@ -38,7 +38,7 @@ namespace Assets.Scripts.Neuroevolution
 
         public void Awake()
         {
-            InvokeRepeating("ControllerUpdate", 0, Controller.DeltaTime);
+            InvokeRepeating("ControllerUpdate", 0, Globals.DeltaTime);
         }
         private void ControllerUpdate()
         {

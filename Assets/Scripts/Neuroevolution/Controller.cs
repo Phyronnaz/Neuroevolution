@@ -6,7 +6,6 @@ namespace Assets.Scripts.Neuroevolution
 {
     public class Controller
     {
-        public const float DeltaTime = 0.01f;
         public readonly List<Creature> Creatures;
         public float CurrentTime;
         public bool IsTraining;
@@ -31,7 +30,7 @@ namespace Assets.Scripts.Neuroevolution
         {
             for (var k = 0; k < testDuration; k++)
             {
-                c.Update(DeltaTime);
+                c.Update(Globals.DeltaTime);
             }
             waitHandle.Set();
         }
@@ -56,7 +55,7 @@ namespace Assets.Scripts.Neuroevolution
             {
 
                 //Update creatures
-                controller.Update((int)(testDuration / DeltaTime));
+                controller.Update((int)(testDuration / Globals.DeltaTime));
 
                 //Save the scores, genomes and parents
                 var s = new List<float>();
@@ -142,7 +141,7 @@ namespace Assets.Scripts.Neuroevolution
             }
 
             // Update time
-            CurrentTime += DeltaTime * testDuration;
+            CurrentTime += Globals.DeltaTime * testDuration;
         }
 
 

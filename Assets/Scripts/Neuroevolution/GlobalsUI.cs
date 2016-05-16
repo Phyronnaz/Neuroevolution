@@ -19,5 +19,9 @@ namespace Assets.Scripts.Neuroevolution
             Globals.EnergyImpact = float.Parse(impact);
         }
 
+        public void SetDT (string dt)
+        {
+            Globals.DeltaTime = float.Parse(dt);
+        }
     }
 }

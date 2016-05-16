@@ -15,5 +15,6 @@ namespace Assets.Scripts.Neuroevolution
         public static float MaxAngle = Mathf.PI / 3;
         public static float BadAngleImpact = -100000;
         public static float EnergyImpact = -1;
+        public static float DeltaTime = 0.01f;
     }
 }
