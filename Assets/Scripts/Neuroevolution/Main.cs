@@ -23,6 +23,8 @@ namespace Assets.Scripts.Neuroevolution
         public Text DistanceText;
         public Text TimeText;
         public Text SpeedText;
+        public Text EnergyText;
+        public Text PowerText;
         public Text TimeRemainingText;
         public ProgressBarBehaviour ProgressBar;
         List<CreatureRenderer> creatureRenderers;
@@ -180,29 +182,42 @@ namespace Assets.Scripts.Neuroevolution
             {
                 ProgressBar.gameObject.SetActive(false);
 
-                var max = controller.GetMaxPosition();
+                var max = controller.GetBestCreature();
 
                 // Update camera position
                 var tmp = transform.position;
-                tmp.x = Mathf.Lerp(tmp.x, max + 5, Time.deltaTime * Mathf.Exp(TimeMultiplierSlider.value) + 0.01f);
+                tmp.x = Mathf.Lerp(tmp.x, max.GetAveragePosition() + 5, Time.deltaTime * Mathf.Exp(TimeMultiplierSlider.value) + 0.01f);
                 transform.position = tmp;
 
                 //Remove slowest creatures
                 controller.RemoveCreaturesFartherThan(100);
 
                 //Update UI
-                var m = max.ToString();
+                var m = max.GetAveragePosition().ToString();
                 if (m.Length > 5)
                     m = m.Substring(0, 5);
+
                 var t = controller.CurrentTime.ToString();
                 if (t.Length > 7)
                     t = t.Substring(0, 7);
-                var s = (max / controller.CurrentTime).ToString();
+
+                var s = (max.GetAveragePosition() / controller.CurrentTime).ToString();
                 if (s.Length > 6)
                     s = s.Substring(0, 6);
+
+                var e = max.Energy.ToString();
+                if (e.Length > 5)
+                    e = e.Substring(0, 5);
+
+                var p = (max.Energy / controller.CurrentTime).ToString();
+                if (p.Length > 5)
+                    p = p.Substring(0, 5);
+
                 DistanceText.text = "Distance : " + m;
                 TimeText.text = "Time : " + t;
-                SpeedText.text = "Speed:" + s;
+                SpeedText.text = "Speed : " + s;
+                EnergyText.text = "Energy : " + e;
+                PowerText.text = "Power : " + p;
 
                 //Render creatures
                 RenderCreatures();

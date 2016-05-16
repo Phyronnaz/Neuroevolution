@@ -17,5 +17,6 @@ namespace Assets.Scripts.Neuroevolution
         public static float MaxAngle = Mathf.PI / 3;
         public const float BadAngleImpact = 100000;
         public const float MaxMotorTorque = 1000;
+        public const float MaxYPosition = 30;
     }
 }

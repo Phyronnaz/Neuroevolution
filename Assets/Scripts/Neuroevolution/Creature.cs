@@ -18,11 +18,13 @@ namespace Assets.Scripts.Neuroevolution
         public int Generation;
         public int Genome;
         public int Parent;
+        public float Energy;
         World world;
         List<RevoluteJoint> revoluteJoints;
         float time;
         float initialRotation;
         bool useRotation;
+        bool isDead;
 
         static int genomeCount;
 
@@ -168,9 +170,16 @@ namespace Assets.Scripts.Neuroevolution
 
         public void Update(float dt)
         {
-            world.Step(dt);
-            time += dt;
-            Train();
+            if (!isDead)
+            {
+                world.Step(dt);
+                time += dt;
+                Train();
+            }
+            if (world.BodyList[0].Position.Y > Globals.MaxYPosition)
+            {
+                isDead = true;
+            }
         }
 
         void Train()
@@ -216,7 +225,9 @@ namespace Assets.Scripts.Neuroevolution
                 //Change speeds
                 for (var i = 0; i < revoluteJoints.Count; i++)
                 {
-                    revoluteJoints[i].MotorSpeed = Controller.DeltaTime * neuralNetwork[0][i] * Globals.MotorTorque;
+                    var x = Controller.DeltaTime * neuralNetwork[0][i] * Globals.MotorTorque;
+                    revoluteJoints[i].MotorSpeed = x;
+                    Energy += Mathf.Abs(x);
                 }
             }
         }
@@ -251,12 +262,20 @@ namespace Assets.Scripts.Neuroevolution
 
         public float GetFitness()
         {
-            var x = 0f;
-            if (useRotation)
+            return 1 / Energy;
+            if (isDead)
             {
-                x = (Mathf.Abs(world.BodyList[RotationNode].Rotation - initialRotation) > Globals.MaxAngle) ? -1 : 0;
+                return -1000000000;
             }
-            return GetAveragePosition() + x * Globals.BadAngleImpact;
+            else
+            {
+                var x = 0f;
+                if (useRotation)
+                {
+                    x = (Mathf.Abs(world.BodyList[RotationNode].Rotation - initialRotation) > Globals.MaxAngle) ? -1 : 0;
+                }
+                return (GetAveragePosition() + x * Globals.BadAngleImpact) / Energy;
+            }
         }
 
         public int CompareTo(object obj)
