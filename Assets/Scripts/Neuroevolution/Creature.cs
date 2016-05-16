@@ -262,7 +262,6 @@ namespace Assets.Scripts.Neuroevolution
 
         public float GetFitness()
         {
-            return 1 / Energy;
             if (isDead)
             {
                 return -1000000000;
