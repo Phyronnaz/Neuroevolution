@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neuroevolution.CSharp", "Ne
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neuroevolution.CSharp.Editor", "Neuroevolution.CSharp.Editor.csproj", "{B7CA6B4B-5A66-9434-47A7-B379C46B735D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neuroevolution.CSharp.Tests", "..\Neuroevolution.CSharp.Tests\Neuroevolution.CSharp.Tests.csproj", "{06300E31-8988-4933-A49E-97152F90880F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,10 +25,6 @@ Global
 		{B7CA6B4B-5A66-9434-47A7-B379C46B735D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7CA6B4B-5A66-9434-47A7-B379C46B735D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7CA6B4B-5A66-9434-47A7-B379C46B735D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{06300E31-8988-4933-A49E-97152F90880F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{06300E31-8988-4933-A49E-97152F90880F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{06300E31-8988-4933-A49E-97152F90880F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{06300E31-8988-4933-A49E-97152F90880F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

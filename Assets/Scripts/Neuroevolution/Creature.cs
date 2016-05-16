@@ -285,7 +285,7 @@ namespace Assets.Scripts.Neuroevolution
                 {
                     x = (Mathf.Abs(world.BodyList[rotationNode].Rotation - initialRotation) > Globals.MaxAngle) ? 1 : 0;
                 }
-                return GetAveragePosition() + x * Globals.BadAngleImpact + energy * Globals.EnergyImpact;
+                return GetAveragePosition() + x * Globals.BadAngleImpact + energy * Globals.EnergyImpact / time;
             }
         }
 
@@ -297,6 +297,11 @@ namespace Assets.Scripts.Neuroevolution
         public int GetParent()
         {
             return parent;
+        }
+
+        public float GetPower()
+        {
+            return energy / time;
         }
 
         public float GetEnergy()

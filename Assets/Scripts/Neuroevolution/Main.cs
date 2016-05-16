@@ -217,7 +217,7 @@ namespace Assets.Scripts.Neuroevolution
                 if (e.Length > 5)
                     e = e.Substring(0, 5);
 
-                var p = (max.GetEnergy() / controller.CurrentTime).ToString();
+                var p = max.GetPower().ToString();
                 if (p.Length > 5)
                     p = p.Substring(0, 5);
 
@@ -230,37 +230,41 @@ namespace Assets.Scripts.Neuroevolution
                 //Render creatures
                 RenderCreatures();
 
-                //Input
-                if (Input.GetKeyDown(KeyCode.A))
+
+                if (!GameObject.Find("EventSystem").GetComponent<EventSystem>().IsPointerOverGameObject())
                 {
-                    controller.ResetCreatures();
-                    controller.CurrentTime = 0;
-                }
-                if (Input.GetKeyDown(KeyCode.R))
-                {
-                    foreach (var c in creatureRenderers)
+                    //Input
+                    if (Input.GetKeyDown(KeyCode.A))
                     {
-                        c.Destroy();
+                        controller.ResetCreatures();
+                        controller.CurrentTime = 0;
                     }
-                    Start();
-                }
-                if (Input.GetKeyDown(KeyCode.S))
-                {
-                    Stream myStream;
-                    SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-
-                    saveFileDialog1.Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*";
-                    saveFileDialog1.FilterIndex = 1;
-                    saveFileDialog1.RestoreDirectory = true;
-
-                    if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                    if (Input.GetKeyDown(KeyCode.R))
                     {
-                        if ((myStream = saveFileDialog1.OpenFile()) != null)
+                        foreach (var c in creatureRenderers)
                         {
-                            var save = controller.GetBestCreature().GetSave();
-                            XmlSerializer serializer = new XmlSerializer(typeof(CreatureSaveStruct));
-                            serializer.Serialize(myStream, save);
-                            myStream.Close();
+                            c.Destroy();
+                        }
+                        Start();
+                    }
+                    if (Input.GetKeyDown(KeyCode.S))
+                    {
+                        Stream myStream;
+                        SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+
+                        saveFileDialog1.Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*";
+                        saveFileDialog1.FilterIndex = 1;
+                        saveFileDialog1.RestoreDirectory = true;
+
+                        if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                        {
+                            if ((myStream = saveFileDialog1.OpenFile()) != null)
+                            {
+                                var save = controller.GetBestCreature().GetSave();
+                                XmlSerializer serializer = new XmlSerializer(typeof(CreatureSaveStruct));
+                                serializer.Serialize(myStream, save);
+                                myStream.Close();
+                            }
                         }
                     }
                 }

@@ -12,6 +12,7 @@ namespace Assets.Scripts.Neuroevolution
         public int CurrentGeneration;
         public int TotalGenerations;
         public float TrainStartTime;
+        public static string DataPath = Application.dataPath;
 
 
         public Controller(List<Creature> creatures)
@@ -49,6 +50,8 @@ namespace Assets.Scripts.Neuroevolution
             var scores = new List<List<float>>();
             var genomes = new List<List<int>>();
             var parents = new List<List<int>>();
+            var fitnesses = new List<List<float>>();
+            var powers = new List<List<float>>();
 
             //Start training
             for (var k = 0; k < generations; k++)
@@ -61,15 +64,21 @@ namespace Assets.Scripts.Neuroevolution
                 var s = new List<float>();
                 var g = new List<int>();
                 var p = new List<int>();
+                var f = new List<float>();
+                var pw = new List<float>();
                 foreach (var c in controller.Creatures)
                 {
                     s.Add(c.GetAveragePosition());
                     g.Add(c.GetGenome());
                     p.Add(c.GetParent());
+                    f.Add(c.GetFitness());
+                    pw.Add(c.GetPower());
                 }
                 scores.Add(s);
                 genomes.Add(g);
                 parents.Add(p);
+                fitnesses.Add(f);
+                powers.Add(pw);
 
 
                 var v = (variation == -1) ? GetVariation(k + 1, generations) : variation;
@@ -96,16 +105,27 @@ namespace Assets.Scripts.Neuroevolution
             if (fileName != "")
             {
 
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(Application.dataPath + @"\" + fileName + ".csv", true))
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(Controller.DataPath + @"\" + fileName + ".csv", true))
                 {
-                    var s = "Variation; Generation; Genome; Parent; Score";
+                    var s = "Variation; Generation; Genome; Parent; Score; Fitness; Power";
                     file.WriteLine(s);
                     for (int k = 0; k < scores.Count; k++)
                     {
                         for (var i = 0; i < scores[k].Count; i++)
                         {
-                            var l = variation.ToString() + ";" + k.ToString() + ";";
-                            l += genomes[k][i].ToString() + "; " + parents[k][i].ToString() + "; " + scores[k][i].ToString();
+                            var l = variation.ToString();
+                            l += "; ";
+                            l += k.ToString();
+                            l += "; ";
+                            l += genomes[k][i].ToString();
+                            l += "; ";
+                            l += parents[k][i].ToString();
+                            l += "; ";
+                            l += scores[k][i].ToString();
+                            l += "; ";
+                            l += fitnesses[k][i].ToString();
+                            l += "; ";
+                            l += powers[k][i].ToString();
                             file.WriteLine(l);
                         }
                     }
