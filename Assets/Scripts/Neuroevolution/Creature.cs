@@ -29,6 +29,9 @@ namespace Assets.Scripts.Neuroevolution
         private float time;
         private bool isDead;
 
+        private float currentFriction;
+        private float maxTorque;
+
         private static int genomeCount;
         private static int GenomeCount
         {
@@ -85,6 +88,8 @@ namespace Assets.Scripts.Neuroevolution
                 body.Friction = Globals.BodyFriction;
                 world.AddBody(body);
             }
+            currentFriction = Globals.BodyFriction;
+            maxTorque = Globals.MaxMotorTorque;
             //Add ground
             var ground = BodyFactory.CreateRectangle(world, 1000000, 1, 1, Vector2.Zero, null);
             ground.IsStatic = true;
@@ -161,6 +166,24 @@ namespace Assets.Scripts.Neuroevolution
             {
                 isDead = true;
             }
+            if (currentFriction != Globals.BodyFriction)
+            {
+                foreach (var b in world.BodyList)
+                {
+                    b.Friction = Globals.BodyFriction;
+                }
+                currentFriction = Globals.BodyFriction;
+            }
+            if (maxTorque != Globals.MaxMotorTorque)
+            {
+                foreach (var r in revoluteJoints)
+                {
+                    r.MaxMotorTorque = Globals.MaxMotorTorque;
+                }
+                maxTorque = Globals.MaxMotorTorque;
+            }
+            world.Gravity.Y = Globals.WorldYGravity;
+
         }
 
         private void Train()
@@ -169,7 +192,7 @@ namespace Assets.Scripts.Neuroevolution
             {
                 foreach (var r in revoluteJoints)
                 {
-                    if (time % 10 > 5)
+                    if (time % Globals.CycleDuration > Globals.CycleDuration / 2)
                     {
                         r.MotorSpeed = Globals.MotorTorque;
                     }

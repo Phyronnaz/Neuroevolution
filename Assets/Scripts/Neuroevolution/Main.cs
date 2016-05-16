@@ -169,6 +169,10 @@ namespace Assets.Scripts.Neuroevolution
         {
             if (controller.IsTraining)
             {
+                if (Input.GetKeyDown(KeyCode.Return))
+                {
+                    remainingTime = Mathf.Infinity;
+                }
                 //Progress bar
                 ProgressBar.gameObject.SetActive(true);
                 ProgressBar.ProgressSpeed = 10000;
