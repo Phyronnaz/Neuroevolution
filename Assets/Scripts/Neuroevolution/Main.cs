@@ -106,7 +106,7 @@ namespace Assets.Scripts.Neuroevolution
         public void EditUpdate()
         {
             editor.Update();
-            if (EventSystem.current.currentSelectedGameObject == null)
+            if (!GameObject.Find("EventSystem").GetComponent<EventSystem>().IsPointerOverGameObject())
             {
                 //Start
                 if (Input.GetKeyDown(KeyCode.Space))

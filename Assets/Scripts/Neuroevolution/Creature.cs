@@ -228,7 +228,7 @@ namespace Assets.Scripts.Neuroevolution
 
         public List<Body> GetBodies()
         {
-            return world.BodyList;
+            return world.BodyList.GetRange(0, world.BodyList.Count - 1);
         }
 
         public List<Joint> GetJoints()
@@ -260,9 +260,9 @@ namespace Assets.Scripts.Neuroevolution
                 var x = 0f;
                 if (useRotation)
                 {
-                    x = (Mathf.Abs(world.BodyList[rotationNode].Rotation - initialRotation) > Globals.MaxAngle) ? -1 : 0;
+                    x = (Mathf.Abs(world.BodyList[rotationNode].Rotation - initialRotation) > Globals.MaxAngle) ? 1 : 0;
                 }
-                return (GetAveragePosition() + x * Globals.BadAngleImpact) / energy;
+                return GetAveragePosition() + x * Globals.BadAngleImpact + energy * Globals.EnergyImpact;
             }
         }
 

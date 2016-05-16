@@ -192,7 +192,7 @@ namespace Assets.Scripts.Neuroevolution
                 }
                 GameObject.Find("HidePanel").GetComponent<MeshRenderer>().enabled = clamp;
             }
-            if (Input.GetMouseButtonDown(0) && EventSystem.current.currentSelectedGameObject == null)
+            if (Input.GetMouseButtonDown(0) && !GameObject.Find("EventSystem").GetComponent<EventSystem>().IsPointerOverGameObject())
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
