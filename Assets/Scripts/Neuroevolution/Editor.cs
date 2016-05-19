@@ -86,7 +86,6 @@ namespace Assets.Scripts.Neuroevolution
 
         public void AddPrefabs()
         {
-            rotationNodeIndex = 0;
             AddLine();
             editMode = EditMode.RotationMuscles;
             var a = new FVector2(-2, 15);

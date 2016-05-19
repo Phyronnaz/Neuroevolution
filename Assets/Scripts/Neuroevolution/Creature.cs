@@ -230,8 +230,8 @@ namespace Assets.Scripts.Neuroevolution
                 for (var i = 0; i < revoluteJoints.Count; i++)
                 {
                     var x = Globals.DeltaTime * neuralNetwork[0][i] * Globals.MotorTorque;
+                    energy += Mathf.Abs(revoluteJoints[i].MotorSpeed - x);
                     revoluteJoints[i].MotorSpeed = x;
-                    energy += Mathf.Abs(x);
                 }
             }
         }
@@ -276,16 +276,16 @@ namespace Assets.Scripts.Neuroevolution
         {
             if (isDead)
             {
-                return -1000000000;
+                return float.NegativeInfinity;
             }
             else
             {
                 var x = 0f;
                 if (useRotation)
                 {
-                    x = (Mathf.Abs(world.BodyList[rotationNode].Rotation - initialRotation) > Globals.MaxAngle) ? 1 : 0;
+                    x = (GetAngle() > Globals.MaxAngle) ? 1 : 0;
                 }
-                return GetAveragePosition() + x * Globals.BadAngleImpact + energy * Globals.EnergyImpact / time;
+                return GetAveragePosition() + x * Globals.BadAngleImpact + GetPower() * Globals.EnergyImpact;
             }
         }
 
@@ -307,6 +307,18 @@ namespace Assets.Scripts.Neuroevolution
         public float GetEnergy()
         {
             return energy;
+        }
+
+        public float GetAngle()
+        {
+            if (rotationNode == -1)
+            {
+                return 0;
+            }
+            else
+            {
+                return Mathf.Abs(world.BodyList[rotationNode].Rotation - initialRotation);
+            }
         }
 
         public int GetGeneration()

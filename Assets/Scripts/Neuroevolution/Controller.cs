@@ -52,6 +52,7 @@ namespace Assets.Scripts.Neuroevolution
             var parents = new List<List<int>>();
             var fitnesses = new List<List<float>>();
             var powers = new List<List<float>>();
+            var angles = new List<List<float>>();
 
             //Start training
             for (var k = 0; k < generations; k++)
@@ -66,6 +67,7 @@ namespace Assets.Scripts.Neuroevolution
                 var p = new List<int>();
                 var f = new List<float>();
                 var pw = new List<float>();
+                var a = new List<float>();
                 foreach (var c in controller.Creatures)
                 {
                     s.Add(c.GetAveragePosition());
@@ -73,32 +75,44 @@ namespace Assets.Scripts.Neuroevolution
                     p.Add(c.GetParent());
                     f.Add(c.GetFitness());
                     pw.Add(c.GetPower());
+                    a.Add(c.GetAngle());
                 }
                 scores.Add(s);
                 genomes.Add(g);
                 parents.Add(p);
                 fitnesses.Add(f);
                 powers.Add(pw);
+                angles.Add(a);
 
 
                 var v = (variation == -1) ? GetVariation(k + 1, generations) : variation;
 
-                //Generate next generation
-                controller.Creatures.Sort();
+                if (k != generations - 1)
+                {
+                    //Generate next generation
+                    controller.Creatures.Sort();
 
-                if (controller.Creatures.Count % 2 != 0)
-                {
-                    controller.Creatures.Add(controller.Creatures[0].Clone(v));
+                    if (controller.Creatures.Count % 2 != 0)
+                    {
+                        controller.Creatures.Add(controller.Creatures[0].Clone(v));
+                    }
+                    for (var i = 0; i < controller.Creatures.Count / 2; i++)
+                    {
+                        controller.Creatures[i] = controller.Creatures[i + controller.Creatures.Count / 2].Clone(v);
+                    }
+                    for (var i = controller.Creatures.Count / 2; i < controller.Creatures.Count; i++)
+                    {
+                        controller.Creatures[i] = controller.Creatures[i].Duplicate();
+                    }
+                    controller.CurrentGeneration = k + 1;
                 }
-                for (var i = 0; i < controller.Creatures.Count / 2; i++)
+                else
                 {
-                    controller.Creatures[i] = controller.Creatures[i + controller.Creatures.Count / 2].Clone(v);
+                    for (var i = 0; i < controller.Creatures.Count; i++)
+                    {
+                        controller.Creatures[i] = controller.Creatures[i].Duplicate();
+                    }
                 }
-                for (var i = controller.Creatures.Count / 2; i < controller.Creatures.Count; i++)
-                {
-                    controller.Creatures[i] = controller.Creatures[i].Duplicate();
-                }
-                controller.CurrentGeneration = k + 1;
             }
 
             //Score output in csv
@@ -107,7 +121,7 @@ namespace Assets.Scripts.Neuroevolution
 
                 using (System.IO.StreamWriter file = new System.IO.StreamWriter(Controller.DataPath + @"\" + fileName + ".csv", true))
                 {
-                    var s = "Variation; Generation; Genome; Parent; Score; Fitness; Power";
+                    var s = "Variation; Generation; Genome; Parent; Score; Fitness; Power; Angle";
                     file.WriteLine(s);
                     for (int k = 0; k < scores.Count; k++)
                     {
@@ -126,6 +140,8 @@ namespace Assets.Scripts.Neuroevolution
                             l += fitnesses[k][i].ToString();
                             l += "; ";
                             l += powers[k][i].ToString();
+                            l += "; ";
+                            l += angles[k][i].ToString();
                             file.WriteLine(l);
                         }
                     }
@@ -166,7 +182,7 @@ namespace Assets.Scripts.Neuroevolution
 
 
 
-        
+
 
         public Creature GetBestCreature()
         {
