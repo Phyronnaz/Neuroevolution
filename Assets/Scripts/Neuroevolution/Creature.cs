@@ -33,6 +33,9 @@ namespace Assets.Scripts.Neuroevolution
         private float currentFriction;
         private float maxTorque;
 
+        private Matrix neuralNetwork;
+        private int count;
+
         private static int genomeCount;
         private static int GenomeCount
         {
@@ -58,11 +61,13 @@ namespace Assets.Scripts.Neuroevolution
         public Creature(CreatureStruct creature, List<Matrix> synapses, int generation, int genome, int species, int parent) : this(creature, generation, genome, species, parent)
         {
             this.synapses = synapses;
+            Train();
         }
 
         public Creature(CreatureStruct creature, List<Matrix> synapses) : this(creature, 0, GenomeCount, SpeciesCount, -1)
         {
             this.synapses = synapses;
+            Train();
         }
 
         public Creature(CreatureStruct creature, int hiddenSize, int hiddenLayersCount) : this(creature, 0, GenomeCount, SpeciesCount, -1)
@@ -75,6 +80,7 @@ namespace Assets.Scripts.Neuroevolution
                 synapses.Add(Matrix.Random(hiddenSize, hiddenSize));
             }
             synapses.Add(Matrix.Random(hiddenSize, revoluteJoints.Count));
+            Train();
         }
 
         private Creature(CreatureStruct creature, int generation, int genome, int species, int parent)
@@ -172,7 +178,31 @@ namespace Assets.Scripts.Neuroevolution
             {
                 world.Step(dt);
                 time += dt;
-                Train();
+                count++;
+                if (Globals.Debug)
+                {
+                    foreach (var r in revoluteJoints)
+                    {
+                        var x = Globals.DeltaTime * Globals.MotorTorque * ((time % Globals.CycleDuration > Globals.CycleDuration / 2) ? 1 : -1);
+                        energy += Mathf.Abs(r.MotorSpeed - x);
+                        r.MotorSpeed = x;
+                    }
+                }
+                else
+                {
+                    if (count >= Globals.TrainCycle)
+                    {
+                        count = 0;
+                        Train();
+                    }
+                    //Change speeds
+                    for (var i = 0; i < revoluteJoints.Count; i++)
+                    {
+                        var x = Globals.DeltaTime * neuralNetwork[0][i] * Globals.MotorTorque;
+                        energy += Mathf.Abs(revoluteJoints[i].MotorSpeed - x);
+                        revoluteJoints[i].MotorSpeed = x;
+                    }
+                }
             }
 
             //Globals update
@@ -197,60 +227,30 @@ namespace Assets.Scripts.Neuroevolution
                 maxTorque = Globals.MaxMotorTorque;
             }
             world.Gravity.Y = Globals.WorldYGravity;
-
         }
+
 
         private void Train()
         {
-            if (Globals.Debug)
-            {
-                foreach (var r in revoluteJoints)
-                {
-                    if (time % Globals.CycleDuration > Globals.CycleDuration / 2)
-                    {
-                        var x = Globals.DeltaTime * Globals.MotorTorque;
-                        energy += Mathf.Abs(r.MotorSpeed - x);
-                        r.MotorSpeed = x;
-                    }
-                    else
-                    {
-                        var x = -Globals.DeltaTime * Globals.MotorTorque;
-                        energy += Mathf.Abs(r.MotorSpeed - x);
-                        r.MotorSpeed = x;
-                    }
+            neuralNetwork = new Matrix(1, 2 * revoluteJoints.Count + 1);
 
-                }
+            //Revolute joints entries
+            for (var i = 0; i < revoluteJoints.Count; i++)
+            {
+                var r = revoluteJoints[i];
+                //Angle between -1 and 1 based on limits
+                neuralNetwork[0][2 * i] = (r.JointAngle - r.LowerLimit) / (r.UpperLimit - r.LowerLimit) * 2 - 1;
+                //Rotation direction
+                neuralNetwork[0][2 * i + 1] = (revoluteJoints[i].MotorSpeed > 0) ? 1 : -1;
             }
-            else
+
+            //Time entry
+            neuralNetwork[0][2 * revoluteJoints.Count] = 2 * (time % Globals.CycleDuration) / Globals.CycleDuration - 1;
+
+            //Process
+            for (var k = 0; k < synapses.Count; k++)
             {
-                var neuralNetwork = new Matrix(1, 2 * revoluteJoints.Count + 1);
-
-                //Revolute joints entries
-                for (var i = 0; i < revoluteJoints.Count; i++)
-                {
-                    var r = revoluteJoints[i];
-                    //Angle between -1 and 1 based on limits
-                    neuralNetwork[0][2 * i] = (r.JointAngle - r.LowerLimit) / (r.UpperLimit - r.LowerLimit) * 2 - 1;
-                    //Rotation direction
-                    neuralNetwork[0][2 * i + 1] = (revoluteJoints[i].MotorSpeed > 0) ? 1 : -1;
-                }
-
-                //Time entry
-                neuralNetwork[0][2 * revoluteJoints.Count] = 2 * (time % Globals.CycleDuration) / Globals.CycleDuration - 1;
-
-                //Process
-                for (var k = 0; k < synapses.Count; k++)
-                {
-                    neuralNetwork = Sigma(Matrix.Dot(neuralNetwork, synapses[k]));
-                }
-
-                //Change speeds
-                for (var i = 0; i < revoluteJoints.Count; i++)
-                {
-                    var x = Globals.DeltaTime * neuralNetwork[0][i] * Globals.MotorTorque;
-                    energy += Mathf.Abs(revoluteJoints[i].MotorSpeed - x);
-                    revoluteJoints[i].MotorSpeed = x;
-                }
+                neuralNetwork = Sigma(Matrix.Dot(neuralNetwork, synapses[k]));
             }
         }
         private static Matrix Sigma(Matrix m)

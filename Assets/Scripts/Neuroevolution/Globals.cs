@@ -18,5 +18,6 @@ namespace Assets.Scripts.Neuroevolution
         public static float DeltaTime = 0.01f;
         public static int RandomCount = 5;
         public static bool UseSpecies = true;
+        public static int TrainCycle = 1;
     }
 }

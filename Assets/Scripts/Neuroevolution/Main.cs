@@ -247,6 +247,11 @@ namespace Assets.Scripts.Neuroevolution
                 if (!GameObject.Find("EventSystem").GetComponent<EventSystem>().IsPointerOverGameObject())
                 {
                     //Input
+                    if (Input.GetKeyDown(KeyCode.A))
+                    {
+                        controller.ResetCreatures();
+                        controller.CurrentTime = 0;
+                    }
                     if (Input.GetKeyDown(KeyCode.P))
                     {
                         isPaused = !isPaused;
