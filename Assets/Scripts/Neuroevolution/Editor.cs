@@ -136,6 +136,14 @@ namespace Assets.Scripts.Neuroevolution
             objects.Add(currentLine);
         }
 
+        private void SetGrid(bool active)
+        {
+            foreach (var g in grid)
+            {
+                g.SetActive(active);
+            }
+            GameObject.Find("HidePanel").GetComponent<MeshRenderer>().enabled = active;
+        }
 
 
         public void Update()
@@ -143,6 +151,7 @@ namespace Assets.Scripts.Neuroevolution
             lowerLimitUI.SetActive(false);
             upperLimitUI.SetActive(false);
             currentLine.enabled = false;
+            SetGrid(false);
             switch (editMode)
             {
                 case EditMode.Nodes:
@@ -185,12 +194,8 @@ namespace Assets.Scripts.Neuroevolution
             if (Input.GetKeyDown(KeyCode.C))
             {
                 clamp = !clamp;
-                foreach (var g in grid)
-                {
-                    g.SetActive(clamp);
-                }
-                GameObject.Find("HidePanel").GetComponent<MeshRenderer>().enabled = clamp;
             }
+            SetGrid(clamp);
             if (Input.GetMouseButtonDown(0) && !GameObject.Find("EventSystem").GetComponent<EventSystem>().IsPointerOverGameObject())
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

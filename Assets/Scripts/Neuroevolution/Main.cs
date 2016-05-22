@@ -86,6 +86,13 @@ namespace Assets.Scripts.Neuroevolution
             controller.Train(int.Parse(GenerationsField.text), int.Parse(TestDurationField.text), float.Parse(VariationField.text), FileNameField.text);
         }
 
+        public void OnPopulationSizeChange()
+        {
+            if (int.Parse(InitialPopulationSizeField.text) % 5 != 0)
+            {
+                InitialPopulationSizeField.text = (int.Parse(InitialPopulationSizeField.text) + 5 - int.Parse(InitialPopulationSizeField.text) % 5).ToString();
+            }
+        }
 
         public void Update()
         {

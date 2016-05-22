@@ -17,6 +17,7 @@ namespace Assets.Scripts.Neuroevolution
         private readonly List<Matrix> synapses;
         private readonly int generation;
         private readonly int genome;
+        private readonly int species;
         private readonly int parent;
 
         private readonly World world;
@@ -42,19 +43,29 @@ namespace Assets.Scripts.Neuroevolution
             }
         }
 
+        private static int speciesCount;
+        private static int SpeciesCount
+        {
+            get
+            {
+                speciesCount++;
+                return speciesCount - 1;
+            }
+        }
 
 
-        public Creature(CreatureStruct creature, List<Matrix> synapses, int generation, int genome, int parent) : this(creature, generation, genome, parent)
+
+        public Creature(CreatureStruct creature, List<Matrix> synapses, int generation, int genome, int species, int parent) : this(creature, generation, genome, species, parent)
         {
             this.synapses = synapses;
         }
 
-        public Creature(CreatureStruct creature, List<Matrix> synapses) : this(creature, 0, GenomeCount, -1)
+        public Creature(CreatureStruct creature, List<Matrix> synapses) : this(creature, 0, GenomeCount, SpeciesCount, -1)
         {
             this.synapses = synapses;
         }
 
-        public Creature(CreatureStruct creature, int hiddenSize, int hiddenLayersCount) : this(creature, 0, GenomeCount, -1)
+        public Creature(CreatureStruct creature, int hiddenSize, int hiddenLayersCount) : this(creature, 0, GenomeCount, SpeciesCount, -1)
         {
             hiddenSize = Mathf.Max(hiddenSize, revoluteJoints.Count * 2 + 1);
             synapses = new List<Matrix>();
@@ -66,9 +77,10 @@ namespace Assets.Scripts.Neuroevolution
             synapses.Add(Matrix.Random(hiddenSize, revoluteJoints.Count));
         }
 
-        private Creature(CreatureStruct creature, int generation, int genome, int parent)
+        private Creature(CreatureStruct creature, int generation, int genome, int species, int parent)
         {
             this.genome = genome;
+            this.species = species;
             this.parent = parent;
             this.generation = generation;
             initialPositions = creature.Positions;
@@ -137,13 +149,13 @@ namespace Assets.Scripts.Neuroevolution
                 synapses.Add(this.synapses[k] + Matrix.Random(this.synapses[k].M, this.synapses[k].N) * variation);
             }
             var c = new CreatureStruct(initialPositions, distanceJointStructs, revoluteJointStructs, rotationNode);
-            return new Creature(c, synapses, generation + 1, GenomeCount, genome);
+            return new Creature(c, synapses, generation + 1, GenomeCount, species, genome);
         }
 
         public Creature Duplicate()
         {
             var c = new CreatureStruct(initialPositions, distanceJointStructs, revoluteJointStructs, rotationNode);
-            return new Creature(c, synapses, generation, genome, parent);
+            return new Creature(c, synapses, generation, genome, species, parent);
         }
 
         public Creature RandomClone()
@@ -294,6 +306,11 @@ namespace Assets.Scripts.Neuroevolution
             return genome;
         }
 
+        public int GetSpecies()
+        {
+            return species;
+        }
+
         public int GetParent()
         {
             return parent;
@@ -335,7 +352,15 @@ namespace Assets.Scripts.Neuroevolution
         {
             if (obj is Creature)
             {
-                return GetFitness().CompareTo(((Creature)obj).GetFitness());
+                var c = (Creature)obj;
+                if (c.GetSpecies() == GetSpecies())
+                {
+                    return c.GetFitness().CompareTo((GetFitness()));
+                }
+                else
+                {
+                    return GetSpecies().CompareTo(c.GetSpecies());
+                }
             }
             else
             {

@@ -16,5 +16,6 @@ namespace Assets.Scripts.Neuroevolution
         public static float BadAngleImpact = -100000;
         public static float EnergyImpact = -1;
         public static float DeltaTime = 0.01f;
+        public static int RandomCount = 5;
     }
 }

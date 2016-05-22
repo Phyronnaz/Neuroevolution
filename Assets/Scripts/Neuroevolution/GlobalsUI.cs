@@ -28,6 +28,7 @@ namespace Assets.Scripts.Neuroevolution
         {
             Globals.CycleDuration = float.Parse(c);
         }
+
         public void SetGravity(string g)
         {
             Globals.WorldYGravity = float.Parse(g);
@@ -56,6 +57,11 @@ namespace Assets.Scripts.Neuroevolution
         public void SetMaxPositon(string f)
         {
             Globals.MaxYPosition = float.Parse(f);
+        }
+
+        public void SetRandomCount(string f)
+        {
+            Globals.RandomCount = int.Parse(f);
         }
     }
 }

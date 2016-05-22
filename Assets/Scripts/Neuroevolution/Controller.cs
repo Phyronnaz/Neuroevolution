@@ -47,63 +47,85 @@ namespace Assets.Scripts.Neuroevolution
             controller.ResetCreatures();
             controller.TotalGenerations = generations;
 
-            var scores = new List<List<float>>();
-            var genomes = new List<List<int>>();
-            var parents = new List<List<int>>();
-            var fitnesses = new List<List<float>>();
-            var powers = new List<List<float>>();
-            var angles = new List<List<float>>();
+            var save = new CSVSave(generations);
 
             //Start training
             for (var k = 0; k < generations; k++)
             {
+                //Variation
+                var currentVariation = (variation == -1) ? GetVariation(k + 1, generations) : variation;
 
                 //Update creatures
                 controller.Update((int)(testDuration / Globals.DeltaTime));
 
-                //Save the scores, genomes and parents
-                var s = new List<float>();
-                var g = new List<int>();
-                var p = new List<int>();
-                var f = new List<float>();
-                var pw = new List<float>();
-                var a = new List<float>();
-                foreach (var c in controller.Creatures)
-                {
-                    s.Add(c.GetAveragePosition());
-                    g.Add(c.GetGenome());
-                    p.Add(c.GetParent());
-                    f.Add(c.GetFitness());
-                    pw.Add(c.GetPower());
-                    a.Add(c.GetAngle());
-                }
-                scores.Add(s);
-                genomes.Add(g);
-                parents.Add(p);
-                fitnesses.Add(f);
-                powers.Add(pw);
-                angles.Add(a);
+                //Save the scores, genomes ...
+                save.Add(currentVariation, k, controller.Creatures);
 
 
-                var v = (variation == -1) ? GetVariation(k + 1, generations) : variation;
-
+                //Generate next generation
                 if (k != generations - 1)
                 {
-                    //Generate next generation
+                    //Sort by species
                     controller.Creatures.Sort();
 
-                    if (controller.Creatures.Count % 2 != 0)
+                    var groups = new List<List<Creature>>();
+
+                    //Create groups
+                    var currentSpecies = controller.Creatures[0].GetSpecies();
+                    groups.Add(new List<Creature>());
+                    foreach (var c in controller.Creatures)
                     {
-                        controller.Creatures.Add(controller.Creatures[0].Clone(v));
+                        if (c.GetSpecies() == currentSpecies)
+                        {
+                            groups[groups.Count - 1].Add(c);
+                        }
+                        else
+                        {
+                            currentSpecies = c.GetSpecies();
+                            groups.Add(new List<Creature>());
+                            groups[groups.Count - 1].Add(c);
+                        }
                     }
-                    for (var i = 0; i < controller.Creatures.Count / 2; i++)
+
+                    //Sort species
+                    groups.Sort((y, x) => x[0].GetFitness().CompareTo(y[0].GetFitness()));
+
+                    //Generate new creatures
+                    var newCreatures = new List<Creature>();
+
+                    //Kept groups
+                    for (var i = 0; i < (controller.Creatures.Count - Globals.RandomCount) / 5; i++)
                     {
-                        controller.Creatures[i] = controller.Creatures[i + controller.Creatures.Count / 2].Clone(v);
+                        var g = groups[i];
+
+                        //Best of the species
+                        newCreatures.Add(g[0].Duplicate());
+                        newCreatures.Add(g[0].Clone(currentVariation));
+
+                        //Second best
+                        if (groups[i].Count > 1)
+                        {
+                            newCreatures.Add(g[1].Duplicate());
+                            newCreatures.Add(g[1].Clone(currentVariation));
+                        }
+                        else
+                        {
+                            newCreatures.Add(g[0].RandomClone());
+                            newCreatures.Add(g[0].RandomClone());
+                        }
+
+                        //Random one
+                        newCreatures.Add(g[0].RandomClone());
                     }
-                    for (var i = controller.Creatures.Count / 2; i < controller.Creatures.Count; i++)
+
+                    while (newCreatures.Count < controller.Creatures.Count)
                     {
-                        controller.Creatures[i] = controller.Creatures[i].Duplicate();
+                        newCreatures.Add(newCreatures[0].RandomClone());
                     }
+
+                    controller.Creatures.Clear();
+                    controller.Creatures.AddRange(newCreatures);
+
                     controller.CurrentGeneration = k + 1;
                 }
                 else
@@ -116,37 +138,7 @@ namespace Assets.Scripts.Neuroevolution
             }
 
             //Score output in csv
-            if (fileName != "")
-            {
-
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(Controller.DataPath + @"\" + fileName + ".csv", true))
-                {
-                    var s = "Variation; Generation; Genome; Parent; Score; Fitness; Power; Angle";
-                    file.WriteLine(s);
-                    for (int k = 0; k < scores.Count; k++)
-                    {
-                        for (var i = 0; i < scores[k].Count; i++)
-                        {
-                            var l = variation.ToString();
-                            l += "; ";
-                            l += k.ToString();
-                            l += "; ";
-                            l += genomes[k][i].ToString();
-                            l += "; ";
-                            l += parents[k][i].ToString();
-                            l += "; ";
-                            l += scores[k][i].ToString();
-                            l += "; ";
-                            l += fitnesses[k][i].ToString();
-                            l += "; ";
-                            l += powers[k][i].ToString();
-                            l += "; ";
-                            l += angles[k][i].ToString();
-                            file.WriteLine(l);
-                        }
-                    }
-                }
-            }
+            save.SaveToFile(fileName, DataPath);
 
             //Reset variables
             controller.CurrentTime = 0;
@@ -179,9 +171,6 @@ namespace Assets.Scripts.Neuroevolution
             // Update time
             CurrentTime += Globals.DeltaTime * testDuration;
         }
-
-
-
 
 
         public Creature GetBestCreature()
