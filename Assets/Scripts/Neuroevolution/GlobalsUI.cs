@@ -63,5 +63,10 @@ namespace Assets.Scripts.Neuroevolution
         {
             Globals.RandomCount = int.Parse(f);
         }
+
+        public void SetUseSpecies (bool b)
+        {
+            Globals.UseSpecies = b;
+        }
     }
 }

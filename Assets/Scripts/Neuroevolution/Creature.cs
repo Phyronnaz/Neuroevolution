@@ -8,7 +8,7 @@ using Mathf = UnityEngine.Mathf;
 
 namespace Assets.Scripts.Neuroevolution
 {
-    public class Creature : IComparable
+    public class Creature
     {
         private readonly List<Vector2> initialPositions;
         private readonly List<DistanceJointStruct> distanceJointStructs;
@@ -174,6 +174,8 @@ namespace Assets.Scripts.Neuroevolution
                 time += dt;
                 Train();
             }
+
+            //Globals update
             if (world.BodyList[0].Position.Y > Globals.MaxYPosition)
             {
                 isDead = true;
@@ -206,11 +208,15 @@ namespace Assets.Scripts.Neuroevolution
                 {
                     if (time % Globals.CycleDuration > Globals.CycleDuration / 2)
                     {
-                        r.MotorSpeed = Globals.MotorTorque;
+                        var x = Globals.DeltaTime * Globals.MotorTorque;
+                        energy += Mathf.Abs(r.MotorSpeed - x);
+                        r.MotorSpeed = x;
                     }
                     else
                     {
-                        r.MotorSpeed = -Globals.MotorTorque;
+                        var x = -Globals.DeltaTime * Globals.MotorTorque;
+                        energy += Mathf.Abs(r.MotorSpeed - x);
+                        r.MotorSpeed = x;
                     }
 
                 }
@@ -247,7 +253,7 @@ namespace Assets.Scripts.Neuroevolution
                 }
             }
         }
-        private Matrix Sigma(Matrix m)
+        private static Matrix Sigma(Matrix m)
         {
             for (var x = 0; x < m.M; x++)
             {
@@ -346,26 +352,6 @@ namespace Assets.Scripts.Neuroevolution
         public CreatureSaveStruct GetSave()
         {
             return new CreatureSaveStruct(initialPositions, distanceJointStructs, revoluteJointStructs, rotationNode, synapses);
-        }
-
-        public int CompareTo(object obj)
-        {
-            if (obj is Creature)
-            {
-                var c = (Creature)obj;
-                if (c.GetSpecies() == GetSpecies())
-                {
-                    return c.GetFitness().CompareTo((GetFitness()));
-                }
-                else
-                {
-                    return GetSpecies().CompareTo(c.GetSpecies());
-                }
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
         }
     }
 }

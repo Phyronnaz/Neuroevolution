@@ -41,6 +41,98 @@ namespace Assets.Scripts.Neuroevolution
             return 0.1f / currentGeneration;
         }
 
+        private static void NextGenerationSpecies(List<Creature> creatures, float currentVariation)
+        {
+            //Sort by species
+            creatures.Sort((a, b) =>
+            {
+                if (a.GetSpecies() == b.GetSpecies())
+                {
+                    return b.GetFitness().CompareTo((a.GetFitness()));
+                }
+                else
+                {
+                    return b.GetSpecies().CompareTo(a.GetSpecies());
+                }
+            });
+
+            var groups = new List<List<Creature>>();
+
+            //Create groups
+            var currentSpecies = creatures[0].GetSpecies();
+            groups.Add(new List<Creature>());
+            foreach (var c in creatures)
+            {
+                if (c.GetSpecies() == currentSpecies)
+                {
+                    groups[groups.Count - 1].Add(c);
+                }
+                else
+                {
+                    currentSpecies = c.GetSpecies();
+                    groups.Add(new List<Creature>());
+                    groups[groups.Count - 1].Add(c);
+                }
+            }
+
+            //Sort species
+            groups.Sort((y, x) => x[0].GetFitness().CompareTo(y[0].GetFitness()));
+
+            //Generate new creatures
+            var newCreatures = new List<Creature>();
+
+            //Kept groups
+            for (var i = 0; i < (creatures.Count - Globals.RandomCount) / 5; i++)
+            {
+                var g = groups[i];
+
+                //Best of the species
+                newCreatures.Add(g[0].Duplicate());
+                newCreatures.Add(g[0].Clone(currentVariation));
+
+                //Second best
+                if (groups[i].Count > 1)
+                {
+                    newCreatures.Add(g[1].Duplicate());
+                    newCreatures.Add(g[1].Clone(currentVariation));
+                }
+                else
+                {
+                    newCreatures.Add(g[0].RandomClone());
+                    newCreatures.Add(g[0].RandomClone());
+                }
+
+                //Random one
+                newCreatures.Add(g[0].RandomClone());
+            }
+
+            while (newCreatures.Count < creatures.Count)
+            {
+                newCreatures.Add(newCreatures[0].RandomClone());
+            }
+
+            creatures.Clear();
+            creatures.AddRange(newCreatures);
+        }
+
+        private static void NextGenerationNormal(List<Creature> creatures, float currentVariation)
+        {
+            creatures.Sort((a, b) => a.GetFitness().CompareTo(b.GetFitness()));
+
+            if (creatures.Count % 2 != 0)
+            {
+                creatures.Add(creatures[0].Clone(currentVariation));
+            }
+            for (var i = 0; i < creatures.Count / 2; i++)
+            {
+                creatures[i] = creatures[i + creatures.Count / 2].Clone(currentVariation);
+            }
+            for (var i = creatures.Count / 2; i < creatures.Count; i++)
+            {
+                creatures[i] = creatures[i].Duplicate();
+            }
+        }
+
         private static void TrainThread(Controller controller, int generations, int testDuration, float variation, string fileName)
         {
             controller.IsTraining = true;
@@ -65,67 +157,14 @@ namespace Assets.Scripts.Neuroevolution
                 //Generate next generation
                 if (k != generations - 1)
                 {
-                    //Sort by species
-                    controller.Creatures.Sort();
-
-                    var groups = new List<List<Creature>>();
-
-                    //Create groups
-                    var currentSpecies = controller.Creatures[0].GetSpecies();
-                    groups.Add(new List<Creature>());
-                    foreach (var c in controller.Creatures)
+                    if (Globals.UseSpecies)
                     {
-                        if (c.GetSpecies() == currentSpecies)
-                        {
-                            groups[groups.Count - 1].Add(c);
-                        }
-                        else
-                        {
-                            currentSpecies = c.GetSpecies();
-                            groups.Add(new List<Creature>());
-                            groups[groups.Count - 1].Add(c);
-                        }
+                        NextGenerationSpecies(controller.Creatures, currentVariation);
                     }
-
-                    //Sort species
-                    groups.Sort((y, x) => x[0].GetFitness().CompareTo(y[0].GetFitness()));
-
-                    //Generate new creatures
-                    var newCreatures = new List<Creature>();
-
-                    //Kept groups
-                    for (var i = 0; i < (controller.Creatures.Count - Globals.RandomCount) / 5; i++)
+                    else
                     {
-                        var g = groups[i];
-
-                        //Best of the species
-                        newCreatures.Add(g[0].Duplicate());
-                        newCreatures.Add(g[0].Clone(currentVariation));
-
-                        //Second best
-                        if (groups[i].Count > 1)
-                        {
-                            newCreatures.Add(g[1].Duplicate());
-                            newCreatures.Add(g[1].Clone(currentVariation));
-                        }
-                        else
-                        {
-                            newCreatures.Add(g[0].RandomClone());
-                            newCreatures.Add(g[0].RandomClone());
-                        }
-
-                        //Random one
-                        newCreatures.Add(g[0].RandomClone());
+                        NextGenerationNormal(controller.Creatures, currentVariation);
                     }
-
-                    while (newCreatures.Count < controller.Creatures.Count)
-                    {
-                        newCreatures.Add(newCreatures[0].RandomClone());
-                    }
-
-                    controller.Creatures.Clear();
-                    controller.Creatures.AddRange(newCreatures);
-
                     controller.CurrentGeneration = k + 1;
                 }
                 else

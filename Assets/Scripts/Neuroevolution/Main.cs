@@ -34,6 +34,7 @@ namespace Assets.Scripts.Neuroevolution
         private bool edit;
         private const int hiddenSize = 4; //Auto increased if needed
         private float remainingTime = Mathf.Infinity;
+        private bool isPaused;
 
 
         public void Awake()
@@ -42,9 +43,14 @@ namespace Assets.Scripts.Neuroevolution
         }
         private void ControllerUpdate()
         {
-            if (controller != null && !controller.IsTraining)
+            if (controller != null && !controller.IsTraining && !isPaused)
             {
                 controller.Update((int)Mathf.Exp(TimeMultiplierSlider.value));
+                //Pause at 20s
+                if (controller.CurrentTime <= 20 && controller.CurrentTime + (int)Mathf.Exp(TimeMultiplierSlider.value) * Globals.DeltaTime >= 20)
+                {
+                    isPaused = true;
+                }
             }
         }
 
@@ -241,10 +247,9 @@ namespace Assets.Scripts.Neuroevolution
                 if (!GameObject.Find("EventSystem").GetComponent<EventSystem>().IsPointerOverGameObject())
                 {
                     //Input
-                    if (Input.GetKeyDown(KeyCode.A))
+                    if (Input.GetKeyDown(KeyCode.P))
                     {
-                        controller.ResetCreatures();
-                        controller.CurrentTime = 0;
+                        isPaused = !isPaused;
                     }
                     if (Input.GetKeyDown(KeyCode.R))
                     {
