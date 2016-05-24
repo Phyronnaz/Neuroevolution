@@ -42,7 +42,7 @@ namespace Assets.Scripts.Neuroevolution
                 genomes.Add(c.GetGenome());
                 species.Add(c.GetSpecies());
                 parents.Add(c.GetParent());
-                scores.Add(c.GetAveragePosition());
+                scores.Add(c.GetAveragePosition().X);
                 fitnesses.Add(c.GetFitness());
                 powers.Add(c.GetPower());
                 angles.Add(c.GetAngle());

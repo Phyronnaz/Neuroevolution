@@ -21,5 +21,6 @@ namespace Assets.Scripts.Neuroevolution
         public static int TrainCycle = 1;
         public static float Restitution = 0.1f;
         public static bool KillFallen;
+        public static float GroundRotation = 0;
     }
 }

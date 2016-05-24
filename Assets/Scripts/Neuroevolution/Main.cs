@@ -207,14 +207,15 @@ namespace Assets.Scripts.Neuroevolution
 
                 // Update camera position
                 var tmp = transform.position;
-                tmp.x = Mathf.Lerp(tmp.x, max.GetAveragePosition() + 5, Time.deltaTime * Mathf.Exp(TimeMultiplierSlider.value) + 0.01f);
+                tmp.x = Mathf.Lerp(tmp.x, max.GetAveragePosition().X + 5, Time.deltaTime * Mathf.Exp(TimeMultiplierSlider.value) + 0.01f);
+                tmp.y = Mathf.Lerp(tmp.y, max.GetAveragePosition().Y + 5, Time.deltaTime * Mathf.Exp(TimeMultiplierSlider.value) + 0.01f);
                 transform.position = tmp;
 
                 //Remove slowest creatures
                 controller.RemoveCreaturesFartherThan(100);
 
                 //Update UI
-                var m = max.GetAveragePosition().ToString();
+                var m = max.GetAveragePosition().X.ToString();
                 if (m.Length > 5)
                     m = m.Substring(0, 5);
 
@@ -222,7 +223,7 @@ namespace Assets.Scripts.Neuroevolution
                 if (t.Length > 7)
                     t = t.Substring(0, 7);
 
-                var s = (max.GetAveragePosition() / controller.CurrentTime).ToString();
+                var s = (max.GetAveragePosition().X / controller.CurrentTime).ToString();
                 if (s.Length > 6)
                     s = s.Substring(0, 6);
 

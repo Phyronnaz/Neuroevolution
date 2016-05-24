@@ -217,7 +217,7 @@ namespace Assets.Scripts.Neuroevolution
             Creature max = Creatures[0];
             foreach (var c in Creatures)
             {
-                if (c.GetAveragePosition() > max.GetAveragePosition())
+                if (c.GetAveragePosition().X > max.GetAveragePosition().X)
                     max = c;
             }
             return max;
@@ -225,8 +225,8 @@ namespace Assets.Scripts.Neuroevolution
 
         public void RemoveCreaturesFartherThan(float distance)
         {
-            var max = GetBestCreature().GetAveragePosition();
-            Creatures.RemoveAll(c => c.GetAveragePosition() < max - distance);
+            var max = GetBestCreature().GetAveragePosition().X;
+            Creatures.RemoveAll(c => c.GetAveragePosition().X < max - distance);
         }
 
         public void ResetCreatures()

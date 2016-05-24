@@ -4,6 +4,8 @@ namespace Assets.Scripts.Neuroevolution
 {
     class GlobalsUI : MonoBehaviour
     {
+        public Transform Ground;
+
         public void SetMaxAngle(string angle)
         {
             Globals.MaxAngle = float.Parse(angle);
@@ -78,9 +80,19 @@ namespace Assets.Scripts.Neuroevolution
             Globals.Restitution = float.Parse(s);
         }
 
-        public void SetKillFallen (bool b)
+        public void SetKillFallen(bool b)
         {
             Globals.KillFallen = b;
+        }
+
+        public void SetGroundRotation(float f)
+        {
+            Globals.GroundRotation = f;
+            var r = Ground.rotation;
+            var e = r.eulerAngles;
+            e.z = Globals.GroundRotation * Mathf.Rad2Deg;
+            r.eulerAngles = e;
+            Ground.rotation = r;
         }
     }
 }

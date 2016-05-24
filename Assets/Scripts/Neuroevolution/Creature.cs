@@ -10,6 +10,7 @@ namespace Assets.Scripts.Neuroevolution
 {
     public class Creature
     {
+        //External
         private readonly List<Vector2> initialPositions;
         private readonly List<DistanceJointStruct> distanceJointStructs;
         private readonly List<RevoluteJointStruct> revoluteJointStructs;
@@ -20,22 +21,27 @@ namespace Assets.Scripts.Neuroevolution
         private readonly int species;
         private readonly int parent;
 
+        //Internal
         private readonly World world;
+        private readonly Body ground;
         private readonly List<RevoluteJoint> revoluteJoints;
 
         private readonly float initialRotation;
         private readonly bool useRotation;
 
+        private Matrix neuralNetwork;
+        private bool isDead;
+        private int count;
+
+        //Stats
         private float energy;
         private float time;
-        private bool isDead;
 
+        //Globals
         private float currentFriction;
         private float maxTorque;
         private float currentRestitution;
 
-        private Matrix neuralNetwork;
-        private int count;
 
         private static int genomeCount;
         private static int GenomeCount
@@ -112,10 +118,11 @@ namespace Assets.Scripts.Neuroevolution
             maxTorque = Globals.MaxMotorTorque;
             currentFriction = Globals.Restitution;
             //Add ground
-            var ground = BodyFactory.CreateRectangle(world, 1000000, 1, 1, Vector2.Zero, null);
+            ground = BodyFactory.CreateRectangle(world, 1000000, 1, 1, Vector2.Zero, null);
             ground.IsStatic = true;
             ground.CollisionCategories = Category.Cat1;
             ground.CollidesWith = Category.Cat2;
+            ground.Rotation = Globals.GroundRotation;
             world.AddBody(ground);
             //Compute bodies
             world.ProcessChanges();
@@ -229,6 +236,10 @@ namespace Assets.Scripts.Neuroevolution
                 }
                 currentRestitution = Globals.Restitution;
             }
+            if (ground.Rotation != Globals.GroundRotation)
+            {
+                ground.Rotation = Globals.GroundRotation;
+            }
             if (maxTorque != Globals.MaxMotorTorque)
             {
                 foreach (var r in revoluteJoints)
@@ -237,6 +248,7 @@ namespace Assets.Scripts.Neuroevolution
                 }
                 maxTorque = Globals.MaxMotorTorque;
             }
+
             world.Gravity.Y = Globals.WorldYGravity;
         }
 
@@ -288,14 +300,14 @@ namespace Assets.Scripts.Neuroevolution
             return world.JointList;
         }
 
-        public float GetAveragePosition()
+        public Vector2 GetAveragePosition()
         {
-            var a = 0f;
+            var a = Vector2.Zero;
             foreach (var b in world.BodyList)
             {
                 if (!b.IsStatic)
                 {
-                    a += b.Position.X;
+                    a += b.Position;
                 }
             }
             return a / (world.BodyList.Count - 1); //-1 : ground
@@ -314,7 +326,7 @@ namespace Assets.Scripts.Neuroevolution
                 {
                     x = (GetAngle() > Globals.MaxAngle) ? 1 : 0;
                 }
-                return GetAveragePosition() + x * Globals.BadAngleImpact + GetPower() * Globals.EnergyImpact;
+                return GetAveragePosition().X + x * Globals.BadAngleImpact + GetPower() * Globals.EnergyImpact;
             }
         }
 
