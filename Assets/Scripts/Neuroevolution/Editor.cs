@@ -315,7 +315,7 @@ namespace Assets.Scripts.Neuroevolution
             if (secondNodeIndex != -1)
             {
                 upperLimit += 0.01f * Input.GetAxis("Vertical");
-                lowerLimit += 0.01f * Input.GetAxis("Horizontal");
+                lowerLimit += 0.01f * Input.GetAxis("Vertical");
 
                 lowerLimit = Mathf.Clamp(lowerLimit, 0, Mathf.PI);
                 upperLimit = Mathf.Clamp(upperLimit, 0, Mathf.PI);

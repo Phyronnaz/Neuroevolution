@@ -73,5 +73,14 @@ namespace Assets.Scripts.Neuroevolution
         {
             Globals.TrainCycle = int.Parse(s);
         }
+        public void SetRestitution(string s)
+        {
+            Globals.Restitution = float.Parse(s);
+        }
+
+        public void SetKillFallen (bool b)
+        {
+            Globals.KillFallen = b;
+        }
     }
 }

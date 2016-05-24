@@ -32,6 +32,7 @@ namespace Assets.Scripts.Neuroevolution
 
         private float currentFriction;
         private float maxTorque;
+        private float currentRestitution;
 
         private Matrix neuralNetwork;
         private int count;
@@ -104,10 +105,12 @@ namespace Assets.Scripts.Neuroevolution
                 body.CollisionCategories = Category.Cat2;
                 body.IsStatic = false;
                 body.Friction = Globals.BodyFriction;
+                body.Restitution = Globals.Restitution;
                 world.AddBody(body);
             }
             currentFriction = Globals.BodyFriction;
             maxTorque = Globals.MaxMotorTorque;
+            currentFriction = Globals.Restitution;
             //Add ground
             var ground = BodyFactory.CreateRectangle(world, 1000000, 1, 1, Vector2.Zero, null);
             ground.IsStatic = true;
@@ -205,11 +208,11 @@ namespace Assets.Scripts.Neuroevolution
                 }
             }
 
-            //Globals update
-            if (world.BodyList[0].Position.Y > Globals.MaxYPosition)
+            if ((world.BodyList[0].Position.Y > Globals.MaxYPosition) || (useRotation && Globals.KillFallen && GetAngle() > Globals.MaxAngle))
             {
                 isDead = true;
             }
+            //Globals update
             if (currentFriction != Globals.BodyFriction)
             {
                 foreach (var b in world.BodyList)
@@ -217,6 +220,14 @@ namespace Assets.Scripts.Neuroevolution
                     b.Friction = Globals.BodyFriction;
                 }
                 currentFriction = Globals.BodyFriction;
+            }
+            if (currentRestitution != Globals.Restitution)
+            {
+                foreach (var b in world.BodyList)
+                {
+                    b.Restitution = Globals.Restitution;
+                }
+                currentRestitution = Globals.Restitution;
             }
             if (maxTorque != Globals.MaxMotorTorque)
             {
