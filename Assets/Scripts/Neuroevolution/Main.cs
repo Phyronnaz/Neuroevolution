@@ -62,6 +62,7 @@ namespace Assets.Scripts.Neuroevolution
             creatureRenderers = new List<CreatureRenderer>();
             var tmp = transform.position;
             tmp.x = 0;
+            tmp.y = 0;
             transform.position = tmp;
         }
 
