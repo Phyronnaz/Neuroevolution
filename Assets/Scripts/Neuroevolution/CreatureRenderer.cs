@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using FarseerPhysics.Dynamics.Joints;
-using Joint = FarseerPhysics.Dynamics.Joints.Joint;
+using FVector2 = Microsoft.Xna.Framework.Vector2;
 using FarseerPhysics.Dynamics;
 
 
@@ -9,80 +8,133 @@ namespace Assets.Scripts.Neuroevolution
 {
     public class CreatureRenderer
     {
-        private List<Transform> nodes;
+        private List<GameObject> nodes;
         private List<LineRenderer> lines;
-        private Color color;
+        private Material nodesMaterial;
+        private Material linesMaterial;
+        private Material rotationNodeMaterial;
+        private Material anchorNodeMaterial;
+        private Material revolutesNodesMaterial;
 
-        public void Update(List<Body> bodies, List<Joint> joints, Color color)
+
+        public CreatureRenderer()
         {
-            //Select distances joints
-            var distanceJoints = new List<DistanceJoint>();
-            foreach (var j in joints)
+            nodesMaterial = new Material(Shader.Find("Diffuse"));
+            nodesMaterial.color = Color.white;
+            linesMaterial = new Material(Shader.Find("Diffuse"));
+            linesMaterial.color = Color.black;
+            rotationNodeMaterial = new Material(Shader.Find("Diffuse"));
+            rotationNodeMaterial.color = Color.yellow;
+            anchorNodeMaterial = new Material(Shader.Find("Diffuse"));
+            anchorNodeMaterial.color = Color.blue;
+            revolutesNodesMaterial = new Material(Shader.Find("Diffuse"));
+            revolutesNodesMaterial.color = Color.green;
+
+            nodes = new List<GameObject>();
+            lines = new List<LineRenderer>();
+        }
+
+
+        private static Vector2 ToVector2(FVector2 fvector2)
+        {
+            return new Vector2(fvector2.X, fvector2.Y);
+        }
+
+
+        public void Update(CreatureStruct creature, int firstNode, int anchorNode, int secondNode)
+        {
+            Update(creature, null);
+            if (firstNode != -1)
             {
-                if (j is DistanceJoint)
-                {
-                    distanceJoints.Add((DistanceJoint)j);
-                }
+                nodes[firstNode].GetComponent<Renderer>().material = revolutesNodesMaterial;
+            }
+            if (anchorNode != -1)
+            {
+                nodes[anchorNode].GetComponent<Renderer>().material = anchorNodeMaterial;
+            }
+            if (secondNode != -1)
+            {
+                nodes[secondNode].GetComponent<Renderer>().material = revolutesNodesMaterial;
+            }
+        }
+
+        public void Update(CreatureStruct creature, List<Body> bodies)
+        {
+            AdjustSizes(creature.Positions.Count, creature.DistanceJoints.Count);
+            UpdatePositions(creature, bodies);
+            ResetMaterials();
+            if (creature.RotationNode != -1)
+            {
+                nodes[creature.RotationNode].GetComponent<Renderer>().material = rotationNodeMaterial;
+            }
+        }
+
+        private void AdjustSizes(int nodesSize, int linesSize)
+        {
+            while (nodes.Count > nodesSize)
+            {
+                Object.Destroy(nodes[0]);
+                nodes.RemoveAt(0);
+            }
+            while (nodes.Count < nodesSize)
+            {
+                var go = Object.Instantiate(Resources.Load("Circle")) as GameObject;
+                go.GetComponent<SpriteRenderer>().material = nodesMaterial;
+                go.name = nodes.Count.ToString();
+                nodes.Add(go);
             }
 
-            //Update lines
-            if (lines == null || lines.Count != distanceJoints.Count)
+            while (lines.Count > linesSize)
             {
-                if (lines != null)
-                {
-                    lines.ForEach(Object.Destroy);
-                }
-                lines = new List<LineRenderer>();
-                var material = new Material(Shader.Find("Diffuse"));
-                for (var k = 0; k < distanceJoints.Count; k++)
-                {
-                    var l = (new GameObject()).AddComponent<LineRenderer>();
-                    l.material = material;
-                    l.SetColors(color, color);
-                    l.SetWidth(0.5f, 0.5f);
-                    lines.Add(l);
-                }
+                Object.Destroy(lines[0]);
+                lines.RemoveAt(0);
             }
-            for (var i = 0; i < lines.Count; i++)
+            while (lines.Count < linesSize)
             {
-                lines[i].SetPosition(0, new Vector3(distanceJoints[i].BodyA.Position.X, distanceJoints[i].BodyA.Position.Y, 0));
-                lines[i].SetPosition(1, new Vector3(distanceJoints[i].BodyB.Position.X, distanceJoints[i].BodyB.Position.Y, 0));
+                var l = (new GameObject()).AddComponent<LineRenderer>();
+                l.material = linesMaterial;
+                l.SetWidth(0.5f, 0.5f);
+                lines.Add(l);
             }
+        }
 
-            //Update nodes
-            if (nodes == null || nodes.Count != bodies.Count)
+        private void UpdatePositions(CreatureStruct creature, List<Body> bodies)
+        {
+            if (bodies == null)
             {
-                if (nodes != null)
+                //Nodes
+                for (var i = 0; i < creature.Positions.Count; i++)
                 {
-                    nodes.ForEach(Object.Destroy);
+                    nodes[i].transform.position = ToVector2(creature.Positions[i]);
                 }
-                nodes = new List<Transform>();
-                foreach (var b in bodies)
+                //Lines
+                for (var i = 0; i < creature.DistanceJoints.Count; i++)
                 {
-                    var go = Object.Instantiate(Resources.Load("Circle"), new Vector2(b.Position.X, b.Position.Y), Quaternion.identity) as GameObject;
-                    go.GetComponent<SpriteRenderer>().color = new Color(1.0f - color.r, 1.0f - color.g, 1.0f - color.b);
-                    nodes.Add(go.transform);
+                    lines[i].SetPosition(0, (Vector3)ToVector2(creature.Positions[creature.DistanceJoints[i].a]) + Vector3.forward);
+                    lines[i].SetPosition(1, (Vector3)ToVector2(creature.Positions[creature.DistanceJoints[i].b]) + Vector3.forward);
                 }
             }
             else
             {
-                for (var i = 0; i < nodes.Count; i++)
+                //Nodes
+                for (var i = 0; i < creature.Positions.Count; i++)
                 {
-                    nodes[i].position = new Vector2(bodies[i].Position.X, bodies[i].Position.Y);
+                    nodes[i].transform.position = ToVector2(bodies[i].Position);
+                }
+                //Lines
+                for (var i = 0; i < creature.DistanceJoints.Count; i++)
+                {
+                    lines[i].SetPosition(0, (Vector3)ToVector2(bodies[creature.DistanceJoints[i].a].Position) + Vector3.forward);
+                    lines[i].SetPosition(1, (Vector3)ToVector2(bodies[creature.DistanceJoints[i].b].Position) + Vector3.forward);
                 }
             }
-            if (color != this.color)
+        }
+
+        private void ResetMaterials()
+        {
+            foreach (var node in nodes)
             {
-                this.color = color;
-                foreach (var l in lines)
-                {
-                    l.material.color = color;
-                    l.SetColors(color, color);
-                }
-                foreach (var n in nodes)
-                {
-                    n.GetComponent<SpriteRenderer>().color = new Color(1.0f - color.r, 1.0f - color.g, 1.0f - color.b);
-                }
+                node.GetComponent<Renderer>().material = nodesMaterial;
             }
         }
 

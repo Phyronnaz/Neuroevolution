@@ -9,10 +9,10 @@ namespace Assets.Scripts.Neuroevolution
     [XmlRoot(ElementName = "Creature")]
     public struct CreatureStruct
     {
-        public readonly List<Vector2> Positions;
-        public readonly List<DistanceJointStruct> DistanceJoints;
-        public readonly List<RevoluteJointStruct> RevoluteJoints;
-        public readonly int RotationNode;
+        public List<Vector2> Positions;
+        public List<DistanceJointStruct> DistanceJoints;
+        public List<RevoluteJointStruct> RevoluteJoints;
+        public int RotationNode;
         public List<Matrix> Synapses;
 
         public CreatureStruct(List<Vector2> positions, List<DistanceJointStruct> distanceJoints, List<RevoluteJointStruct> revoluteJoints, int rotationNode, List<Matrix> synapses)

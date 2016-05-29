@@ -125,6 +125,7 @@ namespace Assets.Scripts.Neuroevolution
                 useRotation = true;
                 initialRotation = world.BodyList[rotationNode].Rotation;
             }
+            Train();
         }
 
 
@@ -264,11 +265,6 @@ namespace Assets.Scripts.Neuroevolution
         public List<Body> GetBodies()
         {
             return world.BodyList.GetRange(0, world.BodyList.Count - 1);
-        }
-
-        public List<Joint> GetJoints()
-        {
-            return world.JointList;
         }
 
         public Vector2 GetAveragePosition()

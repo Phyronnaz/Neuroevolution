@@ -8,45 +8,94 @@ namespace Assets.Scripts.Neuroevolution
     enum EditMode { Nodes, DistanceMuscles, RotationMuscles, RotationNode }
     public class Editor
     {
-        private List<FVector2> positions;
-        private List<DistanceJointStruct> distanceJoints;
-        private List<RevoluteJointStruct> revoluteJoints;
-        private List<Object> objects;
+        public CreatureStruct Creature;
+        private CreatureRenderer creatureRenderer;
         private EditMode editMode;
         //Nodes
         private bool clamp;
         private List<GameObject> grid;
         //Distance
         private int currentMuscleNodeIndex = -1; //Index of the node which is the start of the muscle currently created
-        private LineRenderer currentLine;
+        private LineRenderer line;
         //Rotation
-        private int firstNodeIndex = -1;
-        private int anchorNodeIndex = -1;
-        private int secondNodeIndex = -1;
-        private GameObject firstNodeGameObject;
-        private GameObject secondNodeGameObject;
-        private GameObject anchorNodeGameObject;
+        private int firstNode = -1;
+        private int anchorNode = -1;
+        private int secondNode = -1;
         private float upperLimit = 1;
         private float lowerLimit = 1;
         private AngleUI lowerLimitUI;
         private AngleUI upperLimitUI;
-        //Rotation node
-        private int rotationNodeIndex = -1;
-        private GameObject rotationNodeGameObject;
 
 
-        public Editor()
+        public Editor() : this(new List<FVector2>(), new List<DistanceJointStruct>(), new List<RevoluteJointStruct>(), -1, new List<Matrix>()) { }
+
+        public Editor(List<FVector2> positions, List<DistanceJointStruct> distanceJoints, List<RevoluteJointStruct> revoluteJoints, int rotationNode, List<Matrix> synapses)
         {
-            positions = new List<FVector2>();
-            objects = new List<Object>();
-            distanceJoints = new List<DistanceJointStruct>();
-            revoluteJoints = new List<RevoluteJointStruct>();
+            creatureRenderer = new CreatureRenderer();
+            Creature = new CreatureStruct(new List<FVector2>(), new List<DistanceJointStruct>(), new List<RevoluteJointStruct>(), -1);
             editMode = EditMode.Nodes;
-            AddLine();
-            lowerLimitUI = new AngleUI(Vector2.zero, 100, 3, Color.blue, true);
-            upperLimitUI = new AngleUI(Vector2.zero, 100, 3f, Color.red, false);
-            lowerLimitUI.SetActive(false);
-            upperLimitUI.SetActive(false);
+            CreateGrid();
+            SetGrid(false);
+            CreateLimitUI();
+            SetLimitUI(false);
+            line = (new GameObject()).AddComponent<LineRenderer>();
+            line.material = new Material(Shader.Find("Diffuse")); ;
+            line.material.color = Color.black;
+            line.SetWidth(0.5f, 0.5f);
+        }
+
+
+        private static Vector2 ToVector2(FVector2 fvector2)
+        {
+            return new Vector2(fvector2.X, fvector2.Y);
+        }
+
+
+        public void Update()
+        {
+            creatureRenderer.Update(Creature, firstNode, anchorNode, secondNode);
+            SetLimitUI(false);
+            SetGrid(false);
+            line.enabled = false;
+            if (!GameObject.Find("EventSystem").GetComponent<EventSystem>().IsPointerOverGameObject())
+            {
+                switch (editMode)
+                {
+                    case EditMode.Nodes:
+                        EditNodes();
+                        break;
+                    case EditMode.DistanceMuscles:
+                        EditDistanceMuscles();
+                        break;
+                    case EditMode.RotationMuscles:
+                        EditRotationMuscles();
+                        break;
+                    case EditMode.RotationNode:
+                        EditRotationNode();
+                        break;
+                }
+                if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    editMode = EditMode.Nodes;
+                }
+                if (Input.GetKeyDown(KeyCode.Alpha2))
+                {
+                    editMode = EditMode.DistanceMuscles;
+                }
+                if (Input.GetKeyDown(KeyCode.Alpha3))
+                {
+                    editMode = EditMode.RotationMuscles;
+                }
+                if (Input.GetKeyDown(KeyCode.Alpha4))
+                {
+                    editMode = EditMode.RotationNode;
+                }
+            }
+        }
+
+
+        private void CreateGrid()
+        {
             grid = new List<GameObject>();
             for (var x = -40; x < 40; x++)
             {
@@ -69,73 +118,10 @@ namespace Assets.Scripts.Neuroevolution
                     {
                         go.GetComponent<SpriteRenderer>().color = Color.grey;
                     }
-                    go.SetActive(false);
                     grid.Add(go);
-                    objects.Add(go);
                 }
             }
-            GameObject.Find("HidePanel").GetComponent<MeshRenderer>().enabled = false;
         }
-
-
-        private static Vector2 ToVector2(FVector2 fvector2)
-        {
-            return new Vector2(fvector2.X, fvector2.Y);
-        }
-
-
-        public void AddPrefabs()
-        {
-            AddLine();
-            editMode = EditMode.RotationMuscles;
-            var a = new FVector2(-2, 15);
-            var b = new FVector2(0, 5);
-            var c = new FVector2(2, 10);
-
-
-
-            distanceJoints.Add(new DistanceJointStruct(0, 1));
-            distanceJoints.Add(new DistanceJointStruct(2, 1));
-
-            currentLine.SetPosition(0, ToVector2(a));
-            currentLine.SetPosition(1, ToVector2(b));
-            AddLine();
-            currentLine.SetPosition(0, ToVector2(c));
-            currentLine.SetPosition(1, ToVector2(b));
-            AddLine();
-
-            firstNodeGameObject = Object.Instantiate(Resources.Load("Circle"), ToVector2(a), Quaternion.identity) as GameObject;
-            firstNodeGameObject.GetComponent<SpriteRenderer>().color = Color.green;
-            firstNodeGameObject.name = positions.Count.ToString();
-            firstNodeIndex = positions.Count;
-            positions.Add(a);
-            objects.Add(firstNodeGameObject);
-
-            anchorNodeGameObject = Object.Instantiate(Resources.Load("Circle"), ToVector2(b), Quaternion.identity) as GameObject;
-            anchorNodeGameObject.GetComponent<SpriteRenderer>().color = Color.blue;
-            anchorNodeGameObject.name = positions.Count.ToString();
-            anchorNodeIndex = positions.Count;
-            positions.Add(b);
-            objects.Add(anchorNodeGameObject);
-
-            secondNodeGameObject = Object.Instantiate(Resources.Load("Circle"), ToVector2(c), Quaternion.identity) as GameObject;
-            secondNodeGameObject.GetComponent<SpriteRenderer>().color = Color.green;
-            secondNodeGameObject.name = positions.Count.ToString();
-            secondNodeIndex = positions.Count;
-            positions.Add(c);
-            objects.Add(secondNodeGameObject);
-
-        }
-
-        private void AddLine()
-        {
-            currentLine = (new GameObject()).AddComponent<LineRenderer>();
-            currentLine.material = new Material(Shader.Find("Diffuse"));
-            currentLine.material.color = Color.black;
-            currentLine.SetWidth(0.5f, 0.5f);
-            objects.Add(currentLine);
-        }
-
         private void SetGrid(bool active)
         {
             foreach (var g in grid)
@@ -145,58 +131,29 @@ namespace Assets.Scripts.Neuroevolution
             GameObject.Find("HidePanel").GetComponent<MeshRenderer>().enabled = active;
         }
 
-
-        public void Update()
+        private void CreateLimitUI()
+        {
+            lowerLimitUI = new AngleUI(Vector2.zero, 100, 3, Color.blue, true);
+            upperLimitUI = new AngleUI(Vector2.zero, 100, 3, Color.red, false);
+        }
+        private void SetLimitUI(bool active)
         {
             lowerLimitUI.SetActive(false);
             upperLimitUI.SetActive(false);
-            currentLine.enabled = false;
-            SetGrid(false);
-            switch (editMode)
-            {
-                case EditMode.Nodes:
-                    EditNodes();
-                    break;
-                case EditMode.DistanceMuscles:
-                    EditDistanceMuscles();
-                    break;
-                case EditMode.RotationMuscles:
-                    EditRotationMuscles();
-                    break;
-                case EditMode.RotationNode:
-                    EditRotationNode();
-                    break;
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                editMode = EditMode.Nodes;
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                editMode = EditMode.DistanceMuscles;
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                editMode = EditMode.RotationMuscles;
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha4))
-            {
-                editMode = EditMode.RotationNode;
-            }
-            if (Input.GetKeyDown(KeyCode.G))
-            {
-                AddPrefabs();
-            }
         }
+
 
         private void EditNodes()
         {
+            //Grid
             if (Input.GetKeyDown(KeyCode.C))
             {
                 clamp = !clamp;
             }
             SetGrid(clamp);
-            if (Input.GetMouseButtonDown(0) && !GameObject.Find("EventSystem").GetComponent<EventSystem>().IsPointerOverGameObject())
+
+            //Add node
+            if (Input.GetMouseButtonDown(0))
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
@@ -210,11 +167,48 @@ namespace Assets.Scripts.Neuroevolution
                         p.x = Mathf.Round(p.x);
                         p.y = Mathf.Round(p.y);
                     }
-                    var go = Object.Instantiate(Resources.Load("Circle"), p, Quaternion.identity) as GameObject;
-                    go.name = positions.Count.ToString();
-                    go.GetComponent<SpriteRenderer>().color = Color.white;
-                    objects.Add(go);
-                    positions.Add(new FVector2(p.x, p.y));
+                    Creature.Positions.Add(new FVector2(p.x, p.y));
+                }
+            }
+
+            //Remove node
+            if (Input.GetMouseButtonDown(1))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
+
+                if (hit.collider != null)
+                {
+                    int i;
+                    if (int.TryParse(hit.transform.name, out i))
+                    {
+                        Creature.Positions.RemoveAt(i);
+                        //Remove revolute && distance joints 
+                        var x = Creature.DistanceJoints.Count;
+                        var j = 0;
+                        while (j < x)
+                        {
+                            if (Creature.DistanceJoints[j].a == i || Creature.DistanceJoints[j].b == i)
+                            {
+                                Creature.DistanceJoints.RemoveAt(j);
+                                j--;
+                            }
+                            x = Creature.DistanceJoints.Count;
+                            j++;
+                        }
+                        x = Creature.RevoluteJoints.Count;
+                        j = 0;
+                        while (j < x)
+                        {
+                            if (Creature.RevoluteJoints[j].a == i || Creature.RevoluteJoints[j].anchor == i || Creature.RevoluteJoints[j].b == i)
+                            {
+                                Creature.RevoluteJoints.RemoveAt(j);
+                                j--;
+                            }
+                            x = Creature.RevoluteJoints.Count;
+                            j++;
+                        }
+                    }
                 }
             }
         }
@@ -224,18 +218,20 @@ namespace Assets.Scripts.Neuroevolution
             //Render muscle
             if (currentMuscleNodeIndex != -1)
             {
-                currentLine.enabled = true;
-                var p = ToVector2(positions[currentMuscleNodeIndex]);
+                line.enabled = true;
+                var p = ToVector2(Creature.Positions[currentMuscleNodeIndex]);
                 var q = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 q.z = 0;
-                currentLine.SetPosition(0, p);
-                currentLine.SetPosition(1, q);
+                line.SetPosition(0, p);
+                line.SetPosition(1, q);
             }
+
             //Cancel edit
             if (Input.GetMouseButtonDown(1))
             {
                 currentMuscleNodeIndex = -1;
             }
+
             //Create muscle
             if (Input.GetMouseButtonDown(0))
             {
@@ -243,7 +239,7 @@ namespace Assets.Scripts.Neuroevolution
                 RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
 
                 int nodeIndex;
-                if (hit.collider != null && int.TryParse(hit.collider.name, out nodeIndex))
+                if (hit.collider != null && int.TryParse(hit.transform.name, out nodeIndex))
                 {
                     if (currentMuscleNodeIndex == -1)
                     {
@@ -251,10 +247,32 @@ namespace Assets.Scripts.Neuroevolution
                     }
                     else if (currentMuscleNodeIndex != nodeIndex)
                     {
-                        distanceJoints.Add(new DistanceJointStruct(currentMuscleNodeIndex, nodeIndex));
-                        currentLine.SetPosition(1, new Vector2(hit.transform.position.x, hit.transform.position.y));
-                        AddLine();
+                        Creature.DistanceJoints.Add(new DistanceJointStruct(currentMuscleNodeIndex, nodeIndex));
                         currentMuscleNodeIndex = -1;
+                    }
+                }
+            }
+
+            //Remove muscle
+            if (Input.GetMouseButtonDown(1) && (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
+
+                int nodeIndex;
+                if (hit.collider != null && int.TryParse(hit.transform.name, out nodeIndex))
+                {
+                    var x = Creature.DistanceJoints.Count;
+                    var i = 0;
+                    while (i < x)
+                    {
+                        if (Creature.DistanceJoints[i].a == nodeIndex || Creature.DistanceJoints[i].b == nodeIndex)
+                        {
+                            Creature.DistanceJoints.RemoveAt(i);
+                            i--;
+                        }
+                        x = Creature.DistanceJoints.Count;
+                        i++;
                     }
                 }
             }
@@ -263,9 +281,9 @@ namespace Assets.Scripts.Neuroevolution
         private void EditRotationMuscles()
         {
             //Render
-            if (secondNodeIndex != -1)
+            if (secondNode != -1)
             {
-                var p = new Vector2(positions[anchorNodeIndex].X, positions[anchorNodeIndex].Y);
+                var p = ToVector2(Creature.Positions[anchorNode]);
                 lowerLimitUI.SetPosition(p);
                 lowerLimitUI.SetActive(true);
                 upperLimitUI.SetPosition(p);
@@ -276,12 +294,9 @@ namespace Assets.Scripts.Neuroevolution
             //Cancel edit
             if (Input.GetMouseButtonDown(1))
             {
-                if (firstNodeGameObject != null) firstNodeGameObject.GetComponent<SpriteRenderer>().color = Color.white;
-                if (anchorNodeGameObject != null) anchorNodeGameObject.GetComponent<SpriteRenderer>().color = Color.white;
-                if (secondNodeGameObject != null) secondNodeGameObject.GetComponent<SpriteRenderer>().color = Color.white;
-                firstNodeIndex = -1;
-                secondNodeIndex = -1;
-                anchorNodeIndex = -1;
+                firstNode = -1;
+                secondNode = -1;
+                anchorNode = -1;
             }
             //Create muscle
             if (Input.GetMouseButtonDown(0))
@@ -292,27 +307,21 @@ namespace Assets.Scripts.Neuroevolution
                 int nodeIndex;
                 if (hit.collider != null && int.TryParse(hit.collider.name, out nodeIndex))
                 {
-                    if (firstNodeIndex == -1)
+                    if (firstNode == -1)
                     {
-                        firstNodeIndex = nodeIndex;
-                        firstNodeGameObject = hit.transform.gameObject;
-                        firstNodeGameObject.GetComponent<SpriteRenderer>().color = Color.green;
+                        firstNode = nodeIndex;
                     }
-                    else if (anchorNodeIndex == -1 && nodeIndex != firstNodeIndex)
+                    else if (anchorNode == -1 && nodeIndex != firstNode)
                     {
-                        anchorNodeIndex = nodeIndex;
-                        anchorNodeGameObject = hit.transform.gameObject;
-                        anchorNodeGameObject.GetComponent<SpriteRenderer>().color = Color.blue;
+                        anchorNode = nodeIndex;
                     }
-                    else if (nodeIndex != firstNodeIndex && nodeIndex != anchorNodeIndex)
+                    else if (nodeIndex != firstNode && nodeIndex != anchorNode)
                     {
-                        secondNodeIndex = nodeIndex;
-                        secondNodeGameObject = hit.transform.gameObject;
-                        secondNodeGameObject.GetComponent<SpriteRenderer>().color = Color.green;
+                        secondNode = nodeIndex;
                     }
                 }
             }
-            if (secondNodeIndex != -1)
+            if (secondNode != -1)
             {
                 upperLimit += 0.01f * Input.GetAxis("Vertical");
                 lowerLimit += 0.01f * Input.GetAxis("Vertical");
@@ -322,23 +331,17 @@ namespace Assets.Scripts.Neuroevolution
             }
             if (Input.GetKeyDown(KeyCode.Return))
             {
-                var a = ToVector2(positions[firstNodeIndex]);
-                var b = ToVector2(positions[secondNodeIndex]);
-                var anchor = ToVector2(positions[anchorNodeIndex]);
-                var angle = Vector2.Angle(a - anchor, b - anchor) * Mathf.Deg2Rad;
-                revoluteJoints.Add(new RevoluteJointStruct(firstNodeIndex, secondNodeIndex, anchorNodeIndex, lowerLimit, upperLimit));
+                Creature.RevoluteJoints.Add(new RevoluteJointStruct(firstNode, secondNode, anchorNode, lowerLimit, upperLimit));
 
-                firstNodeGameObject.GetComponent<SpriteRenderer>().color = Color.white;
-                anchorNodeGameObject.GetComponent<SpriteRenderer>().color = Color.white;
-                secondNodeGameObject.GetComponent<SpriteRenderer>().color = Color.white;
-                firstNodeIndex = -1;
-                secondNodeIndex = -1;
-                anchorNodeIndex = -1;
+                firstNode = -1;
+                secondNode = -1;
+                anchorNode = -1;
             }
         }
 
         private void EditRotationNode()
         {
+            //Add
             if (Input.GetMouseButtonDown(0))
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -347,31 +350,21 @@ namespace Assets.Scripts.Neuroevolution
                 int nodeIndex;
                 if (hit.collider != null && int.TryParse(hit.collider.name, out nodeIndex))
                 {
-                    rotationNodeIndex = nodeIndex;
-                    if (rotationNodeGameObject != null)
-                    {
-                        rotationNodeGameObject.GetComponent<SpriteRenderer>().color = Color.white;
-                    }
-                    rotationNodeGameObject = hit.transform.gameObject;
-                    rotationNodeGameObject.GetComponent<SpriteRenderer>().color = Color.yellow;
+                    Creature.RotationNode = nodeIndex;
                 }
             }
+            //Remove
+            if (Input.GetMouseButtonDown(1))
+            {
+                Creature.RotationNode = -1;
+            }
         }
-
-
-
-        public CreatureStruct GetCreature ()
-        {
-            return new CreatureStruct(positions, distanceJoints, revoluteJoints, rotationNodeIndex);
-        }
-
 
         public void Destroy()
         {
-            foreach (var o in objects)
-            {
-                Object.Destroy(o);
-            }
+            grid.ForEach(Object.Destroy);
+            creatureRenderer.Destroy();
+            Object.Destroy(line.gameObject);
             lowerLimitUI.Destroy();
             upperLimitUI.Destroy();
             GameObject.Find("HidePanel").GetComponent<MeshRenderer>().enabled = false;

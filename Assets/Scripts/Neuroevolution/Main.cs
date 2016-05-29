@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using ProgressBar;
 using System.Xml.Serialization;
 using System.IO;
 using System.Windows.Forms;
@@ -26,21 +24,10 @@ namespace Assets.Scripts.Neuroevolution
             InvokeRepeating("ControllerUpdate", 0, Globals.DeltaTime);
             mainUI = GetComponent<MainUI>();
         }
-        private void ControllerUpdate()
-        {
-            if (controller != null && !controller.IsTraining && !pause)
-            {
-                controller.Update(mainUI.GetTimeMultiplier());
-                //Pause at 20s
-                if (controller.CurrentTime <= 20 && controller.CurrentTime + mainUI.GetTimeMultiplier() * Globals.DeltaTime >= 20)
-                {
-                    pause = true;
-                }
-            }
-        }
 
         public void Start()
         {
+            controller = null;
             edit = true;
             editor = new Editor();
             creatureRenderers = new List<CreatureRenderer>();
@@ -48,6 +35,53 @@ namespace Assets.Scripts.Neuroevolution
             tmp.x = 0;
             tmp.y = 12.5f;
             transform.position = tmp;
+        }
+
+        public void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.F11))
+            {
+                UnityEngine.Screen.fullScreen = !UnityEngine.Screen.fullScreen;
+            }
+            if (edit)
+            {
+                EditUpdate();
+            }
+            else
+            {
+                PlayUpdate();
+            }
+        }
+
+        public void EditUpdate()
+        {
+            editor.Update();
+            if (!GameObject.Find("EventSystem").GetComponent<EventSystem>().IsPointerOverGameObject())
+            {
+                CheckEditInputs();
+            }
+        }
+
+        public void PlayUpdate()
+        {
+            if (controller.IsTraining)
+            {
+                mainUI.TrainUpdate(controller.CurrentGeneration);
+            }
+            else
+            {
+                //Update UI
+                mainUI.NormalUpdate(controller.GetBestCreature(), controller.CurrentTime);
+
+                //Remove slowest creatures
+                controller.RemoveCreaturesFartherThan(100);
+
+                //Render creatures
+                RenderCreatures();
+
+                //Input
+                CheckPlayInputs();
+            }
         }
 
 
@@ -72,105 +106,73 @@ namespace Assets.Scripts.Neuroevolution
             controller.Train(generations, testDuration, variation, filename);
         }
 
-        public void Update()
+        private void LoadCreature()
         {
-            if (Input.GetKeyDown(KeyCode.F11))
-            {
-                UnityEngine.Screen.fullScreen = !UnityEngine.Screen.fullScreen;
-            }
-            if (edit)
-            {
-                EditUpdate();
-            }
-            else
-            {
-                PlayUpdate();
-            }
-        }
+            Stream myStream = null;
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
 
-        public void EditUpdate()
-        {
-            editor.Update();
-            if (!GameObject.Find("EventSystem").GetComponent<EventSystem>().IsPointerOverGameObject())
+            openFileDialog1.InitialDirectory = "c:\\";
+            openFileDialog1.Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*";
+            openFileDialog1.FilterIndex = 1;
+            openFileDialog1.RestoreDirectory = true;
+
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                //Start
-                if (Input.GetKeyDown(KeyCode.Space))
+                try
                 {
-                    InitializeController();
-                }
-                //Restart
-                if (Input.GetKeyDown(KeyCode.R))
-                {
-                    editor.Destroy();
-                    editor = new Editor();
-                }
-                //Load file
-                if (Input.GetKeyDown(KeyCode.L))
-                {
-                    Stream myStream = null;
-                    OpenFileDialog openFileDialog1 = new OpenFileDialog();
-
-                    openFileDialog1.InitialDirectory = "c:\\";
-                    openFileDialog1.Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*";
-                    openFileDialog1.FilterIndex = 1;
-                    openFileDialog1.RestoreDirectory = true;
-
-                    if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                    if ((myStream = openFileDialog1.OpenFile()) != null)
                     {
-                        try
+                        using (myStream)
                         {
-                            if ((myStream = openFileDialog1.OpenFile()) != null)
-                            {
-                                using (myStream)
-                                {
-                                    XmlSerializer serializer = new XmlSerializer(typeof(CreatureStruct));
-                                    var c = (CreatureStruct)serializer.Deserialize(myStream);
-                                    controller = new Controller(CreatureFactory.CreateCreature(c));
-
-                                    edit = false;
-                                    editor.Destroy();
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
+                            XmlSerializer serializer = new XmlSerializer(typeof(CreatureStruct));
+                            editor.Creature = (CreatureStruct)serializer.Deserialize(myStream);
                         }
                     }
                 }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
+                }
             }
         }
-        public void InitializeController()
+
+        private void InitializeController()
         {
-            var c = CreatureFactory.CreateCreature(editor.GetCreature(), Globals.HiddenSize, Globals.HiddenLayersCount);
+            Creature c;
+            if (editor.Creature.Synapses.Count == 0)
+            {
+                c = CreatureFactory.CreateCreature(editor.Creature, Globals.HiddenSize, Globals.HiddenLayersCount);
+            }
+            else
+            {
+                c = CreatureFactory.CreateCreature(editor.Creature);
+            }
             edit = false;
             editor.Destroy();
             controller = new Controller(c);
         }
 
-        public void PlayUpdate()
+        private void CheckEditInputs()
         {
-            if (controller.IsTraining)
+            //Start
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                mainUI.TrainUpdate(controller.CurrentGeneration);
+                InitializeController();
             }
-            else
+            //Restart
+            if (Input.GetKeyDown(KeyCode.R))
             {
-                //Update UI
-                mainUI.NormalUpdate(controller.GetBestCreature(), controller.CurrentTime);
-
-                //Remove slowest creatures
-                controller.RemoveCreaturesFartherThan(100);
-
-                //Render creatures
-                RenderCreatures();
-
-                //Input
-                CheckInput();
+                editor.Destroy();
+                editor = new Editor();
+            }
+            //Load file
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                LoadCreature();
             }
         }
 
-        private void CheckInput()
+        private void CheckPlayInputs()
         {
             if (GameObject.Find("EventSystem").GetComponent<EventSystem>().currentSelectedGameObject == null)
             {
@@ -185,11 +187,13 @@ namespace Assets.Scripts.Neuroevolution
                 }
                 if (Input.GetKeyDown(KeyCode.R))
                 {
-                    foreach (var c in creatureRenderers)
-                    {
-                        c.Destroy();
-                    }
-                    Start();
+                    Restart();
+                }
+                if(Input.GetKeyDown(KeyCode.E))
+                {
+                    var c = controller.GetBestCreature().Save;
+                    Restart();
+                    editor.Creature = c;
                 }
                 if (Input.GetKeyDown(KeyCode.S))
                 {
@@ -214,6 +218,15 @@ namespace Assets.Scripts.Neuroevolution
             }
         }
 
+        private void Restart()
+        {
+            foreach (var c in creatureRenderers)
+            {
+                c.Destroy();
+            }
+            Start();
+        }
+
         private void RenderCreatures()
         {
             while (creatureRenderers.Count < controller.Creatures.Count)
@@ -228,7 +241,20 @@ namespace Assets.Scripts.Neuroevolution
             for (var k = 0; k < creatureRenderers.Count; k++)
             {
                 var c = controller.Creatures[k];
-                creatureRenderers[k].Update(c.GetBodies(), c.GetJoints(), Color.black);
+                creatureRenderers[k].Update(c.Save, c.GetBodies());
+            }
+        }
+
+        private void ControllerUpdate()
+        {
+            if (controller != null && !controller.IsTraining && !pause)
+            {
+                controller.Update(mainUI.GetTimeMultiplier());
+                //Pause at 20s
+                if (controller.CurrentTime <= 20 && controller.CurrentTime + mainUI.GetTimeMultiplier() * Globals.DeltaTime >= 20)
+                {
+                    pause = true;
+                }
             }
         }
 
