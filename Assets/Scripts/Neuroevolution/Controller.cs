@@ -10,8 +10,6 @@ namespace Assets.Scripts.Neuroevolution
         public float CurrentTime;
         public bool IsTraining;
         public int CurrentGeneration;
-        public int TotalGenerations;
-        public float TrainStartTime;
         public static string DataPath = Application.dataPath;
 
 
@@ -46,30 +44,30 @@ namespace Assets.Scripts.Neuroevolution
             //Sort by species
             creatures.Sort((a, b) =>
             {
-                if (a.GetSpecies() == b.GetSpecies())
+                if (a.Species == b.Species)
                 {
                     return b.GetFitness().CompareTo((a.GetFitness()));
                 }
                 else
                 {
-                    return b.GetSpecies().CompareTo(a.GetSpecies());
+                    return b.Species.CompareTo(a.Species);
                 }
             });
 
             var groups = new List<List<Creature>>();
 
             //Create groups
-            var currentSpecies = creatures[0].GetSpecies();
+            var currentSpecies = creatures[0].Species;
             groups.Add(new List<Creature>());
             foreach (var c in creatures)
             {
-                if (c.GetSpecies() == currentSpecies)
+                if (c.Species == currentSpecies)
                 {
                     groups[groups.Count - 1].Add(c);
                 }
                 else
                 {
-                    currentSpecies = c.GetSpecies();
+                    currentSpecies = c.Species;
                     groups.Add(new List<Creature>());
                     groups[groups.Count - 1].Add(c);
                 }
@@ -87,28 +85,28 @@ namespace Assets.Scripts.Neuroevolution
                 var g = groups[i];
 
                 //Best of the species
-                newCreatures.Add(g[0].Duplicate());
-                newCreatures.Add(g[0].Clone(currentVariation));
+                newCreatures.Add(g[0].GetCopy());
+                newCreatures.Add(g[0].GetChild(currentVariation));
 
                 //Second best
                 if (groups[i].Count > 1)
                 {
-                    newCreatures.Add(g[1].Duplicate());
-                    newCreatures.Add(g[1].Clone(currentVariation));
+                    newCreatures.Add(g[1].GetCopy());
+                    newCreatures.Add(g[1].GetChild(currentVariation));
                 }
                 else
                 {
-                    newCreatures.Add(g[0].RandomClone());
-                    newCreatures.Add(g[0].RandomClone());
+                    newCreatures.Add(g[0].GetRandomClone());
+                    newCreatures.Add(g[0].GetRandomClone());
                 }
 
                 //Random one
-                newCreatures.Add(g[0].RandomClone());
+                newCreatures.Add(g[0].GetRandomClone());
             }
 
             while (newCreatures.Count < creatures.Count)
             {
-                newCreatures.Add(newCreatures[0].RandomClone());
+                newCreatures.Add(newCreatures[0].GetRandomClone());
             }
 
             creatures.Clear();
@@ -121,23 +119,22 @@ namespace Assets.Scripts.Neuroevolution
 
             if (creatures.Count % 2 != 0)
             {
-                creatures.Add(creatures[0].Clone(currentVariation));
+                creatures.Add(creatures[0].GetChild(currentVariation));
             }
             for (var i = 0; i < creatures.Count / 2; i++)
             {
-                creatures[i] = creatures[i + creatures.Count / 2].Clone(currentVariation);
+                creatures[i] = creatures[i + creatures.Count / 2].GetChild(currentVariation);
             }
             for (var i = creatures.Count / 2; i < creatures.Count; i++)
             {
-                creatures[i] = creatures[i].Duplicate();
+                creatures[i] = creatures[i].GetCopy();
             }
         }
 
-        private static void TrainThread(Controller controller, int generations, int testDuration, float variation, string fileName)
+        private static void TrainThread(Controller controller, int generations, int testDuration, float variation, string filename)
         {
             controller.IsTraining = true;
             controller.ResetCreatures();
-            controller.TotalGenerations = generations;
 
             var save = new CSVSave(generations);
 
@@ -171,13 +168,13 @@ namespace Assets.Scripts.Neuroevolution
                 {
                     for (var i = 0; i < controller.Creatures.Count; i++)
                     {
-                        controller.Creatures[i] = controller.Creatures[i].Duplicate();
+                        controller.Creatures[i] = controller.Creatures[i].GetCopy();
                     }
                 }
             }
 
             //Score output in csv
-            save.SaveToFile(fileName, DataPath);
+            save.SaveToFile(filename, DataPath);
 
             //Reset variables
             controller.CurrentTime = 0;
@@ -185,10 +182,9 @@ namespace Assets.Scripts.Neuroevolution
         }
 
 
-        public void Train(int generations, int testDuration, float variation, string fileName)
+        public void Train(int generations, int testDuration, float variation, string filename)
         {
-            TrainStartTime = Time.time;
-            var t = new Thread(() => TrainThread(this, generations, testDuration, variation, fileName));
+            var t = new Thread(() => TrainThread(this, generations, testDuration, variation, filename));
             t.Start();
         }
 
@@ -233,7 +229,7 @@ namespace Assets.Scripts.Neuroevolution
         {
             for (var k = 0; k < Creatures.Count; k++)
             {
-                Creatures[k] = Creatures[k].Duplicate();
+                Creatures[k] = Creatures[k].GetCopy();
             }
         }
     }

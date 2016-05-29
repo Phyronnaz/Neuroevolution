@@ -24,6 +24,7 @@ namespace Assets.Scripts.Neuroevolution
         public void SetDT(string dt)
         {
             Globals.DeltaTime = float.Parse(dt);
+            GetComponent<Main>().Awake();
         }
 
         public void SetCycleDuration(string c)
@@ -93,6 +94,15 @@ namespace Assets.Scripts.Neuroevolution
             e.z = Globals.GroundRotation * Mathf.Rad2Deg;
             r.eulerAngles = e;
             Ground.rotation = r;
+        }
+
+        public void SetHiddenLayersCount(string s)
+        {
+            Globals.HiddenLayersCount = int.Parse(s);
+        }
+        public void SetHiddenSize(string s)
+        {
+            Globals.HiddenSize = int.Parse(s);
         }
     }
 }

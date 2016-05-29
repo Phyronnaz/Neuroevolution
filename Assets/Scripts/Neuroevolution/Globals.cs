@@ -22,5 +22,7 @@ namespace Assets.Scripts.Neuroevolution
         public static float Restitution = 0.1f;
         public static bool KillFallen;
         public static float GroundRotation = 0;
+        public static int HiddenLayersCount = 2;
+        public static int HiddenSize = 0;
     }
 }

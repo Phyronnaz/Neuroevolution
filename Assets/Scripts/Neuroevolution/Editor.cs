@@ -360,24 +360,9 @@ namespace Assets.Scripts.Neuroevolution
 
 
 
-        public List<FVector2> GetPositions()
+        public CreatureStruct GetCreature ()
         {
-            return positions;
-        }
-
-        public List<DistanceJointStruct> GetDistanceJoints()
-        {
-            return distanceJoints;
-        }
-
-        public List<RevoluteJointStruct> GetRevoluteJoints()
-        {
-            return revoluteJoints;
-        }
-
-        public int GetRotationNode()
-        {
-            return rotationNodeIndex;
+            return new CreatureStruct(positions, distanceJoints, revoluteJoints, rotationNodeIndex);
         }
 
 

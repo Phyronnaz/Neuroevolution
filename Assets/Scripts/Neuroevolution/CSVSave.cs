@@ -39,9 +39,9 @@ namespace Assets.Scripts.Neuroevolution
             var angles = new List<float>();
             foreach (var c in creatures)
             {
-                genomes.Add(c.GetGenome());
-                species.Add(c.GetSpecies());
-                parents.Add(c.GetParent());
+                genomes.Add(c.Genome);
+                species.Add(c.Species);
+                parents.Add(c.Parent);
                 scores.Add(c.GetAveragePosition().X);
                 fitnesses.Add(c.GetFitness());
                 powers.Add(c.GetPower());
@@ -58,11 +58,11 @@ namespace Assets.Scripts.Neuroevolution
             Angles.Add(angles);
         }
 
-        public void SaveToFile(string fileName, string path)
+        public void SaveToFile(string filename, string path)
         {
-            if (fileName != "")
+            if (filename != "")
             {
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(path + @"\" + fileName + ".csv", true))
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(path + @"\" + filename + ".csv", true))
                 {
                     var s = "Generation; Variation; Genome; Species; Parent; Score; Fitness; Power; Angle";
                     file.WriteLine(s);
