@@ -161,6 +161,10 @@ namespace Assets.Scripts.Neuroevolution
                     }
                     var r = revoluteJoints[i];
                     energy += Mathf.Abs(x);
+                    if (Globals.NoImpulse)
+                    {
+                        r.MotorSpeed = 0;
+                    }
                     r.MotorSpeed += x;
                     if ((Mathf.Abs(r.JointAngle - r.LowerLimit - r.ReferenceAngle) < 0.1f && r.MotorSpeed < 0)
                         || (Mathf.Abs(r.JointAngle - r.UpperLimit - r.ReferenceAngle) < 0.1f && r.MotorSpeed > 0))
@@ -181,7 +185,7 @@ namespace Assets.Scripts.Neuroevolution
             {
                 isDead = true;
             }
-            if (useRotation && GetAngle() > Globals.MaxAngle)
+            if (useRotation && GetAngle() > Globals.MaxAngle && Globals.KillFallen)
             {
                 isDead = true;
             }

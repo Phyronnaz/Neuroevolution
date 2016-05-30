@@ -224,8 +224,8 @@ namespace Assets.Scripts.Neuroevolution
                 var p = ToVector2(Creature.Positions[currentMuscleNodeIndex]);
                 var q = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 q.z = 0;
-                line.SetPosition(0, p);
-                line.SetPosition(1, q);
+                line.SetPosition(0, (Vector3)p + Vector3.forward);
+                line.SetPosition(1, q + Vector3.forward);
             }
 
             //Cancel edit

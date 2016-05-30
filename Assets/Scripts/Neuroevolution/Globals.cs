@@ -7,10 +7,10 @@ namespace Assets.Scripts.Neuroevolution
         public const float BodyDensity = 1;
         public static float CycleDuration = 3;
         public static float WorldYGravity = -9.8f;
-        public static float BodyFriction = 100000;
+        public static float BodyFriction = 50;
         public static float MotorTorque = 1000;
         public static bool Debug = false;
-        public static float MaxMotorTorque = 1000;
+        public static float MaxMotorTorque = 50000;
         public static float MaxYPosition = 30;
         public static float MaxAngle = Mathf.PI / 3;
         public static float BadAngleImpact = -100000;
@@ -25,5 +25,6 @@ namespace Assets.Scripts.Neuroevolution
         public static int HiddenLayersCount = 2;
         public static int HiddenSize = 0;
         public static bool UseThreads = true;
+        public static bool NoImpulse = true;
     }
 }

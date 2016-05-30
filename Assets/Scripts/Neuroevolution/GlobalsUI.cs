@@ -109,5 +109,10 @@ namespace Assets.Scripts.Neuroevolution
         {
             Globals.UseThreads = b;
         }
+
+        public void SetNoImpulse(bool b)
+        {
+            Globals.NoImpulse = b;
+        }
     }
 }
