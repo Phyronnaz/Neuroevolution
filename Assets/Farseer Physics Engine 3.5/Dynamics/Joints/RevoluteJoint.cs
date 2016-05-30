@@ -412,9 +412,9 @@ namespace FarseerPhysics.Dynamics.Joints
             }
             else
             {
-#pragma warning disable CS0162 // Unreachable code detected
+#pragma warning disable CS162 // Unreachable code detected
                 _impulse = Vector3.Zero;
-#pragma warning restore CS0162 // Unreachable code detected
+#pragma warning restore CS162 // Unreachable code detected
                 _motorImpulse = 0.0f;
             }
 

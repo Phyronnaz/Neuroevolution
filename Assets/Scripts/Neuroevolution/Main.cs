@@ -66,7 +66,7 @@ namespace Assets.Scripts.Neuroevolution
         {
             if (controller.IsTraining)
             {
-                mainUI.TrainUpdate(controller.CurrentGeneration);
+                mainUI.TrainUpdate(controller.Progression);
             }
             else
             {
@@ -174,7 +174,7 @@ namespace Assets.Scripts.Neuroevolution
 
         private void CheckPlayInputs()
         {
-            if (GameObject.Find("EventSystem").GetComponent<EventSystem>().currentSelectedGameObject == null)
+            if (!EventSystem.current.IsPointerOverGameObject())
             {
                 if (Input.GetKeyDown(KeyCode.A))
                 {
@@ -189,9 +189,9 @@ namespace Assets.Scripts.Neuroevolution
                 {
                     Restart();
                 }
-                if(Input.GetKeyDown(KeyCode.E))
+                if (Input.GetKeyDown(KeyCode.E))
                 {
-                    var c = controller.GetBestCreature().Save;
+                    var c = controller.GetBestCreature().CreatureStruct;
                     Restart();
                     editor.Creature = c;
                 }
@@ -208,7 +208,7 @@ namespace Assets.Scripts.Neuroevolution
                     {
                         if ((myStream = saveFileDialog1.OpenFile()) != null)
                         {
-                            var save = controller.GetBestCreature().Save;
+                            var save = controller.GetBestCreature().CreatureStruct;
                             XmlSerializer serializer = new XmlSerializer(typeof(CreatureStruct));
                             serializer.Serialize(myStream, save);
                             myStream.Close();
@@ -224,6 +224,7 @@ namespace Assets.Scripts.Neuroevolution
             {
                 c.Destroy();
             }
+            Counters.Reset();
             Start();
         }
 
@@ -241,7 +242,7 @@ namespace Assets.Scripts.Neuroevolution
             for (var k = 0; k < creatureRenderers.Count; k++)
             {
                 var c = controller.Creatures[k];
-                creatureRenderers[k].Update(c.Save, c.GetBodies());
+                creatureRenderers[k].Update(c.CreatureStruct, c.GetBodies());
             }
         }
 
@@ -251,10 +252,10 @@ namespace Assets.Scripts.Neuroevolution
             {
                 controller.Update(mainUI.GetTimeMultiplier());
                 //Pause at 20s
-                if (controller.CurrentTime <= 20 && controller.CurrentTime + mainUI.GetTimeMultiplier() * Globals.DeltaTime >= 20)
-                {
-                    pause = true;
-                }
+                //if (controller.CurrentTime <= 20 && controller.CurrentTime + mainUI.GetTimeMultiplier() * Globals.DeltaTime >= 20)
+                //{
+                //    pause = true;
+                //}
             }
         }
 

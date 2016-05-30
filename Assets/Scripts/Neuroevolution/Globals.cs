@@ -19,10 +19,11 @@ namespace Assets.Scripts.Neuroevolution
         public static int RandomCount = 5;
         public static bool UseSpecies = true;
         public static int TrainCycle = 1;
-        public static float Restitution = 0.1f;
+        public static float Restitution = 0;
         public static bool KillFallen;
         public static float GroundRotation = 0;
         public static int HiddenLayersCount = 2;
         public static int HiddenSize = 0;
+        public static bool UseThreads = true;
     }
 }

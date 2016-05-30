@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using FarseerPhysics.Dynamics.Joints;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
@@ -11,9 +10,7 @@ namespace Assets.Scripts.Neuroevolution
     public class Creature
     {
         //External
-        private readonly int rotationNode;
-        private readonly List<Matrix> synapses;
-        public readonly CreatureStruct Save;
+        public readonly CreatureStruct CreatureStruct;
         public readonly int Generation;
         public readonly int Genome;
         public readonly int Species;
@@ -41,26 +38,6 @@ namespace Assets.Scripts.Neuroevolution
         private float currentRestitution;
 
 
-        private static int genomeCount;
-        public static int GenomeCount
-        {
-            get
-            {
-                genomeCount++;
-                return genomeCount - 1;
-            }
-        }
-
-        private static int speciesCount;
-        public static int SpeciesCount
-        {
-            get
-            {
-                speciesCount++;
-                return speciesCount - 1;
-            }
-        }
-
 
 
         public Creature(CreatureStruct creature, int generation, int genome, int species, int parent)
@@ -69,9 +46,7 @@ namespace Assets.Scripts.Neuroevolution
             Species = species;
             Parent = parent;
             Generation = generation;
-            Save = creature;
-            rotationNode = creature.RotationNode;
-            synapses = creature.Synapses;
+            CreatureStruct = creature;
             revoluteJoints = new List<RevoluteJoint>();
             world = new World(new Vector2(0, Globals.WorldYGravity));
 
@@ -120,10 +95,10 @@ namespace Assets.Scripts.Neuroevolution
             world.ProcessChanges();
 
             //Rotation node
-            if (rotationNode != -1)
+            if (CreatureStruct.RotationNode != -1)
             {
                 useRotation = true;
-                initialRotation = world.BodyList[rotationNode].Rotation;
+                initialRotation = world.BodyList[CreatureStruct.RotationNode].Rotation;
             }
             Train();
         }
@@ -132,24 +107,25 @@ namespace Assets.Scripts.Neuroevolution
 
         public Creature GetChild(float variation)
         {
+            variation = Counters.GetVariation(Species, variation);
             var synapses = new List<Matrix>();
-            for (var k = 0; k < this.synapses.Count; k++)
+            for (var k = 0; k < CreatureStruct.Synapses.Count; k++)
             {
-                synapses.Add(this.synapses[k] + Matrix.Random(this.synapses[k].M, this.synapses[k].N) * variation);
+                synapses.Add(CreatureStruct.Synapses[k] + Matrix.Random(CreatureStruct.Synapses[k].M, CreatureStruct.Synapses[k].N) * variation);
             }
-            var c = Save;
-            c.Synapses = synapses;
-            return new Creature(c, Generation + 1, GenomeCount, Species, Genome);
+            var c = CreatureStruct;
+            c.Synapses = CreatureStruct.Synapses;
+            return new Creature(c, Generation + 1, Counters.GenomeCount, Species, Genome);
         }
 
         public Creature GetCopy()
         {
-            return new Creature(Save, Generation, Genome, Species, Parent);
+            return new Creature(CreatureStruct, Generation, Genome, Species, Parent);
         }
 
         public Creature GetRandomClone()
         {
-            return CreatureFactory.CreateCreature(Save, synapses[0].N, synapses.Count - 1);
+            return CreatureFactory.CreateCreature(CreatureStruct, CreatureStruct.Synapses[0].N, CreatureStruct.Synapses.Count - 1);
         }
 
 
@@ -161,33 +137,51 @@ namespace Assets.Scripts.Neuroevolution
                 world.Step(dt);
                 time += dt;
                 count++;
-                if (Globals.Debug)
-                {
-                    foreach (var r in revoluteJoints)
-                    {
-                        var x = Globals.DeltaTime * Globals.MotorTorque * ((time % Globals.CycleDuration > Globals.CycleDuration / 2) ? 1 : -1);
-                        energy += Mathf.Abs(r.MotorSpeed - x);
-                        r.MotorSpeed = x;
-                    }
-                }
-                else
+                if (!Globals.Debug)
                 {
                     if (count >= Globals.TrainCycle)
                     {
                         count = 0;
                         Train();
                     }
-                    //Change speeds
-                    for (var i = 0; i < revoluteJoints.Count; i++)
-                    {
-                        var x = Globals.DeltaTime * neuralNetwork[0][i] * Globals.MotorTorque;
-                        energy += Mathf.Abs(revoluteJoints[i].MotorSpeed - x);
-                        revoluteJoints[i].MotorSpeed = x;
-                    }
                 }
+
+
+                //Change speeds
+                for (var i = 0; i < revoluteJoints.Count; i++)
+                {
+                    float x;
+                    if (Globals.Debug)
+                    {
+                        x = Globals.DeltaTime * Globals.MotorTorque * ((time % Globals.CycleDuration > Globals.CycleDuration / 2) ? 1 : -1);
+                    }
+                    else
+                    {
+                        x = Globals.DeltaTime * neuralNetwork[0][i] * Globals.MotorTorque;
+                    }
+                    var r = revoluteJoints[i];
+                    energy += Mathf.Abs(x);
+                    r.MotorSpeed += x;
+                    if ((Mathf.Abs(r.JointAngle - r.LowerLimit - r.ReferenceAngle) < 0.1f && r.MotorSpeed < 0)
+                        || (Mathf.Abs(r.JointAngle - r.UpperLimit - r.ReferenceAngle) < 0.1f && r.MotorSpeed > 0))
+                    {
+                        r.MotorSpeed = 0;
+                    }
+                    //UnityEngine.Debug.Log("Angle");
+                    //UnityEngine.Debug.Log(Mathf.Abs(r.JointAngle - r.LowerLimit - r.ReferenceAngle));
+                    //UnityEngine.Debug.Log(Mathf.Abs(r.JointAngle - r.UpperLimit - r.ReferenceAngle));
+                    //UnityEngine.Debug.Log("Speed");
+                    //UnityEngine.Debug.Log(r.MotorSpeed);
+                }
+
             }
 
+            //Kill
             if ((world.BodyList[0].Position.Y > Globals.MaxYPosition) || (useRotation && Globals.KillFallen && GetAngle() > Globals.MaxAngle))
+            {
+                isDead = true;
+            }
+            if (useRotation && GetAngle() > Globals.MaxAngle)
             {
                 isDead = true;
             }
@@ -243,9 +237,9 @@ namespace Assets.Scripts.Neuroevolution
             neuralNetwork[0][2 * revoluteJoints.Count] = 2 * (time % Globals.CycleDuration) / Globals.CycleDuration - 1;
 
             //Process
-            for (var k = 0; k < synapses.Count; k++)
+            for (var k = 0; k < CreatureStruct.Synapses.Count; k++)
             {
-                neuralNetwork = Sigma(Matrix.Dot(neuralNetwork, synapses[k]));
+                neuralNetwork = Sigma(Matrix.Dot(neuralNetwork, CreatureStruct.Synapses[k]));
             }
         }
         private static Matrix Sigma(Matrix m)
@@ -309,13 +303,13 @@ namespace Assets.Scripts.Neuroevolution
 
         public float GetAngle()
         {
-            if (rotationNode == -1)
+            if (CreatureStruct.RotationNode == -1)
             {
                 return 0;
             }
             else
             {
-                return Mathf.Abs(world.BodyList[rotationNode].Rotation - initialRotation);
+                return Mathf.Abs(world.BodyList[CreatureStruct.RotationNode].Rotation - initialRotation);
             }
         }
     }

@@ -80,9 +80,9 @@ namespace FarseerPhysics.Common.Decomposition
             {
                 case TriangulationAlgorithm.Earclip:
                     if (Settings.SkipSanityChecks)
-#pragma warning disable CS0162 // Unreachable code detected
+#pragma warning disable CS162 // Unreachable code detected
                         Debug.Assert(!vertices.IsCounterClockWise(), "The Earclip algorithm expects the polygon to be clockwise.");
-#pragma warning restore CS0162 // Unreachable code detected
+#pragma warning restore CS162 // Unreachable code detected
                     else
                     {
                         if (vertices.IsCounterClockWise())
@@ -97,9 +97,9 @@ namespace FarseerPhysics.Common.Decomposition
                     break;
                 case TriangulationAlgorithm.Bayazit:
                     if (Settings.SkipSanityChecks)
-#pragma warning disable CS0162 // Unreachable code detected
+#pragma warning disable CS162 // Unreachable code detected
                         Debug.Assert(vertices.IsCounterClockWise(), "The polygon is not counter clockwise. This is needed for Bayazit to work correctly.");
-#pragma warning restore CS0162 // Unreachable code detected
+#pragma warning restore CS162 // Unreachable code detected
                     else
                     {
                         if (!vertices.IsCounterClockWise())
@@ -114,9 +114,9 @@ namespace FarseerPhysics.Common.Decomposition
                     break;
                 case TriangulationAlgorithm.Flipcode:
                     if (Settings.SkipSanityChecks)
-#pragma warning disable CS0162 // Unreachable code detected
+#pragma warning disable CS162 // Unreachable code detected
                         Debug.Assert(vertices.IsCounterClockWise(), "The polygon is not counter clockwise. This is needed for Bayazit to work correctly.");
-#pragma warning restore CS0162 // Unreachable code detected
+#pragma warning restore CS162 // Unreachable code detected
                     else
                     {
                         if (!vertices.IsCounterClockWise())

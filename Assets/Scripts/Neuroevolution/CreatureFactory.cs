@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Vector2 = Microsoft.Xna.Framework.Vector2;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.Neuroevolution
@@ -9,7 +7,7 @@ namespace Assets.Scripts.Neuroevolution
     {
         public static Creature CreateCreature(CreatureStruct creature)
         {
-            return new Creature(creature, 0, Creature.GenomeCount, Creature.SpeciesCount, -1);
+            return new Creature(creature, 0, Counters.GenomeCount, Counters.SpeciesCount, -1);
         }
 
         public static Creature CreateCreature(CreatureStruct creature, int hiddenSize, int hiddenLayersCount)
@@ -24,7 +22,7 @@ namespace Assets.Scripts.Neuroevolution
             }
             synapses.Add(Matrix.Random(hiddenSize, revoluteCount));
             creature.Synapses = synapses;
-            return new Creature(creature, 0, Creature.GenomeCount, Creature.SpeciesCount, -1);
+            return new Creature(creature, 0, Counters.GenomeCount, Counters.SpeciesCount, -1);
         }
     }
 }

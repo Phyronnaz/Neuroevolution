@@ -182,6 +182,8 @@ namespace Assets.Scripts.Neuroevolution
                     int i;
                     if (int.TryParse(hit.transform.name, out i))
                     {
+                        creatureRenderer.Destroy();
+                        creatureRenderer = new CreatureRenderer();
                         Creature.Positions.RemoveAt(i);
                         //Remove revolute && distance joints 
                         var x = Creature.DistanceJoints.Count;
@@ -229,7 +231,33 @@ namespace Assets.Scripts.Neuroevolution
             //Cancel edit
             if (Input.GetMouseButtonDown(1))
             {
-                currentMuscleNodeIndex = -1;
+                if (currentMuscleNodeIndex == -1)
+                {
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
+
+                    int nodeIndex;
+                    if (hit.collider != null && int.TryParse(hit.transform.name, out nodeIndex))
+                    {
+                        var x = Creature.DistanceJoints.Count;
+                        var i = 0;
+                        while (i < x)
+                        {
+                            if (Creature.DistanceJoints[i].a == nodeIndex || Creature.DistanceJoints[i].b == nodeIndex)
+                            {
+                                Creature.DistanceJoints.RemoveAt(i);
+                                i--;
+                            }
+                            x = Creature.DistanceJoints.Count;
+                            i++;
+                        }
+                    }
+
+                }
+                else
+                {
+                    currentMuscleNodeIndex = -1;
+                }
             }
 
             //Create muscle
@@ -249,30 +277,6 @@ namespace Assets.Scripts.Neuroevolution
                     {
                         Creature.DistanceJoints.Add(new DistanceJointStruct(currentMuscleNodeIndex, nodeIndex));
                         currentMuscleNodeIndex = -1;
-                    }
-                }
-            }
-
-            //Remove muscle
-            if (Input.GetMouseButtonDown(1) && (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)))
-            {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
-
-                int nodeIndex;
-                if (hit.collider != null && int.TryParse(hit.transform.name, out nodeIndex))
-                {
-                    var x = Creature.DistanceJoints.Count;
-                    var i = 0;
-                    while (i < x)
-                    {
-                        if (Creature.DistanceJoints[i].a == nodeIndex || Creature.DistanceJoints[i].b == nodeIndex)
-                        {
-                            Creature.DistanceJoints.RemoveAt(i);
-                            i--;
-                        }
-                        x = Creature.DistanceJoints.Count;
-                        i++;
                     }
                 }
             }

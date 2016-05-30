@@ -9,7 +9,7 @@ namespace Assets.Scripts.Neuroevolution
         public readonly List<Creature> Creatures;
         public float CurrentTime;
         public bool IsTraining;
-        public int CurrentGeneration;
+        public float Progression;
         public static string DataPath = Application.dataPath;
 
 
@@ -25,6 +25,7 @@ namespace Assets.Scripts.Neuroevolution
         }
 
 
+
         private static void ThreadedJob(Creature c, int testDuration, AutoResetEvent waitHandle)
         {
             for (var k = 0; k < testDuration; k++)
@@ -34,12 +35,8 @@ namespace Assets.Scripts.Neuroevolution
             waitHandle.Set();
         }
 
-        private static float GetVariation(int currentGeneration, int totalGenerations)
-        {
-            return 0.1f / currentGeneration;
-        }
 
-        private static void NextGenerationSpecies(List<Creature> creatures, float currentVariation)
+        private static void NextGenerationSpecies(List<Creature> creatures, float variation)
         {
             //Sort by species
             creatures.Sort((a, b) =>
@@ -86,13 +83,13 @@ namespace Assets.Scripts.Neuroevolution
 
                 //Best of the species
                 newCreatures.Add(g[0].GetCopy());
-                newCreatures.Add(g[0].GetChild(currentVariation));
+                newCreatures.Add(g[0].GetChild(variation));
 
                 //Second best
                 if (groups[i].Count > 1)
                 {
                     newCreatures.Add(g[1].GetCopy());
-                    newCreatures.Add(g[1].GetChild(currentVariation));
+                    newCreatures.Add(g[1].GetChild(variation));
                 }
                 else
                 {
@@ -141,14 +138,14 @@ namespace Assets.Scripts.Neuroevolution
             //Start training
             for (var k = 0; k < generations; k++)
             {
-                //Variation
-                var currentVariation = (variation == -1) ? GetVariation(k + 1, generations) : variation;
+                //Update progression
+                controller.Progression = (float)k / generations;
 
                 //Update creatures
                 controller.Update((int)(testDuration / Globals.DeltaTime));
 
                 //Save the scores, genomes ...
-                save.Add(currentVariation, k, controller.Creatures);
+                save.Add(variation, k, controller.Creatures);
 
 
                 //Generate next generation
@@ -156,13 +153,12 @@ namespace Assets.Scripts.Neuroevolution
                 {
                     if (Globals.UseSpecies)
                     {
-                        NextGenerationSpecies(controller.Creatures, currentVariation);
+                        NextGenerationSpecies(controller.Creatures, variation);
                     }
                     else
                     {
-                        NextGenerationNormal(controller.Creatures, currentVariation);
+                        NextGenerationNormal(controller.Creatures, k);
                     }
-                    controller.CurrentGeneration = k + 1;
                 }
                 else
                 {
@@ -171,6 +167,7 @@ namespace Assets.Scripts.Neuroevolution
                         controller.Creatures[i] = controller.Creatures[i].GetCopy();
                     }
                 }
+                Counters.AddGeneration();
             }
 
             //Score output in csv
@@ -178,33 +175,52 @@ namespace Assets.Scripts.Neuroevolution
 
             //Reset variables
             controller.CurrentTime = 0;
+            controller.Progression = 0;
             controller.IsTraining = false;
         }
 
 
         public void Train(int generations, int testDuration, float variation, string filename)
         {
-            var t = new Thread(() => TrainThread(this, generations, testDuration, variation, filename));
-            t.Start();
+            if (Globals.UseThreads)
+            {
+                var t = new Thread(() => TrainThread(this, generations, testDuration, variation, filename));
+                t.Start();
+            }
+            else
+            {
+                TrainThread(this, generations, testDuration, variation, filename);
+            }
         }
 
         public void Update(int testDuration)
         {
-            var waitHandles = new AutoResetEvent[Creatures.Count];
-            for (var k = 0; k < Creatures.Count; k++)
-            {
-                int x = k; //Because of shared data
-                waitHandles[x] = new AutoResetEvent(false);
-                ThreadPool.QueueUserWorkItem(state => ThreadedJob(Creatures[x], testDuration, waitHandles[x]));
-            }
-
-            foreach (var w in waitHandles)
-            {
-                w.WaitOne();
-            }
-
             // Update time
             CurrentTime += Globals.DeltaTime * testDuration;
+
+            //Update creatures
+            if (Globals.UseThreads)
+            {
+                var waitHandles = new AutoResetEvent[Creatures.Count];
+                for (var k = 0; k < Creatures.Count; k++)
+                {
+                    int x = k; //Because of shared data
+                    waitHandles[x] = new AutoResetEvent(false);
+                    ThreadPool.QueueUserWorkItem(state => ThreadedJob(Creatures[x], testDuration, waitHandles[x]));
+                }
+
+                foreach (var w in waitHandles)
+                {
+                    w.WaitOne();
+                }
+            }
+            else
+            {
+                foreach (var c in Creatures)
+                {
+                    ThreadedJob(c, testDuration, new AutoResetEvent(false));
+                }
+            }
         }
 
 

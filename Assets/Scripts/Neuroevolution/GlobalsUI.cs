@@ -104,5 +104,10 @@ namespace Assets.Scripts.Neuroevolution
         {
             Globals.HiddenSize = int.Parse(s);
         }
+
+        public void SetUseThreads(bool b)
+        {
+            Globals.UseThreads = b;
+        }
     }
 }

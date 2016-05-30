@@ -4,8 +4,8 @@ namespace Assets.Scripts.Neuroevolution
 {
     public struct CSVSave
     {
-        public List<float> Variations;
         public List<int> Generations;
+        public List<List<float>> Variations;
         public List<List<int>> Genomes;
         public List<List<int>> Species;
         public List<List<int>> Parents;
@@ -16,7 +16,7 @@ namespace Assets.Scripts.Neuroevolution
 
         public CSVSave(int generations)
         {
-            Variations = new List<float>(generations);
+            Variations = new List<List<float>>(generations);
             Generations = new List<int>(generations);
             Genomes = new List<List<int>>(generations);
             Species = new List<List<int>>(generations);
@@ -37,6 +37,7 @@ namespace Assets.Scripts.Neuroevolution
             var fitnesses = new List<float>();
             var powers = new List<float>();
             var angles = new List<float>();
+            var variations = new List<float>();
             foreach (var c in creatures)
             {
                 genomes.Add(c.Genome);
@@ -46,8 +47,8 @@ namespace Assets.Scripts.Neuroevolution
                 fitnesses.Add(c.GetFitness());
                 powers.Add(c.GetPower());
                 angles.Add(c.GetAngle());
+                variations.Add(Counters.GetVariation(c.Species, variation));
             }
-            Variations.Add(variation);
             Generations.Add(generation);
             Genomes.Add(genomes);
             Species.Add(species);
@@ -56,6 +57,7 @@ namespace Assets.Scripts.Neuroevolution
             Fitnesses.Add(fitnesses);
             Powers.Add(powers);
             Angles.Add(angles);
+            Variations.Add(variations);
         }
 
         public void SaveToFile(string filename, string path)

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using ProgressBar;
 
@@ -43,7 +40,7 @@ namespace Assets.Scripts.Neuroevolution
             return (int)Mathf.Exp(TimeMultiplierSlider.value);
         }
 
-        public void TrainUpdate(int currentGeneration)
+        public void TrainUpdate(float progression)
         {
             ProgressBar.gameObject.SetActive(true);
             if (Input.GetKeyDown(KeyCode.Return))
@@ -51,10 +48,10 @@ namespace Assets.Scripts.Neuroevolution
                 remainingTime = Mathf.Infinity;
             }
             //Update progress bar
-            ProgressBar.SetFillerSizeAsPercentage((float)currentGeneration / totalGenerations * 100f);
+            ProgressBar.SetFillerSizeAsPercentage(progression * 100f);
             //Time text
-            var speed = (Time.time - startTrainTime) / currentGeneration;
-            remainingTime = Mathf.Min(speed * (totalGenerations - currentGeneration), remainingTime);
+            var speed = (Time.time - startTrainTime) / (progression * totalGenerations);
+            remainingTime = Mathf.Min(speed * (totalGenerations - progression * totalGenerations), remainingTime);
             TimeRemainingText.text = (int)remainingTime + "s remaining";
         }
 
@@ -94,11 +91,6 @@ namespace Assets.Scripts.Neuroevolution
             SpeedText.text = "Speed : " + s;
             EnergyText.text = "Energy : " + e;
             PowerText.text = "Power : " + p;
-        }
-
-        public void EditUpdate()
-        {
-
         }
 
 
