@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using ProgressBar;
+using System.Collections.Generic;
 
 namespace Assets.Scripts.Neuroevolution
 {
@@ -12,6 +13,7 @@ namespace Assets.Scripts.Neuroevolution
         public InputField InitialPopulationSizeField;
         public InputField VariationField;
         public InputField FileNameField;
+        public List<InputField> SpeciesSizesFields = new List<InputField>();
         public Text DistanceText;
         public Text TimeText;
         public Text SpeedText;
@@ -24,6 +26,7 @@ namespace Assets.Scripts.Neuroevolution
         private float remainingTime;
         private float startTrainTime;
         private int totalGenerations;
+        private float counter;
 
         private void Awake()
         {
@@ -37,7 +40,17 @@ namespace Assets.Scripts.Neuroevolution
 
         public int GetTimeMultiplier()
         {
-            return (int)Mathf.Exp(TimeMultiplierSlider.value);
+            counter += Mathf.Exp(TimeMultiplierSlider.value);
+            if (counter > 1)
+            {
+                var x = counter;
+                counter = 0;
+                return (int)x;
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         public void TrainUpdate(float progression)
@@ -53,6 +66,11 @@ namespace Assets.Scripts.Neuroevolution
             var speed = (Time.time - startTrainTime) / (progression * totalGenerations);
             remainingTime = Mathf.Min(speed * (totalGenerations - progression * totalGenerations), remainingTime);
             TimeRemainingText.text = (int)remainingTime + "s remaining";
+        }
+
+        public void Update()
+        {
+            OnPopulationSizeChange();
         }
 
         public void NormalUpdate(Creature bestCreature, float currentTime)
@@ -99,14 +117,34 @@ namespace Assets.Scripts.Neuroevolution
          */
         public void OnPopulationSizeChange()
         {
-            if (int.Parse(InitialPopulationSizeField.text) % 5 != 0)
+            if (Globals.UseSpecies)
             {
-                InitialPopulationSizeField.text = (int.Parse(InitialPopulationSizeField.text) + 5 - int.Parse(InitialPopulationSizeField.text) % 5).ToString();
+                var x = 0;
+                foreach (var i in SpeciesSizesFields)
+                {
+                    int a;
+                    if (int.TryParse(i.text, out a))
+                    {
+                        x += a;
+                    }
+                }
+                InitialPopulationSizeField.text = (2 * x + Globals.RandomCount).ToString();
             }
         }
 
         public void Train()
         {
+            var l = new List<int>();
+            foreach (var i in SpeciesSizesFields)
+            {
+                var x = int.Parse(i.text);
+                if (x != 0)
+                {
+                    l.Add(x);
+                }
+            }
+            Globals.SpeciesSizes = l;
+
             startTrainTime = Time.time;
             totalGenerations = int.Parse(GenerationsField.text);
             ResetRemainingTime();

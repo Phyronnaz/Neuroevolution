@@ -46,7 +46,7 @@ namespace Assets.Scripts.Neuroevolution
 
         public static float GetVariation(int species, float variation)
         {
-            if (variation != -1)
+            if (variation >= 0)
             {
                 return variation;
             }
@@ -55,7 +55,7 @@ namespace Assets.Scripts.Neuroevolution
                 int i;
                 if (startGenerationPerSpecies.TryGetValue(species, out i))
                 {
-                    return 0.1f / (CurrentGeneration - i + 1);
+                    return -variation / (CurrentGeneration - i + 1);
                 }
                 else
                 {

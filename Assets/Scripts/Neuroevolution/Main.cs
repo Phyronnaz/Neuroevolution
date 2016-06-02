@@ -250,12 +250,16 @@ namespace Assets.Scripts.Neuroevolution
         {
             if (controller != null && !controller.IsTraining && !pause)
             {
-                controller.Update(mainUI.GetTimeMultiplier());
-                //Pause at 20s
-                //if (controller.CurrentTime <= 20 && controller.CurrentTime + mainUI.GetTimeMultiplier() * Globals.DeltaTime >= 20)
-                //{
-                //    pause = true;
-                //}
+                var m = mainUI.GetTimeMultiplier();
+                if (m != 0)
+                {
+                    controller.Update(m);
+                    //Pause at 20s
+                    //if (controller.CurrentTime <= 20 && controller.CurrentTime + mainUI.GetTimeMultiplier() * Globals.DeltaTime >= 20)
+                    //{
+                    //    pause = true;
+                    //}
+                }
             }
         }
 

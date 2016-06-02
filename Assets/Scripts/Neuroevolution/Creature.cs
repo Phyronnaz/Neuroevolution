@@ -114,7 +114,7 @@ namespace Assets.Scripts.Neuroevolution
                 synapses.Add(CreatureStruct.Synapses[k] + Matrix.Random(CreatureStruct.Synapses[k].M, CreatureStruct.Synapses[k].N) * variation);
             }
             var c = CreatureStruct;
-            c.Synapses = CreatureStruct.Synapses;
+            c.Synapses = synapses;
             return new Creature(c, Generation + 1, Counters.GenomeCount, Species, Genome);
         }
 
@@ -289,9 +289,9 @@ namespace Assets.Scripts.Neuroevolution
                 var x = 0f;
                 if (useRotation)
                 {
-                    x = (GetAngle() > Globals.MaxAngle) ? 1 : 0;
+                    x = GetAngle();
                 }
-                return GetAveragePosition().X + x * Globals.BadAngleImpact + GetPower() * Globals.EnergyImpact;
+                return GetAveragePosition().X + x * Globals.AngleImpact + GetPower() * Globals.EnergyImpact;
             }
         }
 

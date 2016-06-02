@@ -74,7 +74,7 @@ namespace Assets.Scripts.Neuroevolution
                         {
                             s = Generations[i].ToString();
                             s += "; ";
-                            s += Variations[i];
+                            s += Variations[i][j];
                             s += "; ";
                             s += Genomes[i][j];
                             s += "; ";

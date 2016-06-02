@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 namespace Assets.Scripts.Neuroevolution
 {
@@ -13,8 +14,8 @@ namespace Assets.Scripts.Neuroevolution
         public static float MaxMotorTorque = 50000;
         public static float MaxYPosition = 30;
         public static float MaxAngle = Mathf.PI / 3;
-        public static float BadAngleImpact = -100000;
-        public static float EnergyImpact = -1;
+        public static float AngleImpact = 0;
+        public static float EnergyImpact = 0;
         public static float DeltaTime = 0.01f;
         public static int RandomCount = 5;
         public static bool UseSpecies = true;
@@ -26,5 +27,6 @@ namespace Assets.Scripts.Neuroevolution
         public static int HiddenSize = 0;
         public static bool UseThreads = true;
         public static bool NoImpulse = true;
+        public static List<int> SpeciesSizes;
     }
 }

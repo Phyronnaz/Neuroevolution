@@ -13,7 +13,7 @@ namespace Assets.Scripts.Neuroevolution
 
         public void SetAngleImpact(string impact)
         {
-            Globals.BadAngleImpact = float.Parse(impact);
+            Globals.AngleImpact = float.Parse(impact);
         }
 
         public void SetEnergyImpact(string impact)

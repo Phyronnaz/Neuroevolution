@@ -77,33 +77,34 @@ namespace Assets.Scripts.Neuroevolution
             var newCreatures = new List<Creature>();
 
             //Kept groups
-            for (var i = 0; i < (creatures.Count - Globals.RandomCount) / 5; i++)
+            for (var s = 0; s < Globals.SpeciesSizes.Count; s++)
             {
-                var g = groups[i];
-
-                //Best of the species
-                newCreatures.Add(g[0].GetCopy());
-                newCreatures.Add(g[0].GetChild(variation));
-
-                //Second best
-                if (groups[i].Count > 1)
+                if (s < groups.Count)
                 {
-                    newCreatures.Add(g[1].GetCopy());
-                    newCreatures.Add(g[1].GetChild(variation));
+                    for (var i = 0; i < Globals.SpeciesSizes[s]; i++)
+                    {
+                        if (i < groups[s].Count)
+                        {
+                            newCreatures.Add(groups[s][i].GetCopy());
+                            newCreatures.Add(groups[s][i].GetChild(variation));
+                        }
+                        else
+                        {
+                            newCreatures.Add(groups[s][0].GetChild(variation));
+                            newCreatures.Add(groups[s][0].GetChild(variation));
+                        }
+                    }
                 }
                 else
                 {
-                    newCreatures.Add(g[0].GetRandomClone());
-                    newCreatures.Add(g[0].GetRandomClone());
+                    var c = groups[0][0].GetRandomClone();
+                    newCreatures.Add(c);
+                    newCreatures.Add(c.GetChild(variation));
                 }
-
-                //Random one
-                newCreatures.Add(g[0].GetRandomClone());
             }
-
-            while (newCreatures.Count < creatures.Count)
+            for (var i = 0; i < Globals.RandomCount; i++)
             {
-                newCreatures.Add(newCreatures[0].GetRandomClone());
+                newCreatures.Add(groups[0][0].GetRandomClone());
             }
 
             creatures.Clear();
