@@ -100,7 +100,7 @@ namespace Assets.Scripts.Neuroevolution
                     var c = groups[0][0].GetRandomClone();
                     newCreatures.Add(c);
                     newCreatures.Add(c.GetChild(variation));
-                    for (var i = 0; i < Globals.SpeciesSizes[s] - 1; i++)
+                    for (var i = 1 ; i < Globals.SpeciesSizes[s]; i++)
                     {
                         newCreatures.Add(c.GetChild(variation));
                         newCreatures.Add(c.GetChild(variation));

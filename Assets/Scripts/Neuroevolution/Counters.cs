@@ -58,7 +58,7 @@ namespace Assets.Scripts.Neuroevolution
                 {
                     if (Globals.Log)
                     {
-                        return -variation / Mathf.Log10(CurrentGeneration - i + 1);
+                        return -variation / Mathf.Log10(CurrentGeneration - i + 2);
                     }
                     else
                     {

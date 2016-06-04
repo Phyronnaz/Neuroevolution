@@ -20,7 +20,7 @@ namespace Assets.Scripts.Neuroevolution
         public static float DeltaTime = 0.01f;
         public static int RandomCount = 5;
         public static bool UseSpecies = true;
-        public static int TrainCycle = 1;
+        public static int TrainCycle = 10;
         public static float Restitution = 0;
         public static bool KillFallen = true;
         public static float GroundRotation = 0;
