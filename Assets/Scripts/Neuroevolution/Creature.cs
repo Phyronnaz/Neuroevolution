@@ -51,26 +51,33 @@ namespace Assets.Scripts.Neuroevolution
             world = new World(new Vector2(0, Globals.WorldYGravity));
 
             //Add nodes
-            foreach (var p in creature.Positions)
+            for (var i = 0; i < creature.Positions.Count; i++)
             {
-                var body = BodyFactory.CreateCircle(world, 0.5f, Globals.BodyDensity, p, null);
+                var p = creature.Positions[i];
+                Body body;
+                if (i == creature.RotationNode)
+                {
+                    body = BodyFactory.CreateRectangle(world, 1, 1, Globals.BodyDensity, p, null);
+                }
+                else
+                {
+                    body = BodyFactory.CreateRectangle(world, 1, 1, Globals.BodyDensity, p, null);
+                }
                 body.CollidesWith = Category.Cat1;
                 body.CollisionCategories = Category.Cat2;
                 body.IsStatic = false;
                 body.Friction = Globals.BodyFriction;
                 body.Restitution = Globals.Restitution;
-                world.AddBody(body);
             }
             currentFriction = Globals.BodyFriction;
             maxTorque = Globals.MaxMotorTorque;
             currentFriction = Globals.Restitution;
             //Add ground
-            ground = BodyFactory.CreateRectangle(world, 1000000, 1, 1, Vector2.Zero, null);
+            ground = BodyFactory.CreateRectangle(world, 1000000, 1, 1, -Vector2.UnitY * 0.5f, null);
             ground.IsStatic = true;
             ground.CollisionCategories = Category.Cat1;
             ground.CollidesWith = Category.Cat2;
             ground.Rotation = Globals.GroundRotation;
-            world.AddBody(ground);
             //Compute bodies
             world.ProcessChanges();
 
@@ -85,12 +92,11 @@ namespace Assets.Scripts.Neuroevolution
                 j.Enabled = true;
                 j.MotorEnabled = true;
                 j.MaxMotorTorque = Globals.MaxMotorTorque;
-                world.AddJoint(j);
                 revoluteJoints.Add(j);
             }
             foreach (var d in creature.DistanceJoints)
             {
-                world.AddJoint(JointFactory.CreateDistanceJoint(world, world.BodyList[d.a], world.BodyList[d.b], Vector2.Zero, Vector2.Zero));
+                JointFactory.CreateDistanceJoint(world, world.BodyList[d.a], world.BodyList[d.b], Vector2.Zero, Vector2.Zero);
             }
             world.ProcessChanges();
 
@@ -99,6 +105,20 @@ namespace Assets.Scripts.Neuroevolution
             {
                 useRotation = true;
                 initialRotation = world.BodyList[CreatureStruct.RotationNode].Rotation;
+                var l = creature.DistanceJoints.FindAll(d => d.a == creature.RotationNode || d.b == creature.RotationNode);
+                if (l.Count == 0)
+                {
+                    useRotation = false;
+                }
+                else
+                {
+                    foreach (var d in l)
+                    {
+                        var b = (d.a == creature.RotationNode) ? d.b : d.a;
+                        JointFactory.CreateAngleJoint(world, world.BodyList[b], world.BodyList[creature.RotationNode]);
+                    }
+
+                }
             }
             Train();
         }

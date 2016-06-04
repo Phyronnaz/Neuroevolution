@@ -20,6 +20,7 @@ namespace Assets.Scripts.Neuroevolution
         public Text EnergyText;
         public Text PowerText;
         public Text TimeRemainingText;
+        public Text AngleText;
         public ProgressBarBehaviour ProgressBar;
         public GameObject GlobalsPanel;
         public GameObject TrainPanel;
@@ -109,11 +110,16 @@ namespace Assets.Scripts.Neuroevolution
             if (p.Length > 5)
                 p = p.Substring(0, 5);
 
+            var a = bestCreature.GetAngle().ToString();
+            if (a.Length > 5)
+                a = a.Substring(0, 5);
+
             DistanceText.text = "Distance : " + m;
             TimeText.text = "Time : " + t;
             SpeedText.text = "Speed : " + s;
             EnergyText.text = "Energy : " + e;
             PowerText.text = "Power : " + p;
+            AngleText.text = "Angle : " + a;
         }
 
         public void HideUI()

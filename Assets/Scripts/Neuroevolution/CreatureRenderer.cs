@@ -15,6 +15,7 @@ namespace Assets.Scripts.Neuroevolution
         private Material rotationNodeMaterial;
         private Material anchorNodeMaterial;
         private Material revolutesNodesMaterial;
+        private GameObject rotationNode;
 
 
         public CreatureRenderer()
@@ -66,6 +67,16 @@ namespace Assets.Scripts.Neuroevolution
             if (creature.RotationNode != -1)
             {
                 nodes[creature.RotationNode].GetComponent<Renderer>().material = rotationNodeMaterial;
+                //if (bodies != null)
+                //{
+                //    nodes[creature.RotationNode].transform.position = Vector3.down * 10000;
+                //    if (rotationNode == null)
+                //    {
+                //        rotationNode = Object.Instantiate(Resources.Load("Rectangle")) as GameObject;
+                //    }
+                //    rotationNode.transform.position = ToVector2(bodies[creature.RotationNode].Position);
+                //    rotationNode.transform.rotation = Quaternion.Euler(0, 0, bodies[creature.RotationNode].Rotation * Mathf.Rad2Deg);
+                //}
             }
         }
 
@@ -78,7 +89,7 @@ namespace Assets.Scripts.Neuroevolution
             }
             while (nodes.Count < nodesSize)
             {
-                var go = Object.Instantiate(Resources.Load("Circle")) as GameObject;
+                var go = Object.Instantiate(Resources.Load("Rectangle")) as GameObject;
                 go.GetComponent<SpriteRenderer>().material = nodesMaterial;
                 go.name = nodes.Count.ToString();
                 nodes.Add(go);
@@ -120,6 +131,7 @@ namespace Assets.Scripts.Neuroevolution
                 for (var i = 0; i < creature.Positions.Count; i++)
                 {
                     nodes[i].transform.position = ToVector2(bodies[i].Position);
+                    nodes[i].transform.rotation = Quaternion.Euler(0, 0, bodies[i].Rotation * Mathf.Rad2Deg);
                 }
                 //Lines
                 for (var i = 0; i < creature.DistanceJoints.Count; i++)
@@ -148,6 +160,7 @@ namespace Assets.Scripts.Neuroevolution
             {
                 Object.Destroy(n.gameObject);
             }
+            Object.Destroy(rotationNode);
         }
     }
 }

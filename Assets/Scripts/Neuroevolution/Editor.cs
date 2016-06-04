@@ -197,7 +197,7 @@ namespace Assets.Scripts.Neuroevolution
                         //Remove revolute && distance joints 
                         Creature.DistanceJoints.RemoveAll((d) => d.a == i || d.b == i);
                         Creature.RevoluteJoints.RemoveAll((r) => r.a == i || r.anchor == i || r.b == i);
-                        Creature.DistanceJoints = Creature.DistanceJoints.ConvertAll(d => new DistanceJointStruct(0, (d.b > i) ? d.b - 1 : d.b));
+                        Creature.DistanceJoints = Creature.DistanceJoints.ConvertAll(d => new DistanceJointStruct((d.a > i) ? d.a - 1 : d.a, (d.b > i) ? d.b - 1 : d.b));
                         Creature.RevoluteJoints = Creature.RevoluteJoints.ConvertAll(r => new RevoluteJointStruct((r.a > i) ? r.a - 1 : r.a, (r.b > i) ? r.b - 1 : r.b, (r.anchor > i) ? r.anchor - 1 : r.anchor, r.lowerLimit, r.upperLimit));
 
                         Debug.Log(i);
