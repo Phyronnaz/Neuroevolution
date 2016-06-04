@@ -15,6 +15,11 @@ namespace Assets.Scripts.Neuroevolution
             this.a = a;
             this.b = b;
         }
+
+        public override string ToString()
+        {
+            return a.ToString() + "; " + b.ToString();
+        }
     }
 
     [Serializable]

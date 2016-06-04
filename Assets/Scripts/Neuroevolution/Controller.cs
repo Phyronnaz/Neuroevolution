@@ -79,7 +79,7 @@ namespace Assets.Scripts.Neuroevolution
             //Kept groups
             for (var s = 0; s < Globals.SpeciesSizes.Count; s++)
             {
-                if (s < groups.Count)
+                if (s < groups.Count && !groups[s][0].IsDead)
                 {
                     for (var i = 0; i < Globals.SpeciesSizes[s]; i++)
                     {
@@ -100,6 +100,11 @@ namespace Assets.Scripts.Neuroevolution
                     var c = groups[0][0].GetRandomClone();
                     newCreatures.Add(c);
                     newCreatures.Add(c.GetChild(variation));
+                    for (var i = 0; i < Globals.SpeciesSizes[s] - 1; i++)
+                    {
+                        newCreatures.Add(c.GetChild(variation));
+                        newCreatures.Add(c.GetChild(variation));
+                    }
                 }
             }
             for (var i = 0; i < Globals.RandomCount; i++)

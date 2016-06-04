@@ -18,10 +18,11 @@ namespace Assets.Scripts.Neuroevolution
         private bool pause;
 
 
+
         public void Awake()
         {
             CancelInvoke();
-            InvokeRepeating("ControllerUpdate", 0, Globals.DeltaTime);
+            InvokeRepeating("ControllerUpdate", 0, 1 / 60f);
             mainUI = GetComponent<MainUI>();
         }
 
@@ -138,18 +139,21 @@ namespace Assets.Scripts.Neuroevolution
 
         private void InitializeController()
         {
-            Creature c;
-            if (editor.Creature.Synapses.Count == 0)
+            if (editor.Creature.Positions.Count != 0)
             {
-                c = CreatureFactory.CreateCreature(editor.Creature, Globals.HiddenSize, Globals.HiddenLayersCount);
+                Creature c;
+                if (editor.Creature.Synapses.Count == 0)
+                {
+                    c = CreatureFactory.CreateCreature(editor.Creature, Globals.HiddenSize, Globals.HiddenLayersCount);
+                }
+                else
+                {
+                    c = CreatureFactory.CreateCreature(editor.Creature);
+                }
+                edit = false;
+                editor.Destroy();
+                controller = new Controller(c);
             }
-            else
-            {
-                c = CreatureFactory.CreateCreature(editor.Creature);
-            }
-            edit = false;
-            editor.Destroy();
-            controller = new Controller(c);
         }
 
         private void CheckEditInputs()
@@ -176,6 +180,10 @@ namespace Assets.Scripts.Neuroevolution
         {
             if (!EventSystem.current.IsPointerOverGameObject())
             {
+                if (Input.GetKeyDown(KeyCode.H))
+                {
+                    mainUI.HideUI();
+                }
                 if (Input.GetKeyDown(KeyCode.A))
                 {
                     controller.ResetCreatures();

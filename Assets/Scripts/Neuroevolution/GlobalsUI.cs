@@ -1,10 +1,27 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.Scripts.Neuroevolution
 {
     class GlobalsUI : MonoBehaviour
     {
         public Transform Ground;
+
+
+        public void Start()
+        {
+            var panel = GameObject.Find("GlobalsPanel");
+            foreach (var f in panel.GetComponentsInChildren<InputField>())
+            {
+                var s = f.name.Substring(0, f.name.Length - 5);
+                f.text = typeof(Globals).GetField(s).GetValue(null).ToString();
+            }
+            foreach (var t in panel.GetComponentsInChildren<Toggle>())
+            {
+                var s = t.name.Substring(0, t.name.Length - 6);
+                t.isOn = (bool)typeof(Globals).GetField(s).GetValue(null); ;
+            }
+        }
 
         public void SetMaxAngle(string angle)
         {
@@ -113,6 +130,20 @@ namespace Assets.Scripts.Neuroevolution
         public void SetNoImpulse(bool b)
         {
             Globals.NoImpulse = b;
+        }
+
+        public void SetStable(bool b)
+        {
+            Globals.Stable = b;
+        }
+        public void SetDistanceImpact(string s)
+        {
+            Globals.DistanceImpact = float.Parse(s);
+        }
+
+        public void SetLog(bool b)
+        {
+            Globals.Log = b;
         }
     }
 }

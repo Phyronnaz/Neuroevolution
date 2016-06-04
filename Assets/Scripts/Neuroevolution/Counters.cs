@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Assets.Scripts.Neuroevolution
 {
@@ -55,7 +56,14 @@ namespace Assets.Scripts.Neuroevolution
                 int i;
                 if (startGenerationPerSpecies.TryGetValue(species, out i))
                 {
-                    return -variation / (CurrentGeneration - i + 1);
+                    if (Globals.Log)
+                    {
+                        return -variation / Mathf.Log10(CurrentGeneration - i + 1);
+                    }
+                    else
+                    {
+                        return -variation / (CurrentGeneration - i + 1);
+                    }
                 }
                 else
                 {

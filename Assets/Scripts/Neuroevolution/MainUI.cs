@@ -21,6 +21,9 @@ namespace Assets.Scripts.Neuroevolution
         public Text PowerText;
         public Text TimeRemainingText;
         public ProgressBarBehaviour ProgressBar;
+        public GameObject GlobalsPanel;
+        public GameObject TrainPanel;
+        public GameObject SpeciesPanel;
         private Main main;
         //Progress bar
         private float remainingTime;
@@ -28,14 +31,16 @@ namespace Assets.Scripts.Neuroevolution
         private int totalGenerations;
         private float counter;
 
-        private void Awake()
+        public void Awake()
         {
             main = GetComponent<Main>();
-        }
-
-        private void ResetRemainingTime()
-        {
-            remainingTime = Mathf.Infinity;
+            for (var i = 0; i < Globals.SpeciesSizes.Count; i++)
+            {
+                if (i < SpeciesSizesFields.Count)
+                {
+                    SpeciesSizesFields[i].text = Globals.SpeciesSizes[i].ToString();
+                }
+            }
         }
 
         public int GetTimeMultiplier()
@@ -55,11 +60,11 @@ namespace Assets.Scripts.Neuroevolution
 
         public void TrainUpdate(float progression)
         {
-            ProgressBar.gameObject.SetActive(true);
-            if (Input.GetKeyDown(KeyCode.Return))
+            if (Input.GetKey(KeyCode.Return))
             {
-                remainingTime = Mathf.Infinity;
+                ResetRemainingTime();
             }
+            ProgressBar.gameObject.SetActive(true);
             //Update progress bar
             ProgressBar.SetFillerSizeAsPercentage(progression * 100f);
             //Time text
@@ -111,10 +116,13 @@ namespace Assets.Scripts.Neuroevolution
             PowerText.text = "Power : " + p;
         }
 
+        public void HideUI()
+        {
+            GlobalsPanel.SetActive(!GlobalsPanel.activeSelf);
+            TrainPanel.SetActive(!TrainPanel.activeSelf);
+            SpeciesPanel.SetActive(!SpeciesPanel.activeSelf);
+        }
 
-        /*
-         * UI
-         */
         public void OnPopulationSizeChange()
         {
             if (Globals.UseSpecies)
@@ -132,7 +140,7 @@ namespace Assets.Scripts.Neuroevolution
             }
         }
 
-        public void Train()
+        public void StartTrain()
         {
             var l = new List<int>();
             foreach (var i in SpeciesSizesFields)
@@ -149,6 +157,11 @@ namespace Assets.Scripts.Neuroevolution
             totalGenerations = int.Parse(GenerationsField.text);
             ResetRemainingTime();
             main.Train(int.Parse(InitialPopulationSizeField.text), int.Parse(GenerationsField.text), int.Parse(TestDurationField.text), float.Parse(VariationField.text), FileNameField.text);
+        }
+
+        private void ResetRemainingTime()
+        {
+            remainingTime = Mathf.Infinity;
         }
     }
 }

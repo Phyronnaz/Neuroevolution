@@ -93,6 +93,16 @@ namespace Assets.Scripts.Neuroevolution
             }
         }
 
+        public void Destroy()
+        {
+            grid.ForEach(Object.Destroy);
+            creatureRenderer.Destroy();
+            Object.Destroy(line.gameObject);
+            lowerLimitUI.Destroy();
+            upperLimitUI.Destroy();
+            GameObject.Find("HidePanel").GetComponent<MeshRenderer>().enabled = false;
+        }
+
 
         private void CreateGrid()
         {
@@ -122,6 +132,7 @@ namespace Assets.Scripts.Neuroevolution
                 }
             }
         }
+
         private void SetGrid(bool active)
         {
             foreach (var g in grid)
@@ -136,12 +147,12 @@ namespace Assets.Scripts.Neuroevolution
             lowerLimitUI = new AngleUI(Vector2.zero, 100, 3, Color.blue, true);
             upperLimitUI = new AngleUI(Vector2.zero, 100, 3, Color.red, false);
         }
+
         private void SetLimitUI(bool active)
         {
             lowerLimitUI.SetActive(false);
             upperLimitUI.SetActive(false);
         }
-
 
         private void EditNodes()
         {
@@ -182,36 +193,21 @@ namespace Assets.Scripts.Neuroevolution
                     int i;
                     if (int.TryParse(hit.transform.name, out i))
                     {
-                        creatureRenderer.Destroy();
-                        creatureRenderer = new CreatureRenderer();
                         Creature.Positions.RemoveAt(i);
                         //Remove revolute && distance joints 
-                        var x = Creature.DistanceJoints.Count;
-                        var j = 0;
-                        while (j < x)
+                        Creature.DistanceJoints.RemoveAll((d) => d.a == i || d.b == i);
+                        Creature.RevoluteJoints.RemoveAll((r) => r.a == i || r.anchor == i || r.b == i);
+                        Creature.DistanceJoints = Creature.DistanceJoints.ConvertAll(d => new DistanceJointStruct(0, (d.b > i) ? d.b - 1 : d.b));
+                        Creature.RevoluteJoints = Creature.RevoluteJoints.ConvertAll(r => new RevoluteJointStruct((r.a > i) ? r.a - 1 : r.a, (r.b > i) ? r.b - 1 : r.b, (r.anchor > i) ? r.anchor - 1 : r.anchor, r.lowerLimit, r.upperLimit));
+
+                        Debug.Log(i);
+                        foreach (var d in Creature.DistanceJoints)
                         {
-                            if (Creature.DistanceJoints[j].a == i || Creature.DistanceJoints[j].b == i)
-                            {
-                                Creature.DistanceJoints.RemoveAt(j);
-                                j--;
-                            }
-                            x = Creature.DistanceJoints.Count;
-                            j++;
-                        }
-                        x = Creature.RevoluteJoints.Count;
-                        j = 0;
-                        while (j < x)
-                        {
-                            if (Creature.RevoluteJoints[j].a == i || Creature.RevoluteJoints[j].anchor == i || Creature.RevoluteJoints[j].b == i)
-                            {
-                                Creature.RevoluteJoints.RemoveAt(j);
-                                j--;
-                            }
-                            x = Creature.RevoluteJoints.Count;
-                            j++;
+                            Debug.Log(d);
                         }
                     }
                 }
+                ResetRenderer();
             }
         }
 
@@ -228,7 +224,7 @@ namespace Assets.Scripts.Neuroevolution
                 line.SetPosition(1, q + Vector3.forward);
             }
 
-            //Cancel edit
+            //Remove muscle and cancel edit
             if (Input.GetMouseButtonDown(1))
             {
                 if (currentMuscleNodeIndex == -1)
@@ -239,19 +235,9 @@ namespace Assets.Scripts.Neuroevolution
                     int nodeIndex;
                     if (hit.collider != null && int.TryParse(hit.transform.name, out nodeIndex))
                     {
-                        var x = Creature.DistanceJoints.Count;
-                        var i = 0;
-                        while (i < x)
-                        {
-                            if (Creature.DistanceJoints[i].a == nodeIndex || Creature.DistanceJoints[i].b == nodeIndex)
-                            {
-                                Creature.DistanceJoints.RemoveAt(i);
-                                i--;
-                            }
-                            x = Creature.DistanceJoints.Count;
-                            i++;
-                        }
+                        Creature.DistanceJoints.RemoveAll((d) => d.a == nodeIndex || d.b == nodeIndex);
                     }
+                    ResetRenderer();
 
                 }
                 else
@@ -364,14 +350,10 @@ namespace Assets.Scripts.Neuroevolution
             }
         }
 
-        public void Destroy()
+        private void ResetRenderer()
         {
-            grid.ForEach(Object.Destroy);
             creatureRenderer.Destroy();
-            Object.Destroy(line.gameObject);
-            lowerLimitUI.Destroy();
-            upperLimitUI.Destroy();
-            GameObject.Find("HidePanel").GetComponent<MeshRenderer>().enabled = false;
+            creatureRenderer = new CreatureRenderer();
         }
     }
 }

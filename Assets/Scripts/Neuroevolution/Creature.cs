@@ -15,6 +15,7 @@ namespace Assets.Scripts.Neuroevolution
         public readonly int Genome;
         public readonly int Species;
         public readonly int Parent;
+        public bool IsDead;
 
         //Internal
         private readonly World world;
@@ -25,7 +26,6 @@ namespace Assets.Scripts.Neuroevolution
         private readonly bool useRotation;
 
         private Matrix neuralNetwork;
-        private bool isDead;
         private int count;
 
         //Stats
@@ -132,64 +132,43 @@ namespace Assets.Scripts.Neuroevolution
 
         public void Update(float dt)
         {
-            if (!isDead)
+            if (!IsDead)
             {
+                //Get and apply new settings
+                ApplyGlobals();
+                //Do the simulation
                 world.Step(dt);
+                //Increment counters
                 time += dt;
                 count++;
-                if (!Globals.Debug)
+                //Train
+                if (count >= Globals.TrainCycle)
                 {
-                    if (count >= Globals.TrainCycle)
+                    count = 0;
+                    Train();
+                    //Apply changes
+                    if (Globals.Stable)
                     {
-                        count = 0;
-                        Train();
+                        ChangeSpeeds();
                     }
                 }
-
-
-                //Change speeds
-                for (var i = 0; i < revoluteJoints.Count; i++)
+                if (!Globals.Stable)
                 {
-                    float x;
-                    if (Globals.Debug)
-                    {
-                        x = Globals.DeltaTime * Globals.MotorTorque * ((time % Globals.CycleDuration > Globals.CycleDuration / 2) ? 1 : -1);
-                    }
-                    else
-                    {
-                        x = Globals.DeltaTime * neuralNetwork[0][i] * Globals.MotorTorque;
-                    }
-                    var r = revoluteJoints[i];
-                    energy += Mathf.Abs(x);
-                    if (Globals.NoImpulse)
-                    {
-                        r.MotorSpeed = 0;
-                    }
-                    r.MotorSpeed += x;
-                    if ((Mathf.Abs(r.JointAngle - r.LowerLimit - r.ReferenceAngle) < 0.1f && r.MotorSpeed < 0)
-                        || (Mathf.Abs(r.JointAngle - r.UpperLimit - r.ReferenceAngle) < 0.1f && r.MotorSpeed > 0))
-                    {
-                        r.MotorSpeed = 0;
-                    }
-                    //UnityEngine.Debug.Log("Angle");
-                    //UnityEngine.Debug.Log(Mathf.Abs(r.JointAngle - r.LowerLimit - r.ReferenceAngle));
-                    //UnityEngine.Debug.Log(Mathf.Abs(r.JointAngle - r.UpperLimit - r.ReferenceAngle));
-                    //UnityEngine.Debug.Log("Speed");
-                    //UnityEngine.Debug.Log(r.MotorSpeed);
+                    ChangeSpeeds();
                 }
-
+                //Kill if needed
+                if ((world.BodyList[0].Position.Y > Globals.MaxYPosition) || (useRotation && Globals.KillFallen && GetAngle() > Globals.MaxAngle))
+                {
+                    IsDead = true;
+                }
             }
 
-            //Kill
-            if ((world.BodyList[0].Position.Y > Globals.MaxYPosition) || (useRotation && Globals.KillFallen && GetAngle() > Globals.MaxAngle))
-            {
-                isDead = true;
-            }
-            if (useRotation && GetAngle() > Globals.MaxAngle && Globals.KillFallen)
-            {
-                isDead = true;
-            }
-            //Globals update
+
+
+        }
+
+        private void ApplyGlobals()
+        {
             if (currentFriction != Globals.BodyFriction)
             {
                 foreach (var b in world.BodyList)
@@ -218,10 +197,36 @@ namespace Assets.Scripts.Neuroevolution
                 }
                 maxTorque = Globals.MaxMotorTorque;
             }
-
             world.Gravity.Y = Globals.WorldYGravity;
         }
 
+        private void ChangeSpeeds()
+        {
+            for (var i = 0; i < revoluteJoints.Count; i++)
+            {
+                float x;
+                if (Globals.Debug)
+                {
+                    x = Globals.DeltaTime * Globals.MotorTorque * ((time % Globals.CycleDuration > Globals.CycleDuration / 2) ? 1 : -1);
+                }
+                else
+                {
+                    x = Globals.DeltaTime * neuralNetwork[0][i] * Globals.MotorTorque;
+                }
+                var r = revoluteJoints[i];
+                energy += Mathf.Abs(x);
+                if (Globals.NoImpulse)
+                {
+                    r.MotorSpeed = 0;
+                }
+                r.MotorSpeed += x;
+                if ((Mathf.Abs(r.JointAngle - r.LowerLimit - r.ReferenceAngle) < 0.1f && r.MotorSpeed < 0)
+                    || (Mathf.Abs(r.JointAngle - r.UpperLimit - r.ReferenceAngle) < 0.1f && r.MotorSpeed > 0))
+                {
+                    r.MotorSpeed = 0;
+                }
+            }
+        }
 
         private void Train()
         {
@@ -280,7 +285,7 @@ namespace Assets.Scripts.Neuroevolution
 
         public float GetFitness()
         {
-            if (isDead)
+            if (IsDead)
             {
                 return float.NegativeInfinity;
             }
@@ -291,7 +296,7 @@ namespace Assets.Scripts.Neuroevolution
                 {
                     x = GetAngle();
                 }
-                return GetAveragePosition().X + x * Globals.AngleImpact + GetPower() * Globals.EnergyImpact;
+                return GetAveragePosition().X * Globals.DistanceImpact + x * Globals.AngleImpact + GetPower() * Globals.EnergyImpact;
             }
         }
 
