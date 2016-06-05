@@ -60,13 +60,25 @@ namespace Assets.Scripts.Neuroevolution
             Variations.Add(variations);
         }
 
-        public void SaveToFile(string filename, string path)
+        public void SaveToFile(string filename, string path, int generations, float variation, int populationSize, int testDuration)
         {
             if (filename != "")
             {
                 using (System.IO.StreamWriter file = new System.IO.StreamWriter(path + @"\" + filename + ".csv", true))
                 {
                     var s = "Generation; Variation; Genome; Species; Parent; Score; Fitness; Power; Angle";
+                    s += "; Generations: " + generations;
+                    s += "; Variation: " + variation;
+                    s += "; Population Size: " + populationSize;
+                    s += "; Test Duration: " + testDuration;
+                    s += "; Log: " + Globals.Log;
+                    s += "; Distance Impact: " + Globals.DistanceImpact;
+                    s += "; Angle Impact: " + Globals.AngleImpact;
+                    s += "; Energy Impact: " + Globals.EnergyImpact;
+                    s += "; Use Species: " + Globals.UseSpecies;
+                    s += "; Kill Fallen: " + Globals.KillFallen;
+                    s += "; Motor Torque: " + Globals.MotorTorque;
+                    s += "; Max Angle: " + Globals.MaxAngle;
                     file.WriteLine(s);
                     for (int i = 0; i < Scores.Count; i++)
                     {

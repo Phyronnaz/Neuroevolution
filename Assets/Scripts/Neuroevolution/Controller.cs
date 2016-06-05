@@ -34,8 +34,7 @@ namespace Assets.Scripts.Neuroevolution
             }
             waitHandle.Set();
         }
-
-
+        
         private static void NextGenerationSpecies(List<Creature> creatures, float variation)
         {
             //Sort by species
@@ -100,7 +99,7 @@ namespace Assets.Scripts.Neuroevolution
                     var c = groups[0][0].GetRandomClone();
                     newCreatures.Add(c);
                     newCreatures.Add(c.GetChild(variation));
-                    for (var i = 1 ; i < Globals.SpeciesSizes[s]; i++)
+                    for (var i = 1; i < Globals.SpeciesSizes[s]; i++)
                     {
                         newCreatures.Add(c.GetChild(variation));
                         newCreatures.Add(c.GetChild(variation));
@@ -177,7 +176,7 @@ namespace Assets.Scripts.Neuroevolution
             }
 
             //Score output in csv
-            save.SaveToFile(filename, DataPath);
+            save.SaveToFile(filename, DataPath, generations, variation, controller.Creatures.Count, testDuration);
 
             //Reset variables
             controller.CurrentTime = 0;
@@ -235,7 +234,7 @@ namespace Assets.Scripts.Neuroevolution
             Creature max = Creatures[0];
             foreach (var c in Creatures)
             {
-                if (c.GetAveragePosition().X > max.GetAveragePosition().X)
+                if (c.GetFitness() > max.GetFitness())
                     max = c;
             }
             return max;

@@ -85,8 +85,8 @@ namespace Assets.Scripts.Neuroevolution
 
             // Update camera position
             var tmp = transform.position;
-            tmp.x = Mathf.Lerp(tmp.x, bestCreature.GetAveragePosition().X + 5, Time.deltaTime * Mathf.Exp(TimeMultiplierSlider.value) + 0.01f);
-            tmp.y = Mathf.Lerp(tmp.y, bestCreature.GetAveragePosition().Y + 5, Time.deltaTime * Mathf.Exp(TimeMultiplierSlider.value) + 0.01f);
+            tmp.x = Mathf.Lerp(tmp.x, bestCreature.GetAveragePosition().X, Mathf.Abs(tmp.x - bestCreature.GetAveragePosition().X) * 0.1f);
+            tmp.y = Mathf.Lerp(tmp.y, bestCreature.GetAveragePosition().Y, Mathf.Abs(tmp.y - bestCreature.GetAveragePosition().Y) * 0.1f);
             transform.position = tmp;
 
             //Update UI

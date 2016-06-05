@@ -9,7 +9,7 @@ namespace Assets.Scripts.Neuroevolution
         public static float CycleDuration = 3;
         public static float WorldYGravity = -9.8f;
         public static float BodyFriction = 50;
-        public static float MotorTorque = 10;
+        public static float MotorTorque = 25;
         public static bool Debug = false;
         public static float MaxMotorTorque = 50000;
         public static float MaxYPosition = 30;
