@@ -2,6 +2,8 @@
 
 Making creatures learn to walk with neuroevolution
 
+**WARNING:** The code was written a while ago, and isn't particularly beautiful.
+
 ## Controls
 * 1,2,3,4 (alphanumeric): Switch between modes: 1: nodes, 2: muscles, 3: rotations; 4: head
 * S: Save creature
